@@ -1,5 +1,7 @@
 package flare.util
-{	
+{
+	import __AS3__.vec.Vector;
+		
 	/**
 	 * Utility methods for working with colors.
 	 */
@@ -306,11 +308,15 @@ package flare.util
 	     * grayscale values. Can be used with the
 	     * <code>flash.filters.ColorMatrixFilter</code> class.
 	     */
-	    public static function get desaturationMatrix():Array {
-	    	return [0.2125, 0.7154, 0.0721, 0, 0,
-	    			0.2125, 0.7154, 0.0721, 0, 0,
-	    			0.2125, 0.7154, 0.0721, 0, 0,
-	    			     0,      0,      0, 1, 0];
+	    public static function get desaturationMatrix():Vector.<Object> {
+	    	// Using an array to initialize a vector is, as of 2009-01-26, still an
+	    	// unresolved bug
+	    	var v:Vector.<Object> = new Vector.<Object>();
+	    	v.push(0.2125); v.push(0.7154); v.push(0.0721); v.push(0); v.push(0);
+	    	v.push(0.2125); v.push(0.7154); v.push(0.0721); v.push(0); v.push(0);
+	    	v.push(0.2125); v.push(0.7154); v.push(0.0721); v.push(0); v.push(0);
+	    	v.push(		0); v.push(     0); v.push(     0); v.push(1); v.push(0);
+	    	return v;
 	    }
 	    
 	} // end of class Colors

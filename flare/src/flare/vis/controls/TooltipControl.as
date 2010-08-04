@@ -217,6 +217,8 @@ package flare.vis.controls
 			_showTimer.stop();
 			_show = true;
 
+
+			if(!_cur.stage) return;
 			_cur.stage.addChild(tooltip);
 			fireEvent(TooltipEvent.SHOW);
 			layout(tooltip, _cur);

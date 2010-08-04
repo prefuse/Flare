@@ -1,7 +1,9 @@
 package flare.animate
 {
-	import flare.util.Property;
+	import __AS3__.vec.Vector;
+	
 	import flare.util.IValueProxy;
+	import flare.util.Property;
 	
 	import flash.display.DisplayObject;
 	import flash.geom.Rectangle;
@@ -476,14 +478,14 @@ package flare.animate
 		// --------------------------------------------------------------------
 		
 		private static var _maxPoolSize:int = 10000;
-		private static var _tweenPool:Array = [];
+		private static var _tweenPool:Vector.<Object> = new Vector.<Object>();
 		private static var _count:int = 0;
 		
 		private static function getTween(o:Object, duration:Number):Tween
 		{
 			var tw:Tween;
 			if (_tweenPool.length > 0) {
-				tw = _tweenPool.pop();
+				tw = _tweenPool.pop() as Tween;
 				tw.target = o;
 				tw.duration = duration;
 				tw.enabled = true;

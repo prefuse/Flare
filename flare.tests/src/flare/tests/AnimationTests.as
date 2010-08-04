@@ -10,6 +10,7 @@ package flare.tests
 	import flare.animate.interpolate.PointInterpolator;
 	import flare.animate.interpolate.RectangleInterpolator;
 	import flare.util.Arrays;
+	import flare.util.Vectors;
 	import flare.util.Colors;
 	
 	import flash.geom.Matrix;
@@ -198,7 +199,7 @@ package flare.tests
 			var t0:Tween = new Tween(o, 1, {a:0});
 			var t1:Tween = new Tween(o, 1, {a:2}); t1.id = "tween";
 			var t2:Tween = new Tween(o, 1, {a:3}); t2.id = "tween";
-			
+
 			try {
 				t1.id = "change";
 				t1.id = "tween";
@@ -206,7 +207,7 @@ package flare.tests
 			} catch (err:Error) {
 				fail("id change for non-running tween caused exception.");
 			}
-			
+
 			t0.play();
 			try {
 				t0.id = "change";
@@ -218,7 +219,7 @@ package flare.tests
 				fail("Allowed id change for running transition");
 			} catch (e:Error) {	}
 			t2.play();
-			
+
 			assertTrue(t0.running);
 			assertTrue(Scheduler.instance.remove(t0));
 			assertFalse(t1.running);

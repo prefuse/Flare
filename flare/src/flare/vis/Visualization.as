@@ -1,3 +1,4 @@
+
 package flare.vis
 {
 	import flare.animate.ISchedulable;
@@ -166,6 +167,7 @@ package flare.vis
 				_rec = null;
 			}
 		}
+		
 		
 		// -- Methods ---------------------------------------------------------
 		

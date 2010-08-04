@@ -11,7 +11,7 @@ package flare.query
 		 * Creates a new Minimum operator
 		 * @param input the sub-expression of which to compute the minimum
 		 */
-		public function Minimum(input:*) {
+		public function Minimum(input:*=null) {
 			super(input);
 		}
 		

@@ -8,14 +8,14 @@ package flare.util.palette
 	 */
 	public class Palette implements IMXMLObject
 	{
-		/** Array of palette values. */
-		protected var _values:Array;
+		/** Vector of palette values. */
+		protected var _values:Vector.<Object>;
 		
 		/** The number of values in the palette. */
 		public function get size():int { return _values==null ? 0 : _values.length; }
-		/** Array of palette values. */
-		public function get values():Array { return _values; }
-		public function set values(a:Array):void { _values = a; }
+		/** Object vector of palette values. */
+		public function get values():Vector.<Object> { return _values; }
+		public function set values(a:Vector.<Object>):void { _values = a; }
 		
 		/**
 		 * Retrieves the palette value corresponding to the input interpolation

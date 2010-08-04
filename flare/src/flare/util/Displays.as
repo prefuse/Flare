@@ -109,13 +109,15 @@ package flare.util
 			d:DisplayObjectContainer, cmp:Function):void
 		{
 			if (d==null) return;
-			var a:Array = new Array(d.numChildren);
+			var a:Vector.<Object> = new Vector.<Object>(d.numChildren);
 			for (var i:int=0; i<a.length; ++i) {
 				a[i] = d.getChildAt(i);
 			}
-			if (cmp==null) a.sort() else a.sort(cmp);
+			// Vector objects require a comparison function, so arbitrarily choosing
+			// Array.NUMERIC
+			if (cmp==null) a.sort(Array.NUMERIC) else a.sort(cmp);
 			for (i=0; i<a.length; ++i) {
-				d.setChildIndex(a[i], i);
+				d.setChildIndex(a[i] as DisplayObject, i);
 			}
 		}
 		
@@ -180,14 +182,14 @@ package flare.util
 		 * @return the thumbnail image as a BitmapData instance
 		 */
 		public static function thumbnail(src:DisplayObject, width:Number=-1,
-			height:Number=-1, bd:BitmapData=null):BitmapData
+			height:Number=-1, bd:BitmapData=null, clipRect:Rectangle=null):BitmapData
 		{
 			try {
 				// make sure everything is rendered if DirtySprites exist
 				getDefinitionByName("flare.display.DirtySprite").renderDirty();
 			} catch (err:Error) { /* do nothing */ }
 			
-			var r:Rectangle = src.getBounds(src);
+			var r:Rectangle = clipRect ? clipRect : src.getBounds(src);
 			var hasW:Boolean = width>0, hasH:Boolean = height>0;
 			
 			// get thumbnail dimensions
@@ -208,7 +210,7 @@ package flare.util
 			mat.scale(width/r.width, height/r.height);
 			
 			// draw the thumbnail and return
-			bd.draw(src, mat, src.transform.colorTransform, src.blendMode);
+			bd.draw(src, mat, src.transform.colorTransform, src.blendMode,clipRect);
 			return bd;
 		}
 		

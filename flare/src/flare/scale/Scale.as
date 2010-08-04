@@ -122,9 +122,9 @@ package flare.scale
 		 * Returns a set of label values for this scale.
 		 * @param num a desired target number of labels. This parameter is
 		 *  handled idiosyncratically by different scale sub-classes.
-		 * @return an array of label values for the scale
+		 * @return an object vector of label values for the scale
 		 */ 
-		public function values(num:int=-1) : Array
+		public function values(num:int=-1) : Vector.<Object>
 		{
 			return null;
 		}

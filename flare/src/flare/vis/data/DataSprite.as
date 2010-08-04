@@ -53,8 +53,8 @@ package flare.vis.data
 		/** The line width for this data sprite. */
 		protected var _lineWidth:Number = 0;
 
-		/** Optional array of x,y values for specifying arbitrary shapes. */
-		protected var _points:Array;
+		/** Optional object vector of x,y values for specifying arbitrary shapes. */
+		protected var _points:Vector.<Object>;
 		/** Code indicating the shape value of this data sprite. */
 		protected var _shape:String = "circle";
 		/** The size value of this data sprite (1 by default). */
@@ -202,9 +202,9 @@ package flare.vis.data
 		public function get shape():String { return _shape; }
 		public function set shape(s:String):void { _shape = s; dirty(); }
 		
-		/** Optional array of x,y values for specifying arbitrary shapes. */
-		public function get points():Array { return _points; }
-		public function set points(p:Array):void { _points = p; dirty(); }
+		/** Optional object vector of x,y values for specifying arbitrary shapes. */
+		public function get points():Vector.<Object> { return _points; }
+		public function set points(p:Vector.<Object>):void { _points = p; dirty(); }
 		
 		// -- Methods ---------------------------------------------------------
 

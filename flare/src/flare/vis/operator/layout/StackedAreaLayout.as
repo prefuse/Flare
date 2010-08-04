@@ -4,15 +4,19 @@ package flare.vis.operator.layout
 	import flare.scale.OrdinalScale;
 	import flare.scale.QuantitativeScale;
 	import flare.scale.Scale;
+	import flare.vis.data.ScaleBinding;
 	import flare.scale.TimeScale;
 	import flare.util.Arrays;
 	import flare.util.Maths;
 	import flare.util.Orientation;
 	import flare.util.Stats;
+	import flare.util.Vectors;
 	import flare.vis.axis.CartesianAxes;
 	import flare.vis.data.NodeSprite;
 	
 	import flash.geom.Rectangle;
+	
+	import mx.events.CalendarLayoutChangeEvent;
 	
 	/**
 	 * Layout that consecutively places items on top of each other. The layout
@@ -23,30 +27,32 @@ package flare.vis.operator.layout
 	{
 		// -- Properties ------------------------------------------------------
 		
-		private var _columns:Array;
-    	private var _peaks:Array;
-    	private var _poly:Array;
+		protected var _columns:Vector.<Object> = new Vector.<Object>();
+    	protected var _peaks:Vector.<Object> = new Vector.<Object>();
+    	protected var _poly:Vector.<Object> = new Vector.<Object>();
 		
-		private var _orient:String = Orientation.BOTTOM_TO_TOP;
-		private var _horiz:Boolean = false;
-		private var _top:Boolean = false;
-		private var _initAxes:Boolean = true;
+		protected var _orient:String = Orientation.BOTTOM_TO_TOP;
+		protected var _horiz:Boolean = false;
+		protected var _top:Boolean = false;
+		protected var _initAxes:Boolean = true;
 		
-		private var _normalize:Boolean = false;
-		private var _padding:Number = 0.05;
-		private var _threshold:Number = 1.0;
+		protected var _normalize:Boolean = false;
+		protected var _padding:Number = 0.05;
+		protected var _threshold:Number = 1.0;
 		
-		private var _scale:QuantitativeScale = new LinearScale(0,0,10,true);
-		private var _colScale:Scale;
+		protected var _scale:QuantitativeScale = new LinearScale(0,0,10,true);
+		protected var _colScale:Scale;
 		
-		/** Array containing the column names. */
-		public function get columns():Array { return _columns; }
-		public function set columns(cols:Array):void {
-			_columns = Arrays.copy(cols);
-			_peaks = new Array(cols.length);
-			_poly = new Array(cols.length);
+		/** Vector containing the column names. */
+		public function get columns():Vector.<Object> { return _columns; }
+		public function set columns(cols:Vector.<Object>):void {
+			_columns = Vectors.copy(cols);
+			_peaks = new Vector.<Object>(cols.length);
+			_poly = new Vector.<Object>(4*cols.length);
 			_colScale = getScale(_columns);
 		}
+		
+		public function get colScale():Scale{ return _colScale;}
 		
 		/** Flag indicating if the visualization should be normalized. */		
 		public function get normalize():Boolean { return _normalize; }
@@ -85,18 +91,24 @@ package flare.vis.operator.layout
 		
 		/**
 		 * Creates a new StackedAreaLayout.
-		 * @param cols an ordered array of properties for the column values
+		 * @param cols an ordered object vector or array of properties for the column values
 		 * @param padding percentage of space to leave as a padding margin
 		 *  for the stacked chart
 		 */		
-		public function StackedAreaLayout(cols:Array=null, padding:Number=0.05)
+		public function StackedAreaLayout(cols:*=null, padding:Number=0.05)
 		{
 			layoutType = CARTESIAN;
-			if (cols != null) this.columns = cols;
+			if (cols != null)
+			{
+				if(cols is Array)
+					this.columns = Vectors.copyFromArray(cols);
+				else if(cols is Vector.<Object>)
+					this.columns = cols;
+			}
 			this.padding = padding;
 		}
 		
-		private static function getScale(cols:Array):Scale
+		protected static function getScale(cols:Vector.<Object>):Scale
 		{
 			var stats:Stats = new Stats(cols);
 			switch (stats.dataType) {
@@ -115,7 +127,7 @@ package flare.vis.operator.layout
 		{
 			if (!_initAxes || visualization==null) return;
 			initializeAxes();
-			(_horiz ? xyAxes.yAxis : xyAxes.xAxis).showLines = false;
+			(_horiz ? (xyAxes as CartesianAxes).yAxis : (xyAxes as CartesianAxes).xAxis).showLines = false;
 		}
 		
 		/**
@@ -124,7 +136,7 @@ package flare.vis.operator.layout
 		protected function initializeAxes():void
 		{
 			if (!_initAxes || visualization==null) return;
-			var axes:CartesianAxes = xyAxes;
+			var axes:CartesianAxes = xyAxes as CartesianAxes;
 			if (_horiz) {
 				axes.xAxis.axisScale = _scale;
 				axes.yAxis.axisScale = _colScale;
@@ -157,7 +169,7 @@ package flare.vis.operator.layout
 	        initializeAxes();
 	        
 	        // initialize current polygon
-	        var axes:CartesianAxes = super.xyAxes;
+	        var axes:CartesianAxes = super.xyAxes as CartesianAxes;
 	        var scale:Scale = (_horiz ? axes.yAxis : axes.xAxis).axisScale;
 	        var xx:Number;
 	        for (var j:uint=0; j<len; ++j) {
@@ -185,14 +197,14 @@ package flare.vis.operator.layout
 	        	if (!visible || filtered) {
 	        		if (!visible || _t.immediate) {
 	        			// if already hidden, skip transitioner
-	        			d.points = Arrays.copy(_poly, d.points);
+	        			d.points = Vectors.copy(_poly, d.points);
 	        		} else {
 	        			// otherwise interpolate the change
-	        			obj.points = Arrays.copy(_poly, d.props.poly);
+	        			obj.points = Vectors.copy(_poly, d.props.poly);
 	        		}
 	        		return;
 	        	}
-	        	if (d.points == null) d.points = Arrays.copy(_poly);
+	        	if (d.points == null) d.points = Vectors.copy(_poly);
 	        	
 	        	// if visible, compute the new heights
 	            for (i=0; i<len; ++i) {
@@ -200,12 +212,12 @@ package flare.vis.operator.layout
 	                var value:Number = d.data[_columns[i]];
 	                
 	                if (_normalize) {
-	                	_poly[base+ybias] += sign * hgt * Maths.invLinearInterp(value,0,_peaks[i]);
+	                	_poly[base+ybias] += sign * hgt * Maths.invLinearInterp(value,0,(_peaks[i] as Number));
 	                } else {
 	                	_poly[base+ybias] += sign * hgt * _scale.interpolate(value);
 	                }
 	                
-	                h = Math.abs(_poly[2*(len-1-i)+ybias] - _poly[base+ybias]);
+	                h = Math.abs((_poly[2*(len-1-i)+ybias] as Number) - (_poly[base+ybias] as Number));
 	                if (h > height) height = h;
 	            }
 	            
@@ -217,19 +229,19 @@ package flare.vis.operator.layout
 	            // update data sprite layout
 	            obj.x = 0; obj.y = 0;
 	            if (_t.immediate) {
-	            	d.points = Arrays.copy(_poly, d.points);
+	            	d.points = Vectors.copy(_poly, d.points);
 	            } else {
-	            	obj.points = Arrays.copy(_poly, d.props.poly);
+	            	obj.points = Vectors.copy(_poly, d.props.poly);
 	            }
 	        }, null, true);
 		}
 		
-		private function peaks():Number
+		protected function peaks():Number
 		{
 			var sum:Number = 0;
 	        
 	        // first, compute max value of the current data
-	        Arrays.fill(_peaks, 0);
+	        Vectors.fill(_peaks, 0);
 	        visualization.data.nodes.visit(function(d:NodeSprite):void {
 	        	if (!d.visible || d.alpha <= 0 || !_t.$(d).visible)
 	        		return;
@@ -240,14 +252,14 @@ package flare.vis.operator.layout
 	        		sum += val;
 	        	}
 	        });
-	        var max:Number = Arrays.max(_peaks);
+	        var max:Number = Vectors.max(_peaks) as Number;
 	        
 	        // update peaks array as needed
 	        // adjust peaks to include padding space
 	        if (!_normalize) {
-	        	Arrays.fill(_peaks, max);
+	        	Vectors.fill(_peaks, max);
 	            for (var i:uint=0; i<_peaks.length; ++i) {
-	                _peaks[i] += _padding * _peaks[i];
+	                _peaks[i] += _padding * (_peaks[i] as Number);
 	            }
 	            max += _padding*max;
 	        }

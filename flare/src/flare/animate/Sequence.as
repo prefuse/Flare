@@ -1,6 +1,7 @@
 package flare.animate
-{
+{	
 	import flare.util.Arrays;
+	import flare.util.Vectors;
 	import flare.util.Maths;
 	
 	/**
@@ -16,9 +17,9 @@ package flare.animate
 		// -- Properties ------------------------------------------------------
 		
 		/** Array of sequential transitions */
-		protected var _trans:/*Transition*/Array = [];
+		protected var _trans:Vector.</*Transition*/Object> = new Vector.<Object>();
 		/** @private */
-		protected var _fracs:/*Number*/Array = [];
+		protected var _fracs:Vector.</*Number*/Object> = new Vector.<Object>();
 		/** @private */
 		protected var _autodur:Boolean = true;
 		/** @private */
@@ -81,7 +82,7 @@ package flare.animate
 		public function remove(t:Transition):Boolean
 		{
 			if (running) throw new Error("Transition is running!");
-			var rem:Boolean = Arrays.remove(_trans, t) >= 0;
+			var rem:Boolean = Vectors.remove(_trans, t) >= 0;
 			if (rem) _dirty = true;
 			return rem;
 		}
@@ -91,13 +92,13 @@ package flare.animate
 		 */
 		protected function computeDuration():void
 		{
-			var d:Number = 0; _fracs = [0];
+			var d:Number = 0; _fracs.length = 0; _fracs.push(0);
 			// collect durations and compute sum
 			for each (var t:Transition in _trans)
 				_fracs.push(d += t.totalDuration);
 			// normalize durations to create progress fractions
 			for (var i:int=1; i<=_trans.length; ++i)
-				_fracs[i] = (d==0 ? 0 : _fracs[i] / d);
+				_fracs[i] = (d==0 ? 0 : (_fracs[i] as Number) / d);
 			// set duration and scale
 			if (_autodur) super.duration = d;
 			_dirty = false;
@@ -157,11 +158,11 @@ package flare.animate
 		{
 			// find the right sub-transition
 			var t:Transition, f0:Number, f1:Number, i:int, inc:int;
-			f0 = _fracs[_idx]; f1 = _fracs[_idx+1]; inc = (ef<=f0 ? -1 : 1);
+			f0 = _fracs[_idx] as Number; f1 = _fracs[_idx+1] as Number; inc = (ef<=f0 ? -1 : 1);
 			
 			for (i = _idx; i>=0 && i<_trans.length; i+=inc) {
 				// get transition and progress fractions
-				t = _trans[i]; f0 = _fracs[i]; f1 = _fracs[i+1];
+				t = _trans[i] as Transition; f0 = _fracs[i] as Number; f1 = _fracs[i+1] as Number;
 				// hand-off to new transition
 				if (i != _idx) t.doStart(_reverse);
 				if ((inc<0 && ef >= f0) || (inc>0 && ef <= f1)) break;

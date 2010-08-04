@@ -55,6 +55,7 @@ package flare.vis.controls
 			if (_object && _object.stage != null) onAdd();
 		}
 		
+		
 		/**
 		 * Creates a new PanZoomControl.
 		 * @param hitArea a display object to use as the hit area for mouse

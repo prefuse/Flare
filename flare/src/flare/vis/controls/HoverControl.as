@@ -40,9 +40,9 @@ package flare.vis.controls
 		 *  previous position when the mouse rolls out. */
 		public static const MOVE_AND_RETURN:int = 2;
 		
-		private var _cur:DisplayObject;
-		private var _idx:int;
-		private var _movePolicy:int;
+		protected var _cur:DisplayObject;
+		protected var _idx:int;
+		protected var _movePolicy:int;
 		
 		/** The policy for moving items forward when highlighted.
 		 *  One of <code>DONT_MOVE</code>, <code>MOVE_TO_FRONT</code>, or
@@ -101,7 +101,7 @@ package flare.vis.controls
 			return super.detach();
 		}
 		
-		private function onMouseOver(evt:MouseEvent):void
+		protected function onMouseOver(evt:MouseEvent):void
 		{
 			var n:DisplayObject = evt.target as DisplayObject;
 			if (n==null || (_filter!=null && !_filter(n))) return;
@@ -119,7 +119,7 @@ package flare.vis.controls
 			}
 		}
 		
-		private function onMouseOut(evt:MouseEvent):void
+		protected function onMouseOut(evt:MouseEvent):void
 		{
 			if (_cur == null) return;
 			if (hasEventListener(SelectionEvent.DESELECT)) {

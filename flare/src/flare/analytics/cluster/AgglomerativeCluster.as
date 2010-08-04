@@ -65,7 +65,7 @@ package flare.analytics.cluster
 		private function compute(Z:IMatrix):void
 		{
 			_merges = new MergeEdge(-1, -1);
-			_qvals = [];
+			_qvals.length = 0;
 			_size = Z.rows;
 			
 			var m:MergeEdge = _merges;
@@ -75,7 +75,7 @@ package flare.analytics.cluster
 			
 			// initialize matrix
 			var N:int = Z.rows;
-			var idx:/*int*/Array = new Array(N);
+			var idx:Vector.<int> = new Vector.<int>(N);
 			for (i=0; i<N; ++i) {
 				idx[i] = i;
 				Z.set(i,i,Number.POSITIVE_INFINITY);

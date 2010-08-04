@@ -39,7 +39,7 @@ package flare.vis.data
 		/** @private */
 		protected var _zeroBased:Boolean = false;
 		/** @private */
-		protected var _ordinals:Array = null;
+		protected var _ordinals:Vector.<Object> = null;
 		
 		/** @private */
 		protected var _property:String;
@@ -147,9 +147,9 @@ package flare.vis.data
 			if (_scale) zeroAlignScale(_scale);
 		}
 		
-		/** An ordered array of values for defining an ordinal scale. */
-		public function get ordinals():Array { return _ordinals; }
-		public function set ordinals(ord:Array):void {
+		/** An ordered object vector of values for defining an ordinal scale. */
+		public function get ordinals():Vector.<Object> { return _ordinals; }
+		public function set ordinals(ord:Vector.<Object>):void {
 			_ordinals = ord;
 			if (ScaleType.isOrdinal(_scaleType)) {
 				_stats = null;
@@ -261,11 +261,11 @@ package flare.vis.data
 		}
 		
 		/**
-		 * Returns the index of the input value in the ordinal array if the
+		 * Returns the index of the input value in the ordinal object vector if the
 		 * scale is ordinal or categorical, otherwise returns -1.
 		 * @param value the value to lookup
 		 * @return the index of the input value. If the value is not contained
-		 *  in the ordinal array, this method returns -1.
+		 *  in the ordinal object vector, this method returns -1.
 		 */
 		public function index(value:Object):int
 		{
@@ -293,7 +293,7 @@ package flare.vis.data
 		}
 
 		/** @inheritDoc */
-		public override function values(num:int=-1) : Array
+		public override function values(num:int=-1) : Vector.<Object>
 		{
 			return scale.values(num);
 		}
@@ -308,7 +308,7 @@ package flare.vis.data
 		protected function buildScale(stats:Stats):Scale
 		{
 			var type:String = _scaleType ? _scaleType : ScaleType.UNKNOWN;
-			var vals:Array = _ordinals ? _ordinals : stats.distinctValues;
+			var vals:Vector.<Object> = _ordinals ? _ordinals : stats.distinctValues;
 			var scale:Scale;
 			
 			switch (stats.dataType) {

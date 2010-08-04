@@ -36,6 +36,7 @@ package flare.data
 		
 		/** The URL of the remote data set. */
 		public function get url():String { return _url; }
+		public function set url(u:String):void { _url = u; }
 		/** The format of the remote data set (e.g., "tab" or "json"). */
 		public function get format():String { return _format; }
 		/** A schema describing the attributes of the data set. */

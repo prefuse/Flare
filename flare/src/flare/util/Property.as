@@ -1,5 +1,7 @@
 package flare.util
-{		
+{
+	import __AS3__.vec.Vector;
+				
 	/**
 	 * Utility class for accessing arbitrary property chains, allowing
 	 * nested property expressions (e.g., <code>x.a.b.c</code> or 
@@ -12,7 +14,7 @@ package flare.util
 		private static const DELIMITER:* = /[\.|\[(.*)\]]/;
 		
 		private static var __cache:Object = {};
-		private static var __stack:Array = [];
+		private static var __stack:Vector.<Object> = new Vector.<Object>();
 		private static var __proxy:IValueProxy;
 
 		/**
@@ -52,7 +54,7 @@ package flare.util
 		// --------------------------------------------------------------------
 		
 		private var _field:String;
-		private var _chain:Array;
+		private var _chain:Vector.<Object> = new Vector.<Object>();
 		
 		/** The property name string. */
 		public function get name():String { return _field; }
@@ -75,7 +77,7 @@ package flare.util
 			if (_field != null) {
 				var parts:Array = _field.split(DELIMITER);
 				if (parts.length > 1) {
-					_chain = [];
+					_chain = new Vector.<Object>(); // Clear the chain
 					for (var i:int=0; i<parts.length; ++i) {
 						if (parts[i].length > 0)
 							_chain.push(parts[i]);

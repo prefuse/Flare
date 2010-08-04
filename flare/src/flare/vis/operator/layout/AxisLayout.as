@@ -131,7 +131,7 @@ package flare.vis.operator.layout
 				var map:Object;
 				if (_xField != null) {
 					x = axes.xAxis.X(dx);
-					if (_xStacks) {
+					if (_xStacks && o.visible && o.alpha > 0) {
 						map = (dx < 0 ? xmapNeg : xmapPos);
 						z = x - x0;
 						s = z + (isNaN(s=map[dy]) ? 0 : s);
@@ -145,7 +145,7 @@ package flare.vis.operator.layout
 				}
 				if (_yField != null) {
 					y = axes.yAxis.Y(dy);
-					if (_yStacks) {
+					if (_yStacks && o.visible && o.alpha > 0) {
 						map = (dy < 0 ? ymapNeg : ymapPos);
 						z = y - y0;
 						s = z + (isNaN(s=map[dx]) ? 0 : s);

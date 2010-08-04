@@ -1,5 +1,7 @@
 package flare.vis.operator.layout
 {
+	import __AS3__.vec.Vector;
+	
 	import flare.util.Shapes;
 	import flare.util.Sort;
 	import flare.vis.data.Data;
@@ -116,10 +118,10 @@ package flare.vis.operator.layout
 				shiftTree(root, cn.x, cn.y);
 			} else {
 				// perform flat layout
-				var list:Array = []; data.group(group).visit(list.push);
+				var list:Vector.<Object> = new Vector.<Object>(); data.group(group).visit(list.push);
 				if (_sort) _sort.sort(list);
 				for (var i:int=0; i<list.length; ++i)
-					list[i] = getChainNode(list[i]);
+					list[i] = getChainNode(list[i] as NodeSprite);
 				radius = packCircle(list, list.length);
 			}
 			
@@ -193,7 +195,7 @@ package flare.vis.operator.layout
 		private function packTree(n:NodeSprite):Number
 		{
 			// do a post-order traversal, so recurse first
-			var r:Number, list:Array = [];
+			var r:Number, list:Vector.<Object> = new Vector.<Object>();
 			for (var i:int=0; i<n.childDegree; ++i) {
 				var c:NodeSprite = n.getChildNode(i);
 				if (c.childDegree > 0 && c.expanded) {
@@ -205,12 +207,12 @@ package flare.vis.operator.layout
 			// now sort the child list and perform circle packing
 			if (_sort) _sort.sort(list);
 			for (i=0; i<list.length; ++i)
-				list[i] = getChainNode(list[i]);
+				list[i] = getChainNode(list[i] as NodeSprite);
 			return packCircle(list, list.length);
 		}
 		
 		/** Pack a set of circles together */
-		private function packCircle(nodes:Array, N:int):Number
+		private function packCircle(nodes:Vector.<Object>, N:int):Number
 		{
 			var a:ChainNode, b:ChainNode, c:ChainNode, j:ChainNode, k:ChainNode;
 			
@@ -220,20 +222,20 @@ package flare.vis.operator.layout
 			_order = 0;
 			
 			// create first node
-			a = nodes[0]; a.x = -a.r; a.y = 0; updateBounds(a,_b);
+			a = nodes[0] as ChainNode; a.x = -a.r; a.y = 0; updateBounds(a,_b);
 			if (N==1) return center(nodes, _b);
 			
 			// create second node
-			b = nodes[1]; b.x = b.r; b.y = 0; updateBounds(b,_b);
+			b = nodes[1] as ChainNode; b.x = b.r; b.y = 0; updateBounds(b,_b);
 			if (N==2) return center(nodes, _b);
 			
 			// create third node build chain
-			c = nodes[2]; place(a, b, c); updateBounds(c,_b);
+			c = nodes[2] as ChainNode; place(a, b, c); updateBounds(c,_b);
 			a.insert(c); a.prev = c; c.insert(b); b = a.next;
 			
 			// now iterate through the rest
 			for (var i:int=3; i<N; ++i) {
-				place(a, b, c=nodes[i]);
+				place(a, b, c=nodes[i] as ChainNode);
 				
 				// search for an intersection with a circle on the chain
 				// search in both directions and keep the nearest hit
@@ -267,7 +269,7 @@ package flare.vis.operator.layout
 		}
 		
 		/** Re-center a group of circles and return the encompassing radius. */
-		private function center(nodes:Array, b:Rectangle):Number
+		private function center(nodes:Vector.<Object>, b:Rectangle):Number
 		{
 			var cx:Number = (b.left + b.right) / 2;
 			var cy:Number = (b.top + b.bottom) / 2;

@@ -29,8 +29,8 @@ package flare.vis.operator.filter
 	 */
 	public class FisheyeTreeFilter extends Operator
 	{
-		/** An array of focal NodeSprites. */
-		public var focusNodes:/*NodeSprite*/Array;
+		/** An object vector of focal NodeSprites. */
+		public var focusNodes:Vector.</*NodeSprite*/Object>;
 		/** Graph distance within within which items wll be visible. */
 		public var distance:int;
 		
@@ -40,12 +40,12 @@ package flare.vis.operator.filter
 		
 		/**
 		 * Creates a new FisheyeTreeFilter
-		 * @param focusNodes focusNodes an array of focal NodeSprites. Graph
+		 * @param focusNodes focusNodes an object vector of focal NodeSprites. Graph
 		 *  distance is measured as the minimum number of edge-hops to one of
 		 *  these nodes or their ancestors up to the root.
 		 * @param distance graph distance within which items will be visible
 		 */		
-		public function FisheyeTreeFilter(focusNodes:Array=null,distance:int=1)
+		public function FisheyeTreeFilter(focusNodes:Vector.<Object>=null,distance:int=1)
 		{
 			this.focusNodes = focusNodes;
 			this.distance = distance;

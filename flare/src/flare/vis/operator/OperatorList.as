@@ -1,7 +1,7 @@
 package flare.vis.operator
 {
 	import flare.animate.Transitioner;
-	import flare.util.Arrays;
+	import flare.util.Vectors;
 	import flare.vis.Visualization;
 	
 	import flash.utils.flash_proxy;
@@ -21,7 +21,7 @@ package flare.vis.operator
 		
 		protected var _vis:Visualization;
 		protected var _enabled:Boolean = true;
-		protected var _list:Array = new Array();
+		protected var _list:Vector.<Object> = new Vector.<Object>();
 		
 		/** The visualization processed by this operator. */
 		public function get visualization():Visualization { return _vis; }
@@ -43,8 +43,8 @@ package flare.vis.operator
 			Operator.applyParameters(this, params);
 		}
 		
-		/** An array of the operators contained in the operator list. */
-		public function set list(ops:Array):void {
+		/** An object vector of the operators contained in the operator list. */
+		public function set list(ops:Vector.<Object>):void {
 			// first remove all current operators
 			while (_list.length > 0) {
 				removeOperatorAt(_list.length-1);
@@ -83,7 +83,7 @@ package flare.vis.operator
 		}
 		
 		/**
-		 * Proxy method for retrieving operators from the internal array.
+		 * Proxy method for retrieving operators from the internal vector.
 		 */
 		flash_proxy override function getProperty(name:*):*
 		{
@@ -91,7 +91,7 @@ package flare.vis.operator
     	}
 
 		/**
-		 * Proxy method for setting operators in the internal array.
+		 * Proxy method for setting operators in the internal vector.
 		 */
     	flash_proxy override function setProperty(name:*, value:*):void
     	{
@@ -111,7 +111,7 @@ package flare.vis.operator
 		 */
 		public function getOperatorAt(i:uint):IOperator
 		{
-			return _list[i];
+			return _list[i] as IOperator;
 		}
 		
 		/**
@@ -121,7 +121,7 @@ package flare.vis.operator
 		 */
 		public function removeOperatorAt(i:uint):IOperator
 		{
-			return Arrays.removeAt(_list, i) as IOperator;
+			return Vectors.removeAt(_list, i) as IOperator;
 		}
 		
 		/**
@@ -132,7 +132,7 @@ package flare.vis.operator
 		 */
 		public function setOperatorAt(i:uint, op:IOperator):IOperator
 		{
-			var old:IOperator = _list[i];
+			var old:IOperator = _list[i] as IOperator;
 			op.visualization = visualization;
 			_list[i] = op;
 			return old;
@@ -155,7 +155,7 @@ package flare.vis.operator
 		 */
 		public function remove(op:IOperator):Boolean
 		{
-			return Arrays.remove(_list, op) >= 0;
+			return Vectors.remove(_list, op) >= 0;
 		}
 		
 		/**
@@ -163,7 +163,7 @@ package flare.vis.operator
 		 */
 		public function clear():void
 		{
-			Arrays.clear(_list);
+			Vectors.clear(_list);
 		}
 		
 		/** @inheritDoc */

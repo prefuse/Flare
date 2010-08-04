@@ -128,19 +128,19 @@ package flare.util
 		/**
          * Computes the n-quantile boundaries for a set of values.
          * @param n the number of quantiles
-         * @param values the values to break into quantiles
-         * @param sort indicates if the values array needs to be sorted. If
-         *  true, the array will be sorted prior to determining quantile
-         *  boundaries. If false, the array must be in ascending sort order.
-         * @return an n-length array of quantile boundaries
+         * @param values the values to break into quantiles, in an object vector
+         * @param sort indicates if the values object vector needs to be sorted. If
+         *  true, the vector will be sorted prior to determining quantile
+         *  boundaries. If false, the vector must be in ascending sort order.
+         * @return an n-length object vector of quantile boundaries
          */
-        public static function quantile(n:uint, values:Array, sort:Boolean):Array
+        public static function quantile(n:uint, values:Vector.<Object>, sort:Boolean):Vector.<Object>
         {
         	var len:uint = values.length-1;
-			var qtls:Array = new Array(n);
+			var qtls:Vector.<Object> = new Vector.<Object>(n);
 			
 			if (sort) {
-            	values = Arrays.copy(values);
+            	values = Vectors.copy(values);
             	values.sort(Array.NUMERIC);
    			}
    			
@@ -236,12 +236,12 @@ package flare.util
 		/**
 		 * Computes an interpolated value in a quantile scale.
 		 * @param f the interpolation fraction (typically between 0 and 1)
-		 * @param quantiles an array of quantile boundaries
+		 * @param quantiles an object vector of quantile boundaries
 		 * @return the interpolated value
 		 */
-		public static function quantileInterp(f:Number, quantiles:Array):Number
+		public static function quantileInterp(f:Number, quantiles:Vector.<Object>):Number
 		{
-			return quantiles[int(Math.round(f*(quantiles.length-1)))];
+			return Number(quantiles[int(Math.round(f*(quantiles.length-1)))]);
 		}
 		
 		
@@ -332,19 +332,22 @@ package flare.util
 		 * Computes an inverse quantile scale interpolation, returning an
 		 * interpolation fraction.
 		 * @param x the interpolated value
-		 * @param quantiles an array of quantile boundaries
+		 * @param quantiles an object vector of quantile boundaries
 		 * @return the inferred interpolation fraction
+		 * 
+		 * TODO: Make this robust to Dates.
 		 */
-		public static function invQuantileInterp(x:Number, quantiles:/*Number*/Array):Number
+		public static function invQuantileInterp(x:Number, quantiles:/*Number*/Vector.<Object>):Number
         {
             var a:uint = 0, b:uint = quantiles.length;
             var i:uint = b / 2;
             while (a < b)
             {   // binary search over the boundaries
-                if (quantiles[i] == x) {
-                	for (; i>0 && quantiles[i-1] == x; --i);
+            	// TODO: Make this robust to Dates.
+                if (Number(quantiles[i]) == x) {
+                	for (; i>0 && Number(quantiles[i-1]) == x; --i);
                     break;
-                } else if (quantiles[i] < x) {
+                } else if (Number(quantiles[i]) < x) {
                     a = i+1;
                 } else {
                     b = i;
@@ -407,6 +410,8 @@ package flare.util
 			return ((h&1) == 0 ? u : -u) + ((h&2) == 0 ? v : -v);
 		}
 		
+		// Will move this to Vector.<Number> in a later release, after the
+		// Vector initialization bug is fixed.
 		private static const _p:Array = [151,160,137,91,90,15,131,13,201,95,96,
 		53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21, 10,23,190, 6,148,
 		247,120,234,75, 0,26,197,62,94,252,219,203,117,35, 11, 32,57,177,33,88,

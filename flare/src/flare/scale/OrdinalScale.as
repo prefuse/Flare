@@ -1,32 +1,32 @@
 package flare.scale
 {
 	import flash.utils.Dictionary;
-	import flare.util.Arrays;
+	import flare.util.Vectors;
 	
 	/**
 	 * Scale for ordered sequential data. This supports both numeric and
 	 * non-numeric data, and simply places each element in sequence using
-	 * the ordering found in the input data array.
+	 * the ordering found in the input data vector.
 	 */
 	public class OrdinalScale extends Scale
 	{
-		private var _ordinals:Array;
+		private var _ordinals:Vector.<Object>;
 		private var _lookup:Dictionary;
 
 		/**
 		 * Creates a new OrdinalScale.
-		 * @param ordinals an ordered array of data values to include in the
+		 * @param ordinals an ordered object vector of data values to include in the
 		 *  scale
 		 * @param flush the flush flag for scale padding
-		 * @param copy flag indicating if a copy of the input data array should
+		 * @param copy flag indicating if a copy of the input data vector should
 		 *  be made. True by default.
 		 * @param labelFormat the formatting pattern for value labels
 		 */
-		public function OrdinalScale(ordinals:Array=null, flush:Boolean=false,
+		public function OrdinalScale(ordinals:Vector.<Object>=null, flush:Boolean=false,
 			copy:Boolean=true, labelFormat:String=null)
         {
-        	_ordinals = (ordinals==null ? new Array() :
-        				 copy ? Arrays.copy(ordinals) : ordinals);
+        	_ordinals = (ordinals==null ? new Vector.<Object>() :
+        				 copy ? Vectors.copy(ordinals) : ordinals);
             buildLookup();
             _flush = flush;
             _format = labelFormat;
@@ -52,11 +52,11 @@ package flare.scale
 		}
 
 		/** The ordered data array defining this scale. */
-		public function get ordinals():Array
+		public function get ordinals():Vector.<Object>
 		{
 			return _ordinals;
 		}
-		public function set ordinals(val:Array):void
+		public function set ordinals(val:Vector.<Object>):void
 		{
 			_ordinals = val; buildLookup();
 		}
@@ -80,10 +80,10 @@ package flare.scale
 		// -- Scale Methods ---------------------------------------------------
 		
 		/**
-		 * Returns the index of the input value in the ordinal array
+		 * Returns the index of the input value in the ordinal object vector
 		 * @param value the value to lookup
 		 * @return the index of the input value. If the value is not contained
-		 *  in the ordinal array, this method returns -1.
+		 *  in the ordinal object vector, this method returns -1.
 		 */
 		public function index(value:Object):int
 		{
@@ -115,9 +115,9 @@ package flare.scale
 		}
 		
 		/** @inheritDoc */
-		public override function values(num:int=-1):Array
+		public override function values(num:int=-1):Vector.<Object>
 		{
-			var a:Array = new Array();
+			var a:Vector.<Object> = new Vector.<Object>();
 			var stride:Number = num<0 ? 1 
 				: Math.max(1, Math.floor(_ordinals.length / num));
 			for (var i:uint = 0; i < _ordinals.length; i += stride) {

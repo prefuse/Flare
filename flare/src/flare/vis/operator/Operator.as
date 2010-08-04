@@ -14,8 +14,8 @@ package flare.vis.operator
 	{
 		// -- Properties ------------------------------------------------------
 		
-		private var _vis:Visualization;
-		private var _enabled:Boolean = true;
+		protected var _vis:Visualization;
+		protected var _enabled:Boolean = true;
 		
 		/** The visualization processed by this operator. */
 		public function get visualization():Visualization { return _vis; }

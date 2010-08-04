@@ -12,7 +12,7 @@ package flare.query
 		 * Creates a new Average operator
 		 * @param input the sub-expression of which to compute the average
 		 */
-		public function Average(input:*) {
+		public function Average(input:*=null) {
 			super(input);
 		}
 		

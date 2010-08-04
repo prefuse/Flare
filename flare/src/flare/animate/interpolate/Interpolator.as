@@ -1,5 +1,7 @@
 package flare.animate.interpolate
 {
+	import __AS3__.vec.Vector;
+	
 	import flare.util.Property;
 	
 	import flash.utils.getDefinitionByName;
@@ -80,6 +82,7 @@ package flare.animate.interpolate
 			var ri:RectangleInterpolator;
 			var mi:MatrixInterpolator;
 			var ai:ArrayInterpolator;
+			var vi:VectorInterpolator;
 			var ci:ColorInterpolator;
 			var oi:ObjectInterpolator;
 			
@@ -89,6 +92,7 @@ package flare.animate.interpolate
 			lut["int"] = "flare.animate.interpolate::NumberInterpolator";
 			lut["Date"] = "flare.animate.interpolate::DateInterpolator";
 			lut["Array"] = "flare.animate.interpolate::ArrayInterpolator";
+			lut["__AS3__.vec::Vector.<Object>"] = "flare.animate.interpolate::VectorInterpolator";
 			lut["flash.geom::Point"] = "flare.animate.interpolate::PointInterpolator";
 			lut["flash.geom::Rectangle"] = "flare.animate.interpolate::RectangleInterpolator";
 			lut["flash.geom::Matrix"] = "flare.animate.interpolate::MatrixInterpolator";
@@ -183,6 +187,7 @@ package flare.animate.interpolate
 		 *  <li><code>int -> NumberInterpolator</code></li>
 		 *  <li><code>Date -> DateInterpolator</code></li>
 		 *  <li><code>Array -> ArrayInterpolator</code></li>
+		 *  <li><code> Vector.<Object> -> VectorInterpolator</code></li>
 		 *  <li><code>flash.geom.Point -> PointInterpolator</code></li>
 		 *  <li><code>flash.geom.Rectangle -> RectangleInterpolator</code></li>
 		 * </ul>

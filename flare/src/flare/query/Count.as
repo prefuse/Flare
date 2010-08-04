@@ -11,7 +11,7 @@ package flare.query
 		 * Creates a new Count operator
 		 * @param input the sub-expression of which to count the value
 		 */
-		public function Count(input:*) {
+		public function Count(input:*=null) {
 			super(input);
 		}
 		

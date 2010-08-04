@@ -1,9 +1,9 @@
 package flare.analytics.optimization
-{
+{	
 	import flare.animate.Transitioner;
 	import flare.scale.Scale;
-	import flare.util.Arrays;
 	import flare.util.Property;
+	import flare.util.Vectors;
 	import flare.vis.Visualization;
 	import flare.vis.axis.CartesianAxes;
 	import flare.vis.data.DataSprite;
@@ -34,7 +34,7 @@ package flare.analytics.optimization
 		/** Indicates if the data field is on the y-axis (default true). */
 		public var bankYAxis:Boolean = true;
 		/** The banking function to use. This is a function that takes an
-		 *  array of Numbers as input and returns an aspect ratio. It is
+		 *  Object vector of Numbers as input and returns an aspect ratio. It is
 		 *  expected that this function will be one of the static functions of
 		 *  this class. The default is <code>averageAbsoluteAngle</code>. */
 		public var banker:Function = averageAbsoluteAngle;
@@ -68,7 +68,7 @@ package flare.analytics.optimization
 			if (_z == null) return; // nothing to do
 			
 			// extract data
-			var v:Array = [];
+			var v:Vector.<Object> = new Vector.<Object>();
 			visualization.data.nodes.visit(function(d:DataSprite):void {
 				v.push(_z.getValue(d));
 			});
@@ -118,20 +118,20 @@ package flare.analytics.optimization
 	     * f(a)  = sum(atan(x)) / N - pi/4
 	     * f'(a) = sum(ci/(1 + x^2)) / N
 	     * </pre>
-	     * @param a an array of data values to be banked. It is assumed that
+	     * @param a an Object vector of data values to be banked. It is assumed that
 	     *  values on the opposite axis are evenly spaced.
 	     * @return the optimized aspect ratio
 	     */
-	    public static function averageAbsoluteAngle(a:Array):Number
+	    public static function averageAbsoluteAngle(a:Vector.<Object>):Number
 	    {
 	    	var alpha:Number=0, alpha_p:Number, f:Number, fprime:Number;
-	    	var x:Number, Ry:Number = Arrays.max(a) - Arrays.min(a);
+	    	var x:Number, Ry:Number = (Vectors.max(a) as Number) - (Vectors.min(a) as Number);
 	    	var N:int = a.length-1, iter:int = 0, i:int, j:int;
 	
 	        // compute constants, perform culling
-	        var c:Array = [];
+	        var c:Vector.<Number> = new Vector.<Number>();
 	        for (i=0, j=0; i<N; ++i) {
-	        	var slope:Number = Math.abs(a[i+1] - a[i]) / Ry;
+	        	var slope:Number = Math.abs((a[i+1] as Number) - (a[i] as Number)) / Ry;
 	        	if (slope > 1e-5) c.push(N * slope);
 	        }
 	        N = c.length;
@@ -164,17 +164,17 @@ package flare.analytics.optimization
 	    /**
 	     * Bank the median absolute slope to 45 degrees.
 	     * "Slopeless" lines are culled before the banking is computed.
-	     * @param a an array of data values to be banked. It is assumed that
+	     * @param a an Object vector of data values to be banked. It is assumed that
 	     *  values on the opposite axis are evenly spaced.
 	     * @return the optimized aspect ratio
 	     */
-	    public static function medianAbsoluteSlope(a:Array):Number
+	    public static function medianAbsoluteSlope(a:Vector.<Object>):Number
 	    {
-	    	var slopes:Array = [], i:int;
-	    	var yRange:Number = Arrays.max(a) - Arrays.min(a);
+	    	var slopes:Vector.<Number> = new Vector.<Number>(), i:int;
+	    	var yRange:Number = (Vectors.max(a) as Number) - (Vectors.min(a) as Number);
 	        
 	        for (i=1; i<a.length; ++i) {
-	            var slope:Number = Math.abs(a[i] - a[i-1]);
+	            var slope:Number = Math.abs((a[i] as Number) - (a[i-1] as Number));
 	            if (slope/yRange > 1e-5) {
 	                slopes.push(slope);
 	            }

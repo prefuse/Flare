@@ -1,5 +1,7 @@
 package flare.analytics.graph
 {
+	import __AS3__.vec.Vector;
+	
 	import flare.animate.Transitioner;
 	import flare.util.Property;
 	import flare.util.heap.FibonacciHeap;
@@ -143,9 +145,11 @@ package flare.analytics.graph
 			});
 		}
 		
-		public function getShortestPathTo(v:NodeSprite):Array
+		public function getShortestPathTo(v:NodeSprite):Vector.<NodeSprite>
 		{
-			var path:Array = [v], e:EdgeSprite;
+			var e:EdgeSprite;
+			var path:Vector.<NodeSprite> = new Vector.<NodeSprite>();
+			path.push(v); 			
 			while ((e = _p.getValue(v)) != null) {
 				path.unshift(v = e.other(v));
 			}

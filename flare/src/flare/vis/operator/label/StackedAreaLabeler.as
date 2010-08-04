@@ -54,15 +54,15 @@ package flare.vis.operator.label
 			label = getLabel(d, true, false);
 				
 			// find maximal point
-			var pts:Array = _t.$(d).points, len:uint = pts.length/2;
+			var pts:Vector.<Object> = _t.$(d).points, len:uint = pts.length/2;
 			var i:uint, j:uint, i0:uint = 2*columnIndex;
             var x:Number, y:Number, h:Number, height:Number=-1;
             for (i=i0+1; i<len-i0; i+=2) {
-            	h = pts[i] - pts[pts.length-i];
+            	h = (pts[i] as Number) - (pts[pts.length-i] as Number);
             	if (h > height) {
             		height = h;
-            		x = pts[i-1];
-            		y = pts[i]-h/2;
+            		x = pts[i-1] as Number;
+            		y = (pts[i] as Number)-h/2;
             		j = i;
             	}
             }
@@ -76,8 +76,8 @@ package flare.vis.operator.label
 			if (!label.visible && (pts=d.points)) {
 				var x0:Number=x, y0:Number=y, h0:Number=height;
 				if ((pts=d.points)) {
-					x0 = pts[j-1];
-					y0 = (pts[j] + pts[pts.length-j])/2;
+					x0 = pts[j-1] as Number;
+					y0 = ((pts[j] as Number) + (pts[pts.length-j] as Number))/2;
 				}
 				label.visible = true;
 				label.x = x0;

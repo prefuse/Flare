@@ -39,18 +39,15 @@ package flare.data.converters
 		}
 		
 		/**
-		 * Converts data from a tab-delimited string into ActionScript objects.
-		 * @param input the loaded input data
+		 * Converts data from a tab-delimited string into a DataSet object.
+		 * @param text the loaded input data
 		 * @param schema a data schema describing the structure of the data.
 		 *  Schemas are optional in many but not all cases.
-		 * @param data an array in which to write the converted data objects.
-		 *  If this value is null, a new array will be created.
-		 * @return an array of converted data objects. If the <code>data</code>
-		 *  argument is non-null, it is returned.
+		 * @return a DataSet of converted data objects.
 		 */
 		public function parse(text:String, schema:DataSchema=null):DataSet
 		{
-			var tuples:Array = [];
+			var tuples:Vector.<Object> = new Vector.<Object>();
 			var lines:Array = text.split(/\r\n|\r|\n/);
 			
 			if (schema == null) {
@@ -78,7 +75,7 @@ package flare.data.converters
 		public function write(data:DataSet, output:IDataOutput=null):IDataOutput
 		{
 			if (output==null) output = new ByteArray();
-			var tuples:Array = data.nodes.data;
+			var tuples:Vector.<Object> = data.nodes.data;
 			var schema:DataSchema = data.nodes.schema;
 			
 			for each (var tuple:Object in tuples) {
@@ -106,6 +103,8 @@ package flare.data.converters
 		 * @param lines an array of lines of input text
 		 * @return the inferred schema
 		 */
+		// Not changing to Array as a common parameter is the output from
+		// the String.split function, which returns an Array.
 		protected function inferSchema(lines:Array):DataSchema
 		{
 			var header:Array = lines[0].split(_delim);

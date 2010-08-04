@@ -175,9 +175,9 @@ package flare.scale
 		}
 		
 		/** @inheritDoc */
-		public override function values(num:int=-1):Array
+		public override function values(num:int=-1):Vector.<Object>
 		{   
-            var a:Array = new Array();
+            var a:Vector.<Object> = new Vector.<Object>();
             var span:int = Dates.timeSpan(_dmin, _dmax);
             var step:Number = Dates.timeStep(span);
 			var max:Number = _smax.time;

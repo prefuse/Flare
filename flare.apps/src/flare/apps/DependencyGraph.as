@@ -34,7 +34,7 @@ package flare.apps
 	public class DependencyGraph extends App
 	{
 		/** We will be rotating text, so we embed the font. */
-		[Embed(source="verdana.TTF", fontName="Verdana")]
+		[Embed(source="verdana.TTF", fontName="Verdana",embedAsCFF=false)]
 		private static var _font:Class;
 		
 		private var _url:String = 
@@ -202,7 +202,7 @@ package flare.apps
 		private function showAllDeps(evt:SelectionEvent, linkType:int):void
 		{
 			// first, do a breadth-first-search to compute closure
-			var q:Array = evt.items.slice();
+			var q:Vector.<Object> = evt.items.slice();
 			var map:Dictionary = new Dictionary();
 			while (q.length > 0) {
 				var u:NodeSprite = q.shift();

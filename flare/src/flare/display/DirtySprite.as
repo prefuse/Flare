@@ -1,5 +1,7 @@
 package flare.display
 {
+	import __AS3__.vec.Vector;
+	
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.display.Stage;
@@ -35,7 +37,7 @@ package flare.display
 	{
 		private static var __stage:Stage;
 		private static var __installed:Boolean = false;
-		private static var __dirtyList:Array = [];
+		private static var __dirtyList:Vector.<Object> = new Vector.<Object>();
 		
 		/**
 		 * Installs the frame render listener on the stage.

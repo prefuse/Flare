@@ -1,13 +1,13 @@
 package flare.query
-{	
+{
 	/**
 	 * The ExpressionIterator simplifies the process of traversing an
 	 * expression tree.
 	 */
 	public class ExpressionIterator
 	{
-		private var _estack:Array;
-		private var _istack:Array;
+		private var _estack:Vector.<Expression> = new Vector.<Expression>();
+		private var _istack:Vector.<int> = new Vector.<int>();
 		private var _root:Expression;
 		private var _cur:Expression;
 		private var _idx:int;
@@ -24,10 +24,10 @@ package flare.query
 		/** The depth of this iterator's current position in the
 		 *  expression tree. */
 		public function get depth():int { return _estack.length; }
-		/** An array of expressions from the root expression down to this
+		/** A Vector.<Expression> object of expressions from the root expression down to this
 		 *  iterator's current position. */
-		public function get path():Array {
-			var a:Array = new Array(_estack.length);
+		public function get path():Vector.<Expression> {
+			var a:Vector.<Expression> = new Vector.<Expression>(_estack.length);
 			for (var i:int=0; i<a.length; ++i) { a[i] = _estack[i]; }
 			a.push(_cur);
 			return a;
@@ -46,8 +46,8 @@ package flare.query
 		 */
 		public function reset():void
 		{
-			_estack = new Array();
-			_istack = new Array();
+			_estack = new Vector.<Expression>();
+			_istack = new Vector.<int>();
 			_cur = _root;
 			_idx = 0;
 		}

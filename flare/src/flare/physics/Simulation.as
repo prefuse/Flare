@@ -8,9 +8,9 @@ package flare.physics
 	 */
 	public class Simulation
 	{
-		private var _particles:Array = new Array();
-		private var _springs:Array = new Array();
-		private var _forces:Array = new Array();
+		private var _particles:Vector.<Particle> = new Vector.<Particle>();
+		private var _springs:Vector.<Spring> = new Vector.<Spring>();
+		private var _forces:Vector.<IForce> = new Vector.<IForce>();
 		private var _bounds:Rectangle = null;
 		
 		/** The default gravity force for this simulation. */
@@ -159,20 +159,20 @@ package flare.physics
 		}
 		
 		/**
-		 * Returns the particle list. This is the same array instance backing
-		 * the simulation, so edit the array with caution.
-		 * @return the particle list
+		 * Returns the particle list. This is the same vector instance backing
+		 * the simulation, so edit the vector with caution.
+		 * @return the particle list as a Vector.<Particle> object
 		 */
-		public function get particles():Array {
+		public function get particles():Vector.<Particle> {
 			return _particles;
 		}
 		
 		/**
-		 * Returns the spring list. This is the same array instance backing
-		 * the simulation, so edit the array with caution.
-		 * @return the spring list
+		 * Returns the spring list. This is the same vector instance backing
+		 * the simulation, so edit the vector with caution.
+		 * @return the spring list as a Vector.<Spring> object
 		 */
-		public function get springs():Array {
+		public function get springs():Vector.<Spring> {
 			return _springs;
 		}
 		
@@ -272,8 +272,8 @@ package flare.physics
 		
 		/** The maximum number of items stored in a simulation object pool. */
 		public static var objectPoolLimit:int = 5000;
-		protected static var _ppool:Array = new Array();
-		protected static var _spool:Array = new Array();
+		protected static var _ppool:Vector.<Particle> = new Vector.<Particle>();
+		protected static var _spool:Vector.<Spring> = new Vector.<Spring>();
 		
 		/**
 		 * Returns a particle instance, pulling a recycled particle from the

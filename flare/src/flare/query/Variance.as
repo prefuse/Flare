@@ -27,7 +27,7 @@ package flare.query
 		 * @param input the sub-expression of which to compute variance
 		 * @param type the type of variance or deviation to compute
 		 */
-		public function Variance(input:*, type:int=0) {
+		public function Variance(input:*=null, type:int=0) {
 			super(input);
 			_type = type;
 		}

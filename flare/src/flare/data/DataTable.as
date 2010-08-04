@@ -9,10 +9,10 @@ package flare.data
 	{
 		/**
 		 * Creates a new data table instance.
-		 * @param data an array of tuples, each tuple is a row of data
+		 * @param data an object vector of tuples, each tuple is a row of data
 		 * @param schema an optional DataSchema describing the data columns
 		 */
-		public function DataTable(data:Array, schema:DataSchema=null) {
+		public function DataTable(data:Vector.<Object>, schema:DataSchema=null) {
 			this.data = data;
 			this.schema = schema;
 		}
@@ -20,8 +20,8 @@ package flare.data
 		/** A DataSchema describing the data columns of the table. */
 		public var schema:DataSchema;
 		
-		/** An array of data objects, each representing a row of data. */
-		public var data:Array;
+		/** An object vector of data objects, each representing a row of data. */
+		public var data:Vector.<Object>;
 		
 	} // end of class DataTable
 }

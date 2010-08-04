@@ -7,6 +7,7 @@ package flare.vis.legend
 	import flare.util.Colors;
 	import flare.util.Orientation;
 	import flare.util.Stats;
+	import flare.util.Vectors;
 	import flare.util.palette.ColorPalette;
 	
 	import flash.display.GradientType;
@@ -200,7 +201,7 @@ package flare.vis.legend
 		 */
 		public function updateLabels():void
 		{
-			var pts:Array = _palette==null ? [0,1] : _palette.keyframes;
+			var pts:Vector.<Object> = _palette==null ? Vectors.copyFromArray([0,1]) : _palette.keyframes;
 			var n:uint = pts.length;
 			
 			// filter for the needed number of labels
@@ -213,7 +214,7 @@ package flare.vis.legend
 			// update and layout the labels
 			for (i=0; i<n; ++i) {
 				var ts:TextSprite = TextSprite(_labels.getChildAt(i));
-				var val:Object = _scale.lookup(pts[i]);
+				var val:Object = _scale.lookup(pts[i] as Number);
 				// set format
 				if (_fmt != null) ts.applyFormat(_fmt);
 				ts.textMode = _labelMode;
@@ -269,13 +270,13 @@ package flare.vis.legend
 		 */
 		protected function drawHistogram(w:Number, h:Number):void
 		{
-			var values:Array = _stats.values;
+			var values:Vector.<Object> = _stats.values;
 			var ib:int = int(_vert ? h/2 : w/2);
 			var pb:int = (_vert ? h : w) / ib;
 			var d:Number = _vert ? w : h;
 			var i:int, f:Number;
 			
-			var counts:Array = new Array(ib);
+			var counts:Vector.<int> = new Vector.<int>(ib);
 			for (i=0; i<counts.length; ++i) counts[i] = 0;
 			
 			for (i=0; i<values.length; ++i) {
@@ -315,10 +316,10 @@ package flare.vis.legend
 			var alphas:Array = new Array(N);
 			var ratios:Array = new Array(N);
 			for (var i:uint=0; i<N; ++i) {
-				var c:uint = _palette.getColor(_palette.keyframes[i]);
+				var c:uint = _palette.getColor(_palette.keyframes[i] as Number);
 				colors[i] = 0x00ffffff & c;
 				alphas[i] = Colors.a(c) / 255;
-				ratios[i] = int(255 * _palette.keyframes[i]);
+				ratios[i] = int(255 * (_palette.keyframes[i] as Number));
 			}
 			var rot:Number = _vert ? (_rev ? 1 : -1) * Math.PI/2
 								   : (_rev ? Math.PI : 0);

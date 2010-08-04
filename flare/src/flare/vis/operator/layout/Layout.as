@@ -222,7 +222,7 @@ package flare.vis.operator.layout
 				
 				// create new control points
 				var i:uint, len:uint = e.points.length, f:Number;
-				var cp:Array = new Array(len);
+				var cp:Vector.<Object> = new Vector.<Object>(len);
 				var x1:Number, y1:Number, x2:Number, y2:Number;
 				
 				// get target end points

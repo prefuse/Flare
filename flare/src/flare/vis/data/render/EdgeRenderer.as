@@ -42,7 +42,7 @@ package flare.vis.data.render
 		
 		// temporary variables
 		private var _p:Point = new Point(), _q:Point = new Point();
-		private var _pts:Array = new Array(20);
+		private var _pts:Vector.<Object> = new Vector.<Object>(20);
 		
 		/** @inheritDoc */
 		public function render(d:DataSprite):void
@@ -53,11 +53,11 @@ package flare.vis.data.render
 			var t:NodeSprite = e.target;
 			var g:Graphics = e.graphics;
 			
-			var ctrls:Array = e.points as Array;
+			var ctrls:Vector.<Object> = e.points as Vector.<Object>;
 			var x1:Number = e.x1, y1:Number = e.y1;
 			var x2:Number = e.x2, y2:Number = e.y2;
-			var xL:Number = ctrls==null ? x1 : ctrls[ctrls.length-2];
-			var yL:Number = ctrls==null ? y1 : ctrls[ctrls.length-1];
+			var xL:Number = ctrls==null ? x1 : (ctrls[ctrls.length-2] as Number);
+			var yL:Number = ctrls==null ? y1 : (ctrls[ctrls.length-1] as Number);
 			var dx:Number, dy:Number, dd:Number;
 
 			// modify end points as needed to accomodate arrow
@@ -111,12 +111,12 @@ package flare.vis.data.render
 				if (ctrls.length < 4)
 				{
 					g.moveTo(x1, y1);
-					g.curveTo(ctrls[0], ctrls[1], x2, y2);
+					g.curveTo(ctrls[0] as Number, ctrls[1] as Number, x2, y2);
 				}
 				else
 				{
-					Shapes.drawCubic(g, x1, y1, ctrls[0], ctrls[1],
-									 ctrls[2], ctrls[3], x2, y2);
+					Shapes.drawCubic(g, x1, y1, ctrls[0] as Number, ctrls[1] as Number,
+									 ctrls[2] as Number, ctrls[3] as Number, x2, y2);
 				}
 			}
 			else if (e.shape == Shapes.CARDINAL)
@@ -134,7 +134,7 @@ package flare.vis.data.render
 				g.moveTo(x1, y1);
 				if (ctrls != null) {
 					for (var i:uint=0; i<ctrls.length; i+=2)
-						g.lineTo(ctrls[i], ctrls[i+1]);
+						g.lineTo(ctrls[i] as Number, ctrls[i+1] as Number);
 				}
 				g.lineTo(x2, y2);
 			}

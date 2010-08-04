@@ -11,7 +11,7 @@ package flare.query
 		 * Creates a new Sum operator.
 		 * @param input the sub-expression of which to compute the sum
 		 */
-		public function Sum(input:*) {
+		public function Sum(input:*=null) {
 			super(input);
 		}
 		

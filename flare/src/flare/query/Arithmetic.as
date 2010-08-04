@@ -36,7 +36,7 @@ package flare.query
 	     * @param left the left sub-expression
 	     * @param right the right sub-expression
 	     */
-	    public function Arithmetic(op:int, left:*, right:*)
+	    public function Arithmetic(op:int=0, left:*="", right:*="")
 	    {
 	        super(op, ADD, MOD, left, right);
 	    }

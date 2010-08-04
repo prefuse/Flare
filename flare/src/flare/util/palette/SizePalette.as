@@ -61,7 +61,7 @@ package flare.util.palette
 			if (_values == null) {
 				s = _minSize + v * _range;
 			} else {
-				s = _values[uint(Math.round(v*(_values.length-1)))];
+				s = _values[uint(Math.round(v*(_values.length-1)))] as Number;
 			}
 			return _is2D ? Math.sqrt(s) : s;
 		}

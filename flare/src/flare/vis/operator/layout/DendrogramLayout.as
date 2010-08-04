@@ -2,6 +2,7 @@ package flare.vis.operator.layout
 {
 	import flare.util.Orientation;
 	import flare.util.Property;
+	import flare.util.Vectors;
 	import flare.vis.data.EdgeSprite;
 	import flare.vis.data.NodeSprite;
 	
@@ -149,11 +150,12 @@ package flare.vis.operator.layout
 			if (e.points == null) {
 				var s:NodeSprite = e.source;
 				var t:NodeSprite = e.target;
-				e.points = [(s.x+t.x)/2, (s.y+t.y)/2];
+				e.points = new Vector.<Object>();
+				e.points.push((s.x+t.x)/2); e.points.push((s.y+t.y)/2);
 			}
 			_dummy.x = b; b = _dummy.x;
 			_dummy.x = d; d = _dummy.x;
-			_t.$(e).points = vert ? [b, d] : [d, b];
+			_t.$(e).points = vert ? Vectors.copyFromArray([b, d]) : Vectors.copyFromArray([d, b]);
 		}
 		
 	} // end of class DendrogramLayout

@@ -1,5 +1,7 @@
 package flare.analytics.graph
 {
+	import __AS3__.vec.Vector;
+	
 	import flare.animate.Transitioner;
 	import flare.util.Property;
 	import flare.vis.data.Data;
@@ -64,8 +66,9 @@ package flare.analytics.graph
 				si.paths = 1;
 				si.distance = 0;
 				
-				var stack:Array = [];
-				var queue:Array = [n];
+				var stack:Vector.<NodeSprite> = new Vector.<NodeSprite>();
+				var queue:Vector.<NodeSprite> = new Vector.<NodeSprite>();
+				queue.push(n);
 				
 				while (queue.length > 0) {
 					stack.push(v = queue.shift()); si = v.props._score;
@@ -101,18 +104,21 @@ package flare.analytics.graph
 	} // end of class BetweennessCentrality
 }
 
-import flare.util.Arrays;
+import flare.util.Vectors;
+import __AS3__.vec.Vector;
 
 /** Helper class for storing intermediate centrality computations */
 class Score {
 	public var dependency:Number = 0;
 	public var distance:Number = -1;
 	public var paths:Number = 0;
+	// Doesn't want a Vector here, for some reason
 	public var predecessors:Array = [];
 	public var centrality:Number = 0;
 	
 	public function reset():void {
-		Arrays.clear(predecessors);
+		//Vectors.clear(predecessors);
+		predecessors.length = 0;
 		dependency = 0;
 		distance = -1;
 		paths = 0;

@@ -1,6 +1,7 @@
 package flare.query.methods
 {
 	import flare.query.Fn;
+	import flare.util.Vectors;
 	
 	/**
 	 * Creates a new <code>Fn</code> query operator for a function in a query.
@@ -12,7 +13,7 @@ package flare.query.methods
 	public function fn(name:String, ...args):Fn
 	{
 		var f:Fn = new Fn(name);
-		f.setChildren(args);
+		f.setChildren(Vectors.copyFromArray(args));
 		return f;
 	}
 }

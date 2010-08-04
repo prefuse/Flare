@@ -1,8 +1,11 @@
 package flare.query
 {
+	import __AS3__.vec.Vector;
+	
 	import flare.util.Filter;
 	import flare.util.Property;
 	import flare.util.Sort;
+	import flare.util.Vectors;
 	
 	/**
 	 * Performs query processing over a collection of ActionScript objects.
@@ -251,17 +254,19 @@ package flare.query
 		 * @param input either an array of objects or a visitor function
 		 * @return an array of processed query results
 		 */
-		public function eval(input:*):Array
+		public function eval(input:*):Vector.<Object>
 		{
 			// check for initialization
 			if (_sort  == null) _sort  = sorter();
 			if (_aggrs == null) _aggrs = aggregates();
 			
 			// TODO -- evaluate any sub-queries in WHERE clause
-			var results:Array = [];
+			var results:Vector.<Object> = new Vector.<Object>();
 			var visitor:Function;
 			if (input is Array) {
 				visitor = (input as Array).forEach;
+			} else if (input is Vector.<Object>) {
+				visitor = (input as Vector.<Object>).forEach;
 			} else if (input is Function) {
 				visitor = input as Function;
 			} else if (Object(input).hasOwnProperty("visit") &&
@@ -298,7 +303,7 @@ package flare.query
 			}
 		}
 		
-		private function projectAll(results:Array):Array
+		private function projectAll(results:Vector.<Object>):Vector.<Object>
 		{					
 			for (var i:int=0; i<results.length; ++i) {
 				var item:Object = {};
@@ -312,7 +317,7 @@ package flare.query
 			return results;
 		}
 		
-		private function applyAll(results:Array):Array
+		private function applyAll(results:Vector.<Object>):Vector.<Object>
 		{
 			var o:Object = {};
 			for each (var item:Object in results) {
@@ -334,13 +339,14 @@ package flare.query
 		
 		/**
 		 * Performs grouping and aggregation of query results.
-		 * @param items the filtered query results array
-		 * @return aggregated query results array
+		 * @param items the filtered query results object vector
+		 * @return aggregated query results object vector
 		 */
-		private function aggregate(items:Array):Array
+		private function aggregate(items:Vector.<Object>):Vector.<Object>
 		{
 			var h:int, i:int, j:int, item:Object;
-			var results:Array = [], props:Array = [];
+			var results:Vector.<Object> = new Vector.<Object>()
+			var props:Vector.<Object> = new Vector.<Object>();
 			
 			// get group-by properties as key
 			if (_groupby != null) {
@@ -353,7 +359,8 @@ package flare.query
 			
 			// process all groups
 			reset(_aggrs);
-			for (i=1, h=0, item=items[0]; i<=items.length; ++i) {
+			for (i=1, h=0; i<=items.length; ++i) {
+				item = items[i-1];
 				// update the aggregate functions
 				for each (var aggr:AggregateExpression in _aggrs) {
 					aggr.aggregate(items[i-1]);
@@ -371,7 +378,7 @@ package flare.query
 					} else {
 						results.push(project(item));
 					}
-					item = items[(h=i)];
+					item = (i==items.length) ? null : items[(h=i)];
 					reset(_aggrs);
 				}
 			}
@@ -413,7 +420,7 @@ package flare.query
 			return result;
 		}
 		
-		private static function sameGroup(props:Array, x:Object, y:Object):Boolean
+		private static function sameGroup(props:Vector.<Object>, x:Object, y:Object):Boolean
 		{
 			var a:*, b:*;
 			for each (var p:Property in props) {

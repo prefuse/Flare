@@ -11,7 +11,7 @@ package flare.query
 		 * Creates a new Maximum operator
 		 * @param input the sub-expression of which to compute the maximum
 		 */
-		public function Maximum(input:*) {
+		public function Maximum(input:*=null) {
 			super(input);
 		}
 		

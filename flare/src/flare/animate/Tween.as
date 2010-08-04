@@ -11,10 +11,10 @@ package flare.animate
 	 * represents the set of properties to tween and their final values. Any
 	 * arbitrary property (not just visual properties) can be tweened. The
 	 * Tween class handles tweening of Numbers, colors, Dates, Points,
-	 * Rectangles, and numeric Arrays. Properties of other types are simply
-	 * swapped when then Transition half-completes. Tweening for custom types
-	 * is possible, see the <tt>flare.animate.interpolate.Interpolator</tt>
-	 * class for more.
+	 * Rectangles, numeric Arrays, and Vector.<Object> objects containing Numbers.
+	 * Properties of other types are simply swapped when then Transition
+	 * half-completes. Tweening for custom types is possible, see the
+	 * <tt>flare.animate.interpolate.Interpolator</tt> class for more.
 	 * 
 	 * <p>Starting values are automatically determined from the tweened object.
 	 * Once determined, these starting values are stored to allow both forward
@@ -39,7 +39,7 @@ package flare.animate
 	{
 		// -- Properties ------------------------------------------------------
 		
-		private var _interps:Array = new Array();
+		private var _interps:Vector.<Object> = new Vector.<Object>();
 		private var _target:Object;
 		private var _from:Object;
 		private var _remove:Boolean = false;

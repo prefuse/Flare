@@ -1,5 +1,7 @@
 package flare.util
-{	
+{
+	import __AS3__.vec.Vector;
+	
 	import flash.display.Graphics;
 	
 	/**
@@ -325,17 +327,30 @@ package flare.util
 		}
 		
 		/**
+		 * Draws a line linking the points.
+		 * @param g the graphics context to draw with
+		 * @param a a flat object vector/array of x, y values defining the polygon
+		 */
+		public static function drawLine(g:Graphics, a:Vector.<Object>) : void
+		{
+			g.moveTo(a[0] as Number, a[1] as Number);
+			for (var i:uint=2; i<a.length; i+=2) {
+				g.lineTo(a[i] as Number, a[i+1] as Number);
+			}
+		}
+		
+		/**
 		 * Draws a polygon shape.
 		 * @param g the graphics context to draw with
-		 * @param a a flat array of x, y values defining the polygon
+		 * @param a a flat object vector/array of x, y values defining the polygon
 		 */
-		public static function drawPolygon(g:Graphics, a:Array) : void
+		public static function drawPolygon(g:Graphics, a:Vector.<Object>) : void
 		{
-			g.moveTo(a[0], a[1]);
+			g.moveTo(a[0] as Number, a[1] as Number);
 			for (var i:uint=2; i<a.length; i+=2) {
-				g.lineTo(a[i], a[i+1]);
+				g.lineTo(a[i] as Number, a[i+1] as Number);
 			}
-			g.lineTo(a[0], a[1]);
+			g.lineTo(a[0] as Number, a[1] as Number);
 		}
 		
 		/**
@@ -384,14 +399,15 @@ package flare.util
 		}
 		
 		// -- BSpline rendering state variables --
-		private static var _knot:Array  = new Array(20);
-		private static var _basis:Array = new Array(36);
+		private static var _knot:Vector.<Object>  = new Vector.<Object>(20);
+		private static var _basis:Vector.<Object> = new Vector.<Object>(36);
 
 		/**
 		 * Draws a cubic open uniform B-spline. The spline passes through the
 		 * first and last control points, but not necessarily any others.
 		 * @param g the graphics context to draw with
-		 * @param p an array of points defining the spline control points
+		 * @param pp a flat Object vector or Array of points defining the spline control points,
+		 *          e.g., v:Vector.<Object> = Vectors.copyFromArray([x1,y1,x2,y2]);
 		 * @param slack a slack parameter determining the "tightness" of the
 		 *  spline. At value 1 (the default) a normal b-spline will be drawn,
 		 *  at value 0 a straight line between the first and last points will
@@ -402,9 +418,13 @@ package flare.util
 		 *  no move command will be issued; this is useful when connecting
 		 *  multiple curves to define a filled region.
 		 */
-		public static function drawBSpline(g:Graphics, p:Array, npts:int=-1,
+		public static function drawBSpline(g:Graphics, pp:*, npts:int=-1,
 			move:Boolean=true):void
 		{
+			var p:Vector.<Object>;
+			if(pp is Array) p = Vectors.copyFromArray(pp);
+			else p = pp;
+			
 			var N:int = (npts < 0 ? p.length/2 : npts);
 			var k:int = N<4 ? 3 : 4, nplusk:int = N+k;
 			var i:int, j:int, s:int, subdiv:int = 40;
@@ -412,8 +432,8 @@ package flare.util
 			
 			// if only two points, draw a line between them
 			if (N==2) {
-				if (move) g.moveTo(p[0],p[1]);
-				g.lineTo(p[2],p[3]);
+				if (move) g.moveTo(p[0] as Number,p[1] as Number);
+				g.lineTo(p[2] as Number,p[3] as Number);
 				return;
 			}
 			
@@ -423,7 +443,7 @@ package flare.util
 			}
 			
 			// calculate the points on the bspline curve
-			step = _knot[nplusk-1] / subdiv;
+			step = (_knot[nplusk-1] as Number) / subdiv;
 			for (s=0; s <= subdiv; ++s) {
 				u = step * s;
 				
@@ -433,8 +453,8 @@ package flare.util
 				}
 				for (j=2; j <= k; ++j) { // higher-order
 					for (i=0; i < nplusk-j; ++i) {
-						x = (_basis[i  ]==0 ? 0 : ((u-_knot[i])*_basis[i]) / (_knot[i+j-1]-_knot[i]));
-						y = (_basis[i+1]==0 ? 0 : ((_knot[i+j]-u)*_basis[i+1]) / (_knot[i+j]-_knot[i+1]));
+						x = ((_basis[i  ] as Number)==0 ? 0 : ((u-(_knot[i] as Number))*(_basis[i] as Number)) / ((_knot[i+j-1] as Number)-(_knot[i] as Number)));
+						y = ((_basis[i+1] as Number)==0 ? 0 : (((_knot[i+j] as Number)-u)*(_basis[i+1] as Number)) / ((_knot[i+j] as Number)-(_knot[i+1] as Number)));
 						_basis[i] = x + y;
 					}
 				}
@@ -442,8 +462,8 @@ package flare.util
 				
 				// interpolate b-spline point -----
 				for (i=0, j=0, x=0, y=0; i<N; ++i, j+=2) {
-					x += _basis[i] * p[j];
-					y += _basis[i] * p[j+1];
+					x += (_basis[i] as Number) * (p[j] as Number);
+					y += (_basis[i] as Number) * (p[j+1] as Number);
 				}
 				if (s==0) {
 					if (move) g.moveTo(x, y);
@@ -458,15 +478,19 @@ package flare.util
 		 * Bezier curves. Curve control points are inferred so as to ensure
 		 * C1 continuity (continuous derivative).
 		 * @param g the graphics context to draw with
-		 * @param p an array defining a polygon or polyline to render with a
-		 *  cardinal spline
+		 * @param pp a flat Object Vector or Array defining a polygon or polyline to render with a
+		 *  cardinal spline, e.g., v:Vector.<Object> = Vectors.copyFromArray([x1,y1,...]);
 		 * @param s a tension parameter determining the spline's "tightness"
 		 * @param closed indicates if the cardinal spline should be a closed
 		 *  shape. False by default.
 		 */
-		public static function drawCardinal(g:Graphics, p:Array, npts:int=-1,
+		public static function drawCardinal(g:Graphics, pp:*, npts:int=-1,
 			s:Number=0.15, closed:Boolean=false) : void
 		{
+			var p:Vector.<Object>;
+			if(pp is Array) p = Vectors.copyFromArray(pp);
+			else p = pp;
+
 			// compute the size of the path
 	        var len:uint = (npts < 0 ? p.length : 2*npts);
 	        
@@ -474,72 +498,72 @@ package flare.util
 	            throw new Error("Cardinal splines require at least 3 points");
 	        
 	        var dx1:Number, dy1:Number, dx2:Number, dy2:Number;
-	        g.moveTo(p[0], p[1]);
+	        g.moveTo(p[0] as Number, p[1] as Number);
 	        
 	        // compute first control points
 	        if (closed) {
-	            dx2 = p[2]-p[len-2];
-	            dy2 = p[3]-p[len-1];
+	            dx2 = (p[2] as Number)-(p[len-2] as Number);
+	            dy2 = (p[3] as Number)-(p[len-1] as Number);
 	        } else {
-	            dx2 = p[4]-p[0]
-	            dy2 = p[5]-p[1];
+	            dx2 = (p[4] as Number)-(p[0] as Number);
+	            dy2 = (p[5] as Number)-(p[1] as Number);
 	        }
 
 	        // iterate through control points
 	        var i:uint = 0;
 	        for (i=2; i<len-2; i+=2) {
 	            dx1 = dx2; dy1 = dy2;
-	            dx2 = p[i+2] - p[i-2];
-	            dy2 = p[i+3] - p[i-1];
+	            dx2 = (p[i+2] as Number) - (p[i-2] as Number);
+	            dy2 = (p[i+3] as Number) - (p[i-1] as Number);
 	            
-	            drawCubic(g, p[i-2],    p[i-1],
-						     p[i-2]+s*dx1, p[i-1]+s*dy1,
-	                         p[i]  -s*dx2, p[i+1]-s*dy2,
-	                         p[i],         p[i+1], false);
+	            drawCubic(g, (p[i-2] as Number),    (p[i-1] as Number),
+						     (p[i-2] as Number)+s*dx1, (p[i-1] as Number)+s*dy1,
+	                         (p[i] as Number)  -s*dx2, (p[i+1] as Number)-s*dy2,
+	                         (p[i] as Number),         (p[i+1] as Number), false);
 	        }
 	        
 	        // finish spline
 	        if (closed) {
 	            dx1 = dx2; dy1 = dy2;
-	            dx2 = p[0] - p[i-2];
-	            dy2 = p[1] - p[i-1];
-	            drawCubic(g, p[i-2], p[i-1], p[i-2]+s*dx1, p[i-1]+s*dy1,
-	            			 p[i]-s*dx2, p[i+1]-s*dy2, p[i], p[i+1], false);
+	            dx2 = (p[0] as Number) - (p[i-2] as Number);
+	            dy2 = (p[1] as Number) - (p[i-1] as Number);
+	            drawCubic(g, (p[i-2] as Number), (p[i-1] as Number), (p[i-2] as Number)+s*dx1, (p[i-1] as Number)+s*dy1,
+	            			 (p[i] as Number)-s*dx2, (p[i+1] as Number)-s*dy2, (p[i] as Number), (p[i+1] as Number), false);
 	            
 	            dx1 = dx2; dy1 = dy2;
-	            dx2 = p[2] - p[len-2];
-	            dy2 = p[3] - p[len-1];
-	            drawCubic(g, p[len-2], p[len-1], p[len-2]+s*dx1, p[len-1]+s*dy1,
-	            	p[0]-s*dx2, p[1]-s*dy2, p[0], p[1], false);
+	            dx2 = (p[2] as Number) - (p[len-2] as Number);
+	            dy2 = (p[3] as Number) - (p[len-1] as Number);
+	            drawCubic(g, (p[len-2] as Number), (p[len-1] as Number), (p[len-2] as Number)+s*dx1, (p[len-1] as Number)+s*dy1,
+	            	(p[0] as Number)-s*dx2, (p[1] as Number)-s*dy2, (p[0] as Number), (p[1] as Number), false);
 	        } else {
-	        	drawCubic(g, p[i-2], p[i-1], p[i-2]+s*dx1, p[i-1]+s*dy1,
-	        		p[i]-s*dx2, p[i+1]-s*dy2, p[i], p[i+1], false);
+	        	drawCubic(g, (p[i-2] as Number), (p[i-1] as Number), (p[i-2] as Number)+s*dx1, (p[i-1] as Number)+s*dy1,
+	        		(p[i] as Number)-s*dx2, (p[i+1] as Number)-s*dy2, (p[i] as Number), (p[i+1] as Number), false);
 	        }
 		}
 		
 		/**
 		 * A helper function for consolidating end points and control points
-		 * for a spline into a single array.
+		 * for a spline into a single object vector.
 		 * @param x1 the x-coordinate for the first end point
 		 * @param y1 the y-coordinate for the first end point
-		 * @param controlPoints an array of control points
+		 * @param controlPoints an object vector of control points
 		 * @param x2 the x-coordinate for the second end point
 		 * @param y2 the y-coordinate for the second end point
-		 * @param p the array in which to store the consolidated points.
-		 *  If null, a new array will be created and returned.
-		 * @return the consolidated array of all points
+		 * @param p the object vector in which to store the consolidated points.
+		 *  If null, a new object vector will be created and returned.
+		 * @return the consolidated object vector of all points
 		 */
 		public static function consolidate(x1:Number, y1:Number,
-			controlPoints:Array, x2:Number, y2:Number, p:Array=null):Array
+			controlPoints:Vector.<Object>, x2:Number, y2:Number, p:Vector.<Object>=null):Vector.<Object>
 		{
 			var len:int = 4 + controlPoints.length;
 			if (!p) {
-				p = new Array(len);
+				p = new Vector.<Object>(len);
 			} else {
 				while (p.length < len) p.push(0);
 			}
 			
-			Arrays.copy(controlPoints, p, 0, 2);
+			Vectors.copy(controlPoints, p, 0, 2);
 			p[0] = x1;
 			p[1] = y1;
 			p[len-2] = x2;

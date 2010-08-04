@@ -1,8 +1,11 @@
 package flare.vis.operator.layout
 {
+	import __AS3__.vec.Vector;
+	
 	import flare.animate.Transitioner;
 	import flare.util.Arrays;
 	import flare.util.Shapes;
+	import flare.util.Vectors;
 	import flare.vis.data.DataSprite;
 	import flare.vis.data.EdgeSprite;
 	import flare.vis.data.NodeSprite;
@@ -48,14 +51,15 @@ package flare.vis.operator.layout
 			t = (t==null ? Transitioner.DEFAULT : t);
 			
 			var u:NodeSprite, v:NodeSprite, pu:NodeSprite, pv:NodeSprite;
-			var p1:Array = [], p2:Array = [];
+			var p1:Vector.<DataSprite> = new Vector.<DataSprite>();
+			var p2:Vector.<DataSprite> = new Vector.<DataSprite>();
 			var d1:int, d2:int, o:Object;
 			var ux:Number, uy:Number, dx:Number, dy:Number;
 			
 			// compute edge bundles
 			for each (var e:EdgeSprite in visualization.data.edges) {
-				u = e.source; p1.push(pu=u); d1 = u.depth;
-				v = e.target; p2.push(pv=v); d2 = v.depth;
+				u = e.source; p1.push(pu=u as NodeSprite); d1 = u.depth;
+				v = e.target; p2.push(pv=v as NodeSprite); d2 = v.depth;
 				
 				// trace paths to the least common ancestor of u,v
 				while (d1 > d2) { p1.push(pu=pu.parentNode); --d1; }
@@ -66,8 +70,8 @@ package flare.vis.operator.layout
 				}
 				
 				// collect b-spline control points
-				var p:Array = t.$(e).points;
-				if (p==null) { p = []; } else { Arrays.clear(p); }
+				var p:Vector.<Object> = t.$(e).points;
+				if (p==null) { p = new Vector.<Object>; } else { Vectors.clear(p); }
 				
 				d1 = p1.length;
 				d2 = p2.length;
@@ -90,8 +94,8 @@ package flare.vis.operator.layout
 					dy = (dy-uy)/(N+2);
 
 					for (i=0; i<N; i+=2) {
-						p[i]   = b*p[i]   + ib*(ux + (i+2)*dx);
-						p[i+1] = b*p[i+1] + ib*(uy + (i+2)*dy);
+						p[i]   = b*(p[i] as Number)   + ib*(ux + (i+2)*dx);
+						p[i+1] = b*(p[i+1] as Number) + ib*(uy + (i+2)*dy);
 					}
 				}
 				
@@ -100,12 +104,12 @@ package flare.vis.operator.layout
 				e.shape = Shapes.BSPLINE;
 				
 				// clean-up
-				Arrays.clear(p1);
-				Arrays.clear(p2);
+				p1.length = 0;
+				p2.length = 0;
 			}
 		}
 		
-		private static function addPoint(p:Array, d:DataSprite, t:Transitioner):void
+		private static function addPoint(p:Vector.<Object>, d:DataSprite, t:Transitioner):void
 		{
 			var o:Object = t.$(d);
 			p.push(o.x);

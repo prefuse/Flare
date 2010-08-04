@@ -71,9 +71,9 @@ package flare.apps
 			_bar.loadURL(ldr, function():void {
 				// get loaded data, reshape for stacked columns
   				var ds:DataSet = ldr.data as DataSet;
-            	var dr:Array = reshape(ds.nodes.data, ["occupation","sex"],
+            	var dr:Vector.<Object> = reshape(ds.nodes.data, ["occupation","sex"],
             		"year", "people", _cols);
-            	visualize(Data.fromArray(dr));
+            	visualize(Data.fromVector(dr));
         		_bar = null;
 			});
   		}
@@ -300,7 +300,7 @@ package flare.apps
 		 * yearly data is stored in individual rows, this method can be used to
 		 * map each year into a column and the full time series into a single
 		 * row. This is often needed to use the stacked area layout.
-		 * @param tuples an array of data tuples
+		 * @param tuples an object vector of data tuples
 		 * @param cats the category values to maintain
 		 * @param dim the dimension upon which to pivot. The values of this
 		 *  property should correspond to the names of newly created columns.
@@ -310,12 +310,12 @@ package flare.apps
 		 *  match the values of the <code>dim</code> property.
 		 * @param normalize a flag indicating if the data should be normalized
 		 */
-		public static function reshape(tuples:Array, cats:Array, dim:String,
-			measure:String, cols:Array, normalize:Boolean=true):Array
+		public static function reshape(tuples:Vector.<Object>, cats:Array, dim:String,
+			measure:String, cols:Array, normalize:Boolean=true):Vector.<Object>
 		{
 			var t:Object, d:Object, val:Object, name:String;
-			var data:Array = [], names:Array = []
-			var totals:Object = {};
+			var data:Vector.<Object> = new Vector.<Object>();
+			var totals:Object = {}, names:Object = {};
 			for each (val in cols) totals[val] = 0;
 			
 			// create data set

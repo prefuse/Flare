@@ -1,8 +1,10 @@
 package flare.vis.operator
 {
+	import __AS3__.vec.Vector;
+	
 	import flare.animate.FunctionSequence;
 	import flare.animate.Transitioner;
-	import flare.util.Arrays;
+	import flare.util.Vectors;
 
 	/**
 	 * An OperatorSequence maintains a list of operators that are run in
@@ -35,7 +37,7 @@ package flare.vis.operator
 	public class OperatorSequence extends OperatorList
 	{
 		/** @private */
-		protected var _times:/*Number*/Array = [];
+		protected var _times:Vector.<Number> = new Vector.<Number>;
 		
 		/**
 		 * Creates a new OperatorSequence.
@@ -86,7 +88,7 @@ package flare.vis.operator
 		/** @inheritDoc */
 		public override function remove(op:IOperator):Boolean
 		{
-			var idx:int = Arrays.remove(_list, op);
+			var idx:int = Vectors.remove(_list, op);
 			if (idx >= 0) {
 				_times.splice(idx, 1);
 				return true;
@@ -112,7 +114,7 @@ package flare.vis.operator
 				var fs:FunctionSequence = new FunctionSequence();
 				for (var i:int=0; i<_list.length; ++i) {
 					if (_list[i].enabled)
-						fs.push(getFunction(_list[i]), _times[i]);
+						fs.push(getFunction(_list[i] as IOperator), _times[i]);
 				}
 				t.add(fs);
 			}

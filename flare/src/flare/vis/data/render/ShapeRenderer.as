@@ -47,6 +47,15 @@ package flare.vis.data.render
 				case Shapes.BLOCK:
 					g.drawRect(d.u-d.x, d.v-d.y, d.w, d.h);
 					break;
+				case Shapes.LINE:
+					if (d.points!=null)
+						Shapes.drawLine(g, d.points);
+					break;
+				case Shapes.CARDINAL:
+					if (d.points!=null)
+						Shapes.drawCardinal(g, d.points,
+											d.points.length/2, 0.15, false);
+					break;
 				case Shapes.POLYGON:
 					if (d.points!=null)
 						Shapes.drawPolygon(g, d.points);

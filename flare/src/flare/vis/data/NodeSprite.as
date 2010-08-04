@@ -5,6 +5,9 @@ package flare.vis.data
 	import flare.util.Filter;
 	import flare.util.IEvaluable;
 	import flare.util.Sort;
+	import flare.util.Vectors;
+	
+	import mx.core.EdgeMetrics;
 	
 	/**
 	 * Visually represents a data element, such as a data tuple or graph node.
@@ -43,10 +46,10 @@ package flare.vis.data
 		// -- Properties ------------------------------------------------------
 		
 		private var _parentEdge:EdgeSprite;
-		private var _idx:int = -1; // node index in parent's array
-		private var _childEdges:/*EdgeSprite*/Array;
-		private var _inEdges:/*EdgeSprite*/Array;
-		private var _outEdges:/*EdgeSprite*/Array;
+		private var _idx:int = -1; // node index in parent's vector
+		private var _childEdges:Vector.</*EdgeSprite*/Object>;
+		private var _inEdges:Vector.</*EdgeSprite*/Object>;
+		private var _outEdges:Vector.</*EdgeSprite*/Object>;
 		private var _expanded:Boolean = true;
 		
 		/** Flag indicating if this node is currently expanded. This flag can
@@ -91,14 +94,14 @@ package flare.vis.data
 		/** The first child of this node in the tree structure. */
 		public function get firstChildNode():NodeSprite
 		{
-			return childDegree > 0 ? _childEdges[0].other(this) : null;
+			return childDegree > 0 ? (_childEdges[0] as EdgeSprite).other(this) : null;
 		}
 		
 		/** The last child of this node in the tree structure. */
 		public function get lastChildNode():NodeSprite
 		{
 			var len:uint = childDegree;
-			return len > 0 ? _childEdges[len-1].other(this) : null;
+			return len > 0 ? (_childEdges[len-1] as EdgeSprite).other(this) : null;
 		}
 		
 		/** The next sibling of this node in the tree structure. */
@@ -180,7 +183,7 @@ package flare.vis.data
 		 */		
 		public function getChildEdge(i:uint):EdgeSprite
 		{
-			return _childEdges[i];
+			return _childEdges[i] as EdgeSprite;
 		}
 		
 		/**
@@ -200,7 +203,7 @@ package flare.vis.data
 		 */
 		public function getInEdge(i:uint):EdgeSprite
 		{
-			return _inEdges[i];
+			return _inEdges[i] as EdgeSprite;
 		}
 		
 		/**
@@ -220,7 +223,7 @@ package flare.vis.data
 		 */
 		public function getOutEdge(i:uint):EdgeSprite
 		{
-			return _outEdges[i];
+			return _outEdges[i] as EdgeSprite;
 		}
 		
 		/**
@@ -230,7 +233,7 @@ package flare.vis.data
 		 */
 		public function getOutNode(i:uint):NodeSprite
 		{
-			return _outEdges[i].target;
+			return (_outEdges[i] as EdgeSprite).target;
 		}
 		
 		// -- Mutator Methods ----------------------------------
@@ -242,7 +245,7 @@ package flare.vis.data
 		 */
 		public function addChildEdge(e:EdgeSprite):uint
 		{
-			if (_childEdges == null) _childEdges = new Array();
+			if (_childEdges == null) _childEdges = new Vector.<Object>();
 			_childEdges.push(e);
 			return _childEdges.length - 1;
 		}
@@ -254,7 +257,7 @@ package flare.vis.data
 		 */
 		public function addInEdge(e:EdgeSprite):uint
 		{
-			if (_inEdges == null) _inEdges = new Array();
+			if (_inEdges == null) _inEdges = new Vector.<Object>();
 			_inEdges.push(e);
 			return _inEdges.length - 1;
 		}
@@ -266,7 +269,7 @@ package flare.vis.data
 		 */
 		public function addOutEdge(e:EdgeSprite):uint
 		{
-			if (_outEdges == null) _outEdges = new Array();
+			if (_outEdges == null) _outEdges = new Vector.<Object>();
 			_outEdges.push(e);
 			return _outEdges.length - 1;
 		}
@@ -310,7 +313,7 @@ package flare.vis.data
 		 */
 		public function removeChildEdge(e:EdgeSprite):void
 		{
-			Arrays.remove(_childEdges, e);
+			Vectors.remove(_childEdges, e);
 		}
 		
 		/**
@@ -320,7 +323,7 @@ package flare.vis.data
 		 */
 		public function removeInEdge(e:EdgeSprite):void
 		{
-			Arrays.remove(_inEdges, e);
+			Vectors.remove(_inEdges, e);
 		}
 		
 		/**
@@ -330,7 +333,7 @@ package flare.vis.data
 		 */
 		public function removeOutEdge(e:EdgeSprite):void
 		{
-			Arrays.remove(_outEdges, e);
+			Vectors.remove(_outEdges, e);
 		}
 		
 		// -- Visitor Methods --------------------------------------------------
@@ -391,7 +394,7 @@ package flare.vis.data
 			return false;
 		}
 		
-		private function visitEdgeHelper(f:Function, a:Array, r:Boolean,
+		private function visitEdgeHelper(f:Function, a:Vector.<Object>, r:Boolean,
 			ff:Function):Boolean
 		{
 			var i:uint, n:uint=a.length, v:*;
@@ -438,7 +441,7 @@ package flare.vis.data
 			return false;
 		}
 		
-		private function visitNodeHelper(f:Function, a:Array, r:Boolean,
+		private function visitNodeHelper(f:Function, a:Vector.<Object>, r:Boolean,
 			ff:Function):Boolean
 		{
 			var i:uint, n:uint=a.length, u:NodeSprite;
@@ -487,7 +490,7 @@ package flare.vis.data
 		 */
 		public function visitTreeBreadthFirst(f:Function):Boolean
 		{
-			var q:Array = new Array(), x:NodeSprite;
+			var q:Vector.<NodeSprite> = new Vector.<NodeSprite>(), x:NodeSprite;
 			
 			q.push(this);
 			while (q.length > 0) {

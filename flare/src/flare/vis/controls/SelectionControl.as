@@ -22,17 +22,17 @@ package flare.vis.controls
 	 */
 	public class SelectionControl extends Control
 	{
-		private var _r:Rectangle = new Rectangle();
-		private var _drag:Boolean = false;
-		private var _shape:Shape = new Shape();
-		private var _hit:InteractiveObject;
-		private var _stage:Stage;
-		private var _sel:Dictionary = new Dictionary();
+		protected var _r:Rectangle = new Rectangle();
+		protected var _drag:Boolean = false;
+		protected var _shape:Shape = new Shape();
+		protected var _hit:InteractiveObject;
+		protected var _stage:Stage;
+		protected var _sel:Dictionary = new Dictionary();
 		
-		private var _add0:DisplayObject = null;
-		private var _rem0:DisplayObject = null;
-		private var _add:Array = null;
-		private var _rem:Array = null;
+		protected var _add0:DisplayObject = null;
+		protected var _rem0:DisplayObject = null;
+		protected var _add:Vector.</*DisplayObject*/Object> = null;
+		protected var _rem:Vector.</*DisplayObject*/Object> = null;
 		
 		/** The active hit area over which selection
 		 *  interactions can be performed. */
@@ -124,14 +124,14 @@ package flare.vis.controls
 			return super.detach();
 		}
 		
-		private function onAdd(evt:Event=null):void
+		protected function onAdd(evt:Event=null):void
 		{
 			_stage = _object.stage;
 			if (_hit == null) _hit = _stage;
 			_hit.addEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
 		}
 		
-		private function onRemove(evt:Event=null):void
+		protected function onRemove(evt:Event=null):void
 		{
 			if (_hit)
 				_hit.removeEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
@@ -139,7 +139,7 @@ package flare.vis.controls
 		
 		// -----------------------------------------------------
 				
-		private function mouseDown(evt:MouseEvent):void
+		protected function mouseDown(evt:MouseEvent):void
 		{
 			if (_stage == null) return;
 			_stage.addEventListener(MouseEvent.MOUSE_UP, mouseUp);
@@ -158,7 +158,7 @@ package flare.vis.controls
 			}
 		}
 		
-		private function mouseMove(evt:MouseEvent):void
+		protected function mouseMove(evt:MouseEvent):void
 		{
 			if (!_drag) return;
 			_r.width = _object.mouseX - _r.x;
@@ -170,7 +170,7 @@ package flare.vis.controls
 			}
 		}
 		
-		private function mouseUp(evt:MouseEvent):void
+		protected function mouseUp(evt:MouseEvent):void
 		{
 			if (!fireImmediately)
 				selectionTest(evt);
@@ -180,7 +180,7 @@ package flare.vis.controls
 			_stage.removeEventListener(MouseEvent.MOUSE_MOVE, mouseMove);
 		}
 		
-		private function renderShape(g:Graphics):void {
+		protected function renderShape(g:Graphics):void {
 			g.clear();
 			g.beginFill(fillColor, fillAlpha);
 			g.lineStyle(lineWidth, lineColor, lineAlpha, true, "none");
@@ -188,7 +188,7 @@ package flare.vis.controls
 			g.endFill();
 		}
 		
-		private function selectionTest(evt:MouseEvent):void {			
+		protected function selectionTest(evt:MouseEvent):void {			
 			var con:DisplayObjectContainer = DisplayObjectContainer(_object);
 			for (var i:uint=0; i<con.numChildren; ++i) {
 				walkTree(con.getChildAt(i), test);
@@ -207,7 +207,7 @@ package flare.vis.controls
 			_rem0 = _add0 = null;
 		}
 		
-		private static function walkTree(obj:DisplayObject, func:Function):void
+		protected static function walkTree(obj:DisplayObject, func:Function):void
 		{
 			func(obj);
 			if (obj is DisplayObjectContainer) {
@@ -218,7 +218,7 @@ package flare.vis.controls
 			}
 		}
 		
-		private function test(d:DisplayObject):void
+		protected function test(d:DisplayObject):void
 		{
 			if (_filter!=null && !_filter(d)) return;
 			var a:Boolean = _sel[d] != undefined;
@@ -231,25 +231,27 @@ package flare.vis.controls
 			}
 		}
 		
-		private function select(d:DisplayObject):void {
+		protected function select(d:DisplayObject):void {
 			_sel[d] = d;
 			if (_add == null)
 				if (_add0 == null) {
 					_add0 = d;
 				} else {
-					_add = [_add0, d];
+					_add = new Vector.<Object>();
+					_add.push(_add0); _add.push(d);
 				}
 			else
 				_add.push(d);
 		}
 		
-		private function deselect(d:DisplayObject):void {
+		protected function deselect(d:DisplayObject):void {
 			delete _sel[d];
 			if (_rem == null)
 				if (_rem0 == null) {
 					_rem0 = d;
 				} else {
-					_rem = [_rem0, d];
+					_rem = new Vector.<Object>();
+					_rem.push(_rem0); _rem.push(d);
 				}
 			else
 				_rem.push(d);

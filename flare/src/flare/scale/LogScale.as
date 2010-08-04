@@ -83,9 +83,9 @@ package flare.scale
 		}
 		
 		/** @inheritDoc */
-		public override function values(num:int=-1):Array
+		public override function values(num:int=-1):Vector.<Object>
 		{
-			var vals:Array = new Array();
+			var vals:Vector.<Object> = new Vector.<Object>();
 			
 			var beg:int = int(Math.round(log(_smin)));
 			var end:int = int(Math.round(log(_smax)));

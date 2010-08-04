@@ -51,7 +51,7 @@ package flare.analytics.cluster
 		/** Computes the clustering */
 		private function compute(G:IMatrix):void
 		{
-			_merges = new MergeEdge(-1, -1); _qvals = [];
+			_merges = new MergeEdge(-1, -1); _qvals.length = 0;
 			_size = G.rows;
 			var i:int, j:int, k:int, s:int, t:int, v:Number;
 			var Q:Number=0, Qmax:Number=0, dQ:Number, dQmax:Number=0, imax:int;
@@ -65,7 +65,7 @@ package flare.analytics.cluster
 			var E:MergeEdge = new MergeEdge(-1,-1);
 			var e:MergeEdge = E, m:MergeEdge = _merges;
 			var eMax:MergeEdge = new MergeEdge(0,0);
-			var A:Array = new Array(N);
+			var A:Vector.<int> = new Vector.<int>(N);
 			
 			for (i=0; i<N; ++i) {
 				A[i] = 0;

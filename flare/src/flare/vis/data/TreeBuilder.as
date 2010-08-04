@@ -1,5 +1,7 @@
 package flare.vis.data
 {
+	import __AS3__.vec.Vector;
+	
 	import flare.util.IEvaluable;
 	import flare.util.Property;
 	import flare.util.heap.FibonacciHeap;
@@ -238,7 +240,8 @@ package flare.vis.data
 		{
 			var visited:Dictionary = buildTree ? null : new Dictionary();
 			
-			var q:Array = [n];
+			var q:Vector.<NodeSprite> = new Vector.<NodeSprite>();
+			q.push(n);
 			while (q.length > 0) {
 				n = q.shift();
 				n.visitEdges(function(e:EdgeSprite):void {

@@ -20,21 +20,21 @@ package flare.flex
 		private var _vis:Visualization;
 		
 		/** The visualization operators used by this visualization. This
-		 *  should be an array of IOperator instances. */
-		public function set operators(a:Array):void {
+		 *  should be an object vector of IOperator instances. */
+		public function set operators(a:Vector.</*IOperator*/Object>):void {
 			_vis.operators.list = a;
 			_vis.update();
 		}
 		
 		/** The interactive controls used by this visualization. This
-		 *  should be an array of IControl instances. */
-		public function set controls(a:Array):void {
+		 *  should be an object vector of IControl instances. */
+		public function set controls(a:Vector.</*IControl*/Object>):void {
 			_vis.controls.list = a;
 			_vis.update();
 		}
 		
 		/** Sets the data visualized by this instance. The input value can be
-		 *  an array of data objects, a Data instance, or a DataSet instance.
+		 *  an array/object vector of data objects, a Data instance, or a DataSet instance.
 		 *  Any existing data will be removed and new NodeSprite instances will
 		 *  be created for each object in the input arrary. */
 		public function set dataSet(d:*):void {
@@ -44,6 +44,8 @@ package flare.flex
 				dd = Data(d);
 			} else if (d is Array) {
 				dd = Data.fromArray(d as Array);
+			} else if (d is Vector.<Object>) { 
+				dd = Data.fromVector(d as Vector.<Object>);
 			} else if (d is DataSet) {
 				dd = Data.fromDataSet(d as DataSet);
 			} else {

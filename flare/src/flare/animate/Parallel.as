@@ -1,6 +1,6 @@
 package flare.animate
 {
-	import flare.util.Arrays;
+	import flare.util.Vectors;
 	
 	/**
 	 * Transition that runs multiple transitions simultaneously (in parallel).
@@ -14,7 +14,7 @@ package flare.animate
 		// -- Properties ------------------------------------------------------
 		
 		/** Array of parallel transitions */
-		protected var _trans:/*Transition*/Array = [];
+		protected var _trans:Vector.</*Transition*/Object> = new Vector.<Object>();
 		/** @private */
 		protected var _equidur:Boolean;
 		/** @private */
@@ -75,7 +75,7 @@ package flare.animate
 		 */
 		public function remove(t:Transition):Boolean {
 			if (running) throw new Error("Transition is running!");
-			var rem:Boolean = Arrays.remove(_trans, t) >= 0;
+			var rem:Boolean = Vectors.remove(_trans, t) >= 0;
 			if (rem) _dirty = true;
 			return rem;
 		}

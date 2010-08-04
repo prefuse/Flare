@@ -1,8 +1,8 @@
 package flare.util
 {
+	import __AS3__.vec.Vector;
+	
 	import flash.utils.Dictionary;
-	import flare.util.Arrays;
-	import flare.util.Property;
 	
 	/**
 	 * Utility class for computing statistics for a collection of values.
@@ -21,7 +21,7 @@ package flare.util
 		
 		private var _num:Number = 0;
 		private var _distinct:Number = 0;
-		private var _elm:Array = null;
+		private var _elm:Vector.<Object> = null;
 		
 		private var _minObject:Object = null;
 		private var _maxObject:Object = null;
@@ -34,11 +34,11 @@ package flare.util
 		/** The data type of the collection, one of NUMBER, DATE, or OBJECT. */
 		public function get dataType():int { return _type; }
 		/** A sorted array of all the values. */
-		public function get values():Array { return _elm; }
+		public function get values():Vector.<Object> { return _elm; }
 		/** A sorted array of all unique values in the collection. */
-		public function get distinctValues():Array {
+		public function get distinctValues():Vector.<Object> {
 			// get array with only unique items
-			var dists:Array = [];
+			var dists:Vector.<Object> = new Vector.<Object>();
 			if (_elm==null || _elm.length == 0) return dists;
 			dists.push(_elm[0]);
 			for (var i:int=1, j:int=0; i<_num; ++i) {
@@ -97,22 +97,22 @@ package flare.util
 		 *  If true, the array will be copied before being sorted. The default
 		 *  behavior is to make a copy.
 		 */
-		public function Stats(data:Array, field:String=null,
+		public function Stats(data:Vector.<Object>, field:String=null,
 							  comparator:Function=null, copy:Boolean=true)
 		{
 			_comp = comparator;
 			init(data, field, copy);
 		}
 		
-		private function init(data:Array, field:String, copy:Boolean):void
+		private function init(data:Vector.<Object>, field:String, copy:Boolean):void
 		{
 			// INVARIANT: properties must be set to default values
 			// TODO: how to handle null values?
 						
 			// collect all values into element array
 			_num = data.length; if (_num==0) return;
-			_elm = (field==null ? (copy ? Arrays.copy(data) : data)
-								: new Array(_num));
+			_elm = (field==null ? (copy ? Vectors.copy(data) : data)
+								: new Vector.<Object>(_num));
 			if (field != null) {
 				var p:Property = Property.$(field);
 				for (var i:uint=0; i<_num; ++i) {
@@ -135,7 +135,7 @@ package flare.util
 			
 			// sort data values
 			var opt:int = (_type==OBJECT ? 0 : Array.NUMERIC);
-			if (_comp==null) _elm.sort(opt); else _elm.sort(_comp, opt);
+			if (_comp==null) _elm.sort(opt); else _elm.sort(_comp);
 			
 			// count unique values
 			_distinct = 1; var j:uint = 0;

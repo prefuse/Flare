@@ -33,10 +33,13 @@ package flare.query
 		 * @param max sub-expression for the maximum value of the range
 		 * @param val sub-expression for the value to test for range inclusion
 		 */
-		public function Range(min:*, max:*, val:*)
+		public function Range(min:*=null, max:*=null, val:*=null)
 		{
-			addChild(new Comparison(Comparison.LTEQ, min, val));
-			addChild(new Comparison(Comparison.LTEQ, val, max));
+			addChild(new Comparison(Comparison.LTEQ));
+			addChild(new Comparison(Comparison.LTEQ));
+			if(min)this.min = min;
+			if(max)this.max = max;
+			if(val)this.val = val;
 		}
 		
 		/**

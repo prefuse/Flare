@@ -1,10 +1,10 @@
 package flare.vis.controls
 {
-	import flare.util.Arrays;
+	import flare.util.Vectors;
 	import flare.vis.Visualization;
 	
-	import flash.utils.flash_proxy;
 	import flash.utils.Proxy;
+	import flash.utils.flash_proxy;
 	
 	import mx.core.IMXMLObject;
 	
@@ -20,7 +20,7 @@ package flare.vis.controls
 	public class ControlList extends Proxy implements IMXMLObject
 	{
 		protected var _vis:Visualization;
-		protected var _list:/*IControl*/Array = [];
+		protected var _list:Vector.</*IControl*/Object> = new Vector.<Object>();
 		
 		/** The visualization manipulated by these controls. */
 		public function get visualization():Visualization { return _vis; }
@@ -29,8 +29,8 @@ package flare.vis.controls
 			for each (var ic:IControl in _list) { ic.attach(v);	}
 		}
 		
-		/** An array of the controls contained in the control list. */
-		public function set list(ctrls:Array):void {
+		/** An object vector of the controls contained in the control list. */
+		public function set list(ctrls:Vector.<Object>):void {
 			// first remove all current operators
 			while (_list.length > 0) {
 				removeControlAt(_list.length-1);
@@ -57,7 +57,7 @@ package flare.vis.controls
 		}
 		
 		/**
-		 * Proxy method for retrieving controls from the internal array.
+		 * Proxy method for retrieving controls from the internal object vector.
 		 */
 		flash_proxy override function getProperty(name:*):*
 		{
@@ -65,7 +65,7 @@ package flare.vis.controls
     	}
 
 		/**
-		 * Proxy method for setting controls in the internal array.
+		 * Proxy method for setting controls in the internal object vector.
 		 */
     	flash_proxy override function setProperty(name:*, value:*):void
     	{
@@ -86,7 +86,7 @@ package flare.vis.controls
 		 */
 		public function getControlAt(i:uint):IControl
 		{
-			return _list[i];
+			return _list[i] as IControl;
 		}
 		
 		/**
@@ -96,7 +96,7 @@ package flare.vis.controls
 		 */
 		public function removeControlAt(i:uint):IControl
 		{
-			var ic:IControl = Arrays.removeAt(_list, i) as IControl;
+			var ic:IControl = Vectors.removeAt(_list, i) as IControl;
 			if (ic) ic.detach();
 			return ic;
 		}
@@ -109,7 +109,7 @@ package flare.vis.controls
 		 */
 		public function setControlAt(i:uint, ic:IControl):IControl
 		{
-			var old:IControl = _list[i];
+			var old:IControl = _list[i] as IControl;
 			_list[i] = ic;
 			old.detach();
 			ic.attach(_vis);
@@ -144,7 +144,7 @@ package flare.vis.controls
 		 */
 		public function remove(ic:IControl):IControl
 		{
-			var idx:int = Arrays.remove(_list, ic);
+			var idx:int = Vectors.remove(_list, ic);
 			if (idx >= 0) ic.detach();
 			return ic;
 		}
@@ -155,7 +155,7 @@ package flare.vis.controls
 		public function clear():void
 		{
 			for each (var ic:IControl in _list) { ic.detach(); }
-			Arrays.clear(_list);
+			Vectors.clear(_list);
 		}
 		
 		// -- MXML ------------------------------------------------------------

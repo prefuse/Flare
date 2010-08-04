@@ -13,7 +13,7 @@ package flare.scale
 	 */
 	public class QuantileScale extends Scale
 	{
-		private var _quantiles:Array;
+		private var _quantiles:Vector.<Object>;
 		
 		/** @inheritDoc */
 		public override function get flush():Boolean { return true; }
@@ -30,12 +30,12 @@ package flare.scale
 		/**
 		 * Creates a new QuantileScale.
 		 * @param n the number of quantiles desired
-		 * @param values the data values to organized into quantiles
-		 * @param sorted flag indicating if the input values array is
+		 * @param values the data values to be organized into quantiles
+		 * @param sorted flag indicating if the input values vector is
 		 *  already pre-sorted
 		 * @param labelFormat the formatting pattern for value labels
 		 */
-		public function QuantileScale(n:int, values:Array,
+		public function QuantileScale(n:int, values:Vector.<Object>,
 			sorted:Boolean=false, labelFormat:String=Strings.DEFAULT_NUMBER)
 		{
 			_quantiles = (n<0 ? values : Maths.quantile(n, values, !sorted));
@@ -66,9 +66,9 @@ package flare.scale
 		}
 		
 		/** @inheritDoc */
-		public override function values(num:int=-1):/*Number*/Array
+		public override function values(num:int=-1):/*Number*/Vector.<Object>
 		{
-			var a:Array = new Array();
+			var a:Vector.<Object> = new Vector.<Object>();
 			var stride:int = num<0 ? 1 : 
 				int(Math.max(1, Math.floor(_quantiles.length/num)));
 			for (var i:uint=0; i<_quantiles.length; i += stride) {

@@ -13,7 +13,7 @@ package flare.util.palette
 		 * Creates a new, empty ShapePalette.
 		 */
 		public function ShapePalette() {
-			_values = new Array();
+			_values = new Vector.<Object>();
 		}	
 		
 		/**
@@ -34,7 +34,7 @@ package flare.util.palette
 		 */
 		public function getShape(idx:uint):String
 		{
-			return _values[idx % _values.length];
+			return _values[idx % _values.length] as String;
 		}
 		
 		/**

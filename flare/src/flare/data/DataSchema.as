@@ -1,6 +1,6 @@
 package flare.data
 {
-	import flare.util.Arrays;
+	import flare.util.Vectors;
 	
 	/**
 	 * A data schema represents a set of data variables and their associated 
@@ -13,12 +13,12 @@ package flare.data
 		public var dataRoot:String = null;
 		public var hasHeader:Boolean = false;
 		
-		private var _fields:/*DataField*/Array = [];
+		private var _fields:Vector.</*DataField*/Object> = new Vector.<Object>();
 		private var _nameLookup:/*String->DataField*/Object = {};
 		private var _idLookup:/*String->DataField*/Object = {};
 		
-		/** An array containing the data fields in this schema. */
-		public function get fields():Array { return Arrays.copy(_fields); }
+		/** An objct vector containing the data fields in this schema. */
+		public function get fields():Vector.<Object> { return Vectors.copy(_fields); }
 		/** The number of data fields in this schema. */
 		public function get numFields():int { return _fields.length; }
 		
@@ -74,7 +74,7 @@ package flare.data
 		 */
 		public function getFieldAt(idx:int):DataField
 		{
-			return _fields[idx];
+			return _fields[idx] as DataField;
 		}
 		
 	} // end of class DataSchema

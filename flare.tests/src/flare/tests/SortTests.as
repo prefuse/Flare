@@ -2,6 +2,7 @@ package flare.tests
 {
 	import flare.util.Displays;
 	import flare.util.Sort;
+	import flare.util.Vectors;
 	
 	import flash.display.Shape;
 	import flash.display.Sprite;
@@ -12,6 +13,7 @@ package flare.tests
 	{
 		public function SortTests() {
 			addTest("testSort");
+			addTest("testSortVector");
 			addTest("testSortDisplayChildren");
 		}
 		
@@ -57,6 +59,48 @@ package flare.tests
 				{
 				 items:[a, b, c, d, e, f, g, h],
 				 check:[g, h, e, f, c, d, a, b],
+				 sort: Sort.$(["-z", "-y", "x"])
+				},
+			];
+			
+			for each (var test:Object in tests) {
+				test.items.sort(test.sort);
+				for (var i:int=0; i<test.items.length; ++i)
+					assertEquals(test.check[i], test.items[i]);
+			}
+		}
+
+		public function testSortVector():void
+		{
+			var tests:Array = [
+				{
+				 items:Vectors.copyFromArray([a, b, c, d, e, f, g, h]),
+				 check:Vectors.copyFromArray([h, g, f, e, d, c, b, a]),
+				 sort: Sort.$("-x")
+				},
+				{
+				 items:Vectors.copyFromArray([a, b, c, d, e, f, g, h]),
+				 check:Vectors.copyFromArray([g, h, e, f, c, d, a, b]),
+				 sort: Sort.$("-y")
+				},
+				{
+				 items:Vectors.copyFromArray([a, b, c, d, e, f, g, h]),
+				 check:Vectors.copyFromArray([e, f, g, h, a, b, c, d]),
+				 sort: Sort.$("-z", "+x")
+				},
+				{
+				 items:Vectors.copyFromArray([a, b, c, d, e, f, g, h]),
+				 check:Vectors.copyFromArray([b, a, d, c, f, e, h, g]),
+				 sort: Sort.$("y", "-x")
+				},
+				{
+				 items:Vectors.copyFromArray([a, b, c, d, e, f, g, h]),
+				 check:Vectors.copyFromArray([a, b, c, d, e, f, g, h]),
+				 sort: Sort.$("z", "y", "x")
+				},
+				{
+				 items:Vectors.copyFromArray([a, b, c, d, e, f, g, h]),
+				 check:Vectors.copyFromArray([g, h, e, f, c, d, a, b]),
 				 sort: Sort.$(["-z", "-y", "x"])
 				},
 			];

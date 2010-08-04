@@ -7,6 +7,7 @@ package flare.vis.legend
 	import flare.scale.ScaleType;
 	import flare.util.Displays;
 	import flare.util.Orientation;
+	import flare.util.Vectors;
 	import flare.util.palette.ColorPalette;
 	import flare.util.palette.Palette;
 	import flare.util.palette.ShapePalette;
@@ -37,8 +38,8 @@ package flare.vis.legend
 	 * 
 	 * <p>Legends can also be created from a collection of independent
 	 * values using the static <code>fromValues</code> constructor. This
-	 * method takes an array of legend item descriptions and uses them to
-	 * generate a legend. For example, consider this code:</p>
+	 * method takes an Object Vector or Array of legend item descriptions
+	 * and uses them to generate a legend. For example, consider this code:</p>
 	 * 
 	 * <pre>
 	 * var legend:Legend = Legend.fromValues("Legend Title", [
@@ -253,7 +254,7 @@ package flare.vis.legend
 				
 				var numVals:int = ScaleType.isQuantitative(type) ? 5 : -1;
 				var maxSize:Number = Number.MIN_VALUE;
-				var vals:Array = _scale.values(numVals);
+				var vals:Vector.<Object> = _scale.values(numVals);
 				for (var i:uint=0; i<vals.length; ++i) {
 					// determine legend item properties
 					var f:Number = _scale.interpolate(vals[i]);
@@ -280,8 +281,8 @@ package flare.vis.legend
 		/**
 		 * Populates the contents of this legend from a list of value objects.
 		 * This method will create a legend with discrete entries determined by
-		 * the contents of the input <code>values</code> array. This should be
-		 * an array of objects containing the following properties:
+		 * the contents of the input <code>values</code> array or vector. This should be
+		 * an array or vector of objects containing the following properties:
 		 * <ul>
 		 *  <li><code>value</code>: The data value the legend item represents.
 		 *    This value is not required.</li>
@@ -297,10 +298,25 @@ package flare.vis.legend
 		 * </ul>
 		 * When this method is called, any previous values in the legend will
 		 * be removed.
-		 * @param values an array of value to include in the legend.
+		 * @param valuesv an array or vector of value to include in the legend.
 		 */
-		public function buildFromValues(values:Array):void
+		public function buildFromValues(valuesv:*):void
 		{
+			var values:Vector.<Object>;
+			if(valuesv is Array)
+			{
+				values = Vectors.copyFromArray(valuesv);
+			}
+			else if(valuesv is Vector.<Object>)
+			{
+				values = valuesv;
+			}
+			else
+			{
+				throw new Error("In flare.vis.legend, buildFromValues(), the parameter" + 
+						"was not a valid Array or Vector.<Object> instance.");
+			}
+			
 			// first, remove all items
 			while (_items.numChildren > 0) {
 				_items.removeChildAt(_items.numChildren-1);
@@ -550,16 +566,16 @@ package flare.vis.legend
 		}
 		
 		/**
-		 * Generates a legend from an array of legend item values. This method
+		 * Generates a legend from an array or object vector of legend item values. This method
 		 * simply instantiates a new <code>Legend</code> instance with the
 		 * given title and then invokes the <code>buildFromValues</code> method
-		 * with the given value array.
+		 * with the given value array or object vector.
   		 * @param title the legend title text, or null for no title.
-  		 * @param values an array of values for the legend items. See the
+  		 * @param values an array or object vector of values for the legend items. See the
 		 *  documentation for the <code>buildFromValues</code> method for more.
 		 * @return the generated legend
 		 */
-		public static function fromValues(title:String, values:Array):Legend
+		public static function fromValues(title:String, values:*):Legend
 		{
 			var legend:Legend = new Legend(title);
 			legend.buildFromValues(values);

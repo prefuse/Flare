@@ -1,6 +1,6 @@
 package flare.animate
-{
-	import flare.util.Arrays;
+{	
+	import flare.util.Vectors;
 	import flare.util.Maths;
 	
 	/**
@@ -19,7 +19,7 @@ package flare.animate
 	public class FunctionSequence extends Sequence
 	{
 		/** @private */
-		protected var _funcs:/*Function*/Array = [];
+		protected var _funcs:Vector.<Object> = new Vector.<Object>();
 		/** @private */
 		protected var _offsetStart:Boolean = true;
 		
@@ -68,7 +68,7 @@ package flare.animate
 		public function removeFunction(f:Function):Boolean
 		{
 			if (running) throw new Error("Transition is running!");
-			var idx:int = Arrays.remove(_funcs, f);
+			var idx:int = Vectors.remove(_funcs, f);
 			var rem:Boolean = idx > 0;
 			if (rem) {
 				_trans.splice(idx, 1);
@@ -94,7 +94,7 @@ package flare.animate
 		public override function remove(t:Transition):Boolean
 		{
 			if (running) throw new Error("Transition is running!");
-			var idx:int = Arrays.remove(_trans, t);
+			var idx:int = Vectors.remove(_trans, t);
 			var rem:Boolean = idx > 0;
 			if (rem) {
 				_funcs.splice(idx, 1);
@@ -106,7 +106,7 @@ package flare.animate
 		/** @inheritDoc */
 		public override function dispose():void {
 			super.dispose();
-			Arrays.clear(_funcs);
+			_funcs.length = 0;
 		}
 	
 		/**
@@ -122,7 +122,7 @@ package flare.animate
 		}
 		
 		private function invoke(idx:int, t:Transition):void {
-			var f:Function = _funcs[idx];
+			var f:Function = _funcs[idx] as Function;
 			if (f != null) {
 				if (_offsetStart) {
 					var d:Number = new Date().time;
@@ -151,7 +151,7 @@ package flare.animate
 		protected override function start():void
 		{
 			if (_trans.length > 0) {
-				var t:Transition = _trans[_idx];
+				var t:Transition = _trans[_idx] as Transition;
 				invoke(_idx, t); t.doSetup(); t.doStart(false);
 			}
 		}
@@ -166,11 +166,11 @@ package flare.animate
 		{
 			// find the right sub-transition
 			var t:Transition, f0:Number, f1:Number, i:int, inc:int;
-			f0 = _fracs[_idx]; f1 = _fracs[_idx+1]; inc = (ef<=f0 ? -1 : 1);
+			f0 = _fracs[_idx] as Number; f1 = _fracs[_idx+1] as Number; inc = (ef<=f0 ? -1 : 1);
 			
 			for (i = _idx; i>=0 && i<_trans.length; i+=inc) {
 				// get transition and progress fractions
-				t = _trans[i]; f0 = _fracs[i]; f1 = _fracs[i+1];
+				t = _trans[i] as Transition; f0 = _fracs[i] as Number; f1 = _fracs[i+1] as Number;
 				// hand-off to new transition
 				if (i != _idx) {
 					invoke(i, t); t.doSetup(); t.doStart(false);
