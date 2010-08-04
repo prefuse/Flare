@@ -1,0 +1,64 @@
+<?xml version="1.0" ?>
+<componentPackage>
+  <component id="CommunityStructure" class="flare.analytics.cluster.CommunityStructure" />
+  <component id="BetweennessCentrality" class="flare.analytics.graph.BetweennessCentrality" />
+  <component id="LinkDistance" class="flare.analytics.graph.LinkDistance" />
+  <component id="MaxFlowMinCut" class="flare.analytics.graph.MaxFlowMinCut" />
+  <component id="ShortestPaths" class="flare.analytics.graph.ShortestPaths" />
+  <component id="SpanningTree" class="flare.analytics.graph.SpanningTree" />
+  <component id="AspectRatioBanker" class="flare.analytics.optimization.AspectRatioBanker" />
+
+  <component id="OperatorList" class="flare.vis.operator.OperatorList" />
+  <component id="OperatorSwitch" class="flare.vis.operator.OperatorSwitch" />
+
+  <component id="BifocalDistortion" class="flare.vis.operator.distortion.BifocalDistortion" />
+  <component id="FisheyeDistortion" class="flare.vis.operator.distortion.FisheyeDistortion" />
+  
+  <component id="ColorEncoder" class="flare.vis.operator.encoder.ColorEncoder" />
+  <component id="PropertyEncoder" class="flare.vis.operator.encoder.PropertyEncoder" />
+  <component id="ShapeEncoder" class="flare.vis.operator.encoder.ShapeEncoder" />
+  <component id="SizeEncoder" class="flare.vis.operator.encoder.SizeEncoder" />
+  
+  <component id="FisheyeTreeFilter" class="flare.vis.operator.filter.FisheyeTreeFilter" />
+  <component id="GraphDistanceFilter" class="flare.vis.operator.filter.GraphDistanceFilter" />
+  <component id="VisibilityFilter" class="flare.vis.operator.filter.VisibilityFilter" />
+  
+  <component id="AxisLayout" class="flare.vis.operator.layout.AxisLayout" />
+  <component id="BundledEdgeRouter" class="flare.vis.operator.layout.BundledEdgeRouter" />
+  <component id="CircleLayout" class="flare.vis.operator.layout.CircleLayout" />
+  <component id="CirclePackingLayout" class="flare.vis.operator.layout.CirclePackingLayout" />
+  <component id="DendrogramLayout" class="flare.vis.operator.layout.DendrogramLayout" />
+  <component id="ForceDirectedLayout" class="flare.vis.operator.layout.ForceDirectedLayout" />
+  <component id="IcicleTreeLayout" class="flare.vis.operator.layout.IcicleTreeLayout" />
+  <component id="IndentedTreeLayout" class="flare.vis.operator.layout.IndentedTreeLayout" />
+  <component id="NodeLinkTreeLayout" class="flare.vis.operator.layout.NodeLinkTreeLayout" />
+  <component id="PieLayout" class="flare.vis.operator.layout.PieLayout" />
+  <component id="RadialTreeLayout" class="flare.vis.operator.layout.RadialTreeLayout" />
+  <component id="RandomLayout" class="flare.vis.operator.layout.RandomLayout" />
+  <component id="StackedAreaLayout" class="flare.vis.operator.layout.StackedAreaLayout" />
+  <component id="TreeMapLayout" class="flare.vis.operator.layout.TreeMapLayout" />
+
+  <component id="ColorPalette" class="flare.vis.palette.ColorPalette" />
+  <component id="ShapePalette" class="flare.vis.palette.ShapePalette" />
+  <component id="SizePalette" class="flare.vis.palette.SizePalette" />
+
+  <component id="ScaleBinding" class="flare.vis.data.ScaleBinding" />
+  <component id="LinearScale" class="flare.scale.LinearScale" />
+  <component id="LogScale" class="flare.scale.LogScale" />
+  <component id="OrdinalScale" class="flare.scale.OrdinalScale" />
+  <component id="QuantileScale" class="flare.scale.QuantileScale" />
+  <component id="RootScale" class="flare.scale.RootScale" />
+  <component id="TimeScale" class="flare.scale.TimeScale" />
+
+  <component id="ControlList" class="flare.vis.controls.ControlList" />  
+  <component id="AnchorControl" class="flare.vis.controls.AnchorControl" />
+  <component id="ClickControl" class="flare.vis.controls.ClickControl" />
+  <component id="DragControl" class="flare.vis.controls.DragControl" />
+  <component id="ExpandControl" class="flare.vis.controls.ExpandControl" />
+  <component id="HoverControl" class="flare.vis.controls.HoverControl" />
+  <component id="PanZoomControl" class="flare.vis.controls.PanZoomControl" />
+  <component id="SelectionControl" class="flare.vis.controls.SelectionControl" />
+  <component id="TooltipControl" class="flare.vis.controls.TooltipControl" />
+  
+  <component id="FlareVis" class="flare.flex.FlareVis" />
+</componentPackage>
