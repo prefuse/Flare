@@ -1,6 +1,6 @@
 package flare.vis.operator.layout
 {
-	import flare.util.Vectors;
+	import flare.util.Arrays;
 	import flare.vis.data.NodeSprite;
 	
 	import flash.geom.Rectangle;
@@ -239,12 +239,11 @@ package flare.vis.operator.layout
 	        return angle;
 	    }
 
-		private function sortedChildren(n:NodeSprite):Vector.<NodeSprite>
+		private function sortedChildren(n:NodeSprite):Array
 		{
 			var cc:int = n.childDegree;
-			if (cc == 0) return new Vector.<NodeSprite>();
-			var angleIndices:Vector.<Number> = new Vector.<Number>(cc);
-			var angles:Vector.<NodeSprite> = new Vector.<NodeSprite>(cc);
+			if (cc == 0) return Arrays.EMPTY;
+			var angles:Array = new Array(cc);
 	        
 	        if (_sortAngles) {
 	        	// update base angle for node ordering			
@@ -255,13 +254,13 @@ package flare.vis.operator.layout
 	        	// collect the angles
 	        	var c:NodeSprite = n.firstChildNode;
 		        for (var i:uint=0; i<cc; ++i, c=c.nextNode) {
-		        	angleIndices[i] = normalize(-base + Math.atan2(c.y-n.y,n.x-c.x));
+		        	angles[i] = normalize(-base + Math.atan2(c.y-n.y,n.x-c.x));
 		        }
 		        // get array of indices, sorted by angle
-		        angleIndices = angleIndices.sort(Array.NUMERIC | Array.RETURNINDEXEDARRAY);
+		        angles = angles.sort(Array.NUMERIC | Array.RETURNINDEXEDARRAY);
 		        // switch in the actual nodes and return
 		        for (i=0; i<cc; ++i) {
-		        	angles[i] = n.getChildNode(angleIndices[i]);
+		        	angles[i] = n.getChildNode(angles[i]);
 		        }
 		    } else {
 		    	for (i=0; i<cc; ++i) {

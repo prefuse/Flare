@@ -1,7 +1,5 @@
 package flare.animate
 {
-	import __AS3__.vec.Vector;
-	
 	import flash.display.Shape;
 	import flash.events.Event;
 	import flash.events.TimerEvent;
@@ -27,7 +25,7 @@ package flare.animate
 		/** The default Scheduler instance. */
 		public static function get instance():Scheduler { return _instance; }
 		
-		private var _scheduled:Vector.<Object> = new Vector.<Object>(0); // list of all currently scheduled items
+		private var _scheduled:Array; // list of all currently scheduled items
 		private var _ids:Object;      // map of all named items
 		private var _timer:Timer;     // timer for interval-based scheduling
 		private var _obj:Shape;       // shape for getting ENTER_FRAME events
@@ -53,7 +51,7 @@ package flare.animate
 		 */
 		public function Scheduler(lock:Class) {
 			if (lock == _Lock) {
-				_scheduled.length = 0;
+				_scheduled = [];
 				_ids = {};
 				_obj = new Shape();
 				_timer = new Timer(0);

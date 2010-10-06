@@ -1,10 +1,8 @@
 package flare.analytics.cluster
 {
-	import __AS3__.vec.Vector;
-
+	import flare.util.Arrays;
 	import flare.util.Property;
 	import flare.util.Sort;
-	import flare.util.Vectors;
 	import flare.vis.data.Data;
 	import flare.vis.data.DataList;
 	import flare.vis.data.EdgeSprite;
@@ -41,7 +39,7 @@ package flare.analytics.cluster
 		protected var _com:Property = Property.$("props.cluster");
 		
 		/** @private */
-		protected var _qvals:Vector.<Object>;
+		protected var _qvals:Array;
 		/** @private */
 		protected var _merges:MergeEdge;
 		/** @private */
@@ -71,7 +69,7 @@ package flare.analytics.cluster
 		public function set sequenceField(f:String):void { _idx = Property.$(f); }
 		
 		/** Computed criterion values for each merge in the cluster tree. */
-		public function get criteria():Vector.<Object> { return _qvals; }
+		public function get criteria():Array { return _qvals; }
 		
 		/** The cluster tree of detected community structures. The leaf nodes
 		 *  correspond to each of the nodes in the input graph, and include the
@@ -104,7 +102,7 @@ package flare.analytics.cluster
 		 */
 		public function labelNodes(merge:int=-1):void
 		{
-			if (merge < 0) merge = Vectors.maxIndex(_qvals);
+			if (merge < 0) merge = Arrays.maxIndex(_qvals);
 			var com:int, idx:int;
 			var helper:Function = function(n:NodeSprite):void
 			{
@@ -174,8 +172,8 @@ package flare.analytics.cluster
 				delete map[j];
 			}
 			
-			// build and sort vector of cluster roots
-			var roots:Vector.<Object> = new Vector.<Object>();
+			// build and sort array of cluster roots
+			var roots:Array = [];
 			for each (var n:NodeSprite in map) roots.push(n);
 			roots.sort(Sort.$("-props.size"));
 			

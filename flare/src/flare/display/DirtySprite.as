@@ -1,7 +1,5 @@
 package flare.display
 {
-	import __AS3__.vec.Vector;
-	
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.display.Stage;
@@ -37,7 +35,7 @@ package flare.display
 	{
 		private static var __stage:Stage;
 		private static var __installed:Boolean = false;
-		private static var __dirtyList:Vector.<Object> = new Vector.<Object>();
+		private static var __dirtyList:Array = [];	
 		
 		/**
 		 * Installs the frame render listener on the stage.
@@ -45,7 +43,8 @@ package flare.display
 		private static function install(stage:Stage):void
 		{
 			__stage = stage;
-			__stage.addEventListener(Event.RENDER, renderDirty);
+//			__stage.addEventListener(Event.RENDER, renderDirty);
+			__stage.addEventListener(Event.ENTER_FRAME, renderDirty);
 			__installed = true;
 		}
 		
@@ -64,15 +63,17 @@ package flare.display
 				ds._dirty = CLEAN;
 				if (db) ds.render();
 			}
-
+/*
 			// We need to remove and then re-add the listeners
 			// to work around Flash Player bugs (#139381?). Ugh.
 			// TODO: it seems this is not a complete solution, as in
 			// rare cases RENDER events are still omitted.
-			if (__stage != null) {
+
+			if (__stage != null && __installed) {
 				__stage.removeEventListener(Event.RENDER, renderDirty);
 				__installed = false;
 			}
+*/
 		}
 		
 		// --------------------------------------------------------------------
@@ -103,7 +104,7 @@ package flare.display
 		{
 			if (_dirty == DIRTY) {
 				if (!__installed) install(stage);	
-				stage.invalidate();
+//				stage.invalidate();
 			}
 		}
 
@@ -120,7 +121,7 @@ package flare.display
 			__dirtyList.push(this);
 			if (stage) {	
 				if (!__installed) install(stage);
-				stage.invalidate();
+//				stage.invalidate();
 			}
 			_dirty = DIRTY;
 		}
@@ -237,10 +238,8 @@ package flare.display
 			return _radius;
 		}
 		public function set radius(r:Number):void {
-			var a:Number = angle;
-			super.x =  r * Math.cos(a) + _origin.x;
-			super.y = -r * Math.sin(a) + _origin.y;
 			_radius = r;
+			applyPolarCoordinates();
 		}
 		
 		/** The angle value of this sprite's position in polar co-ordinates.
@@ -253,19 +252,24 @@ package flare.display
 			return _angle;
 		}
 		public function set angle(a:Number):void {
-			var r:Number = radius;
-			super.x =  r * Math.cos(a) + _origin.x;
-			super.y = -r * Math.sin(a) + _origin.y;
 			_angle = a;
+			applyPolarCoordinates();
 		}
 		
 		/** The origin point for polar coordinates. */
 		public function get origin():Point { return _origin; }
 		public function set origin(p:Point):void {
-			if (p.x != _origin.x || p.y != _origin.y) {
-				_radius = NaN; _angle = NaN;
+			if (_origin.x != p.x || _origin.y != p.y) {
+				_origin = p.clone();
+				applyPolarCoordinates();
 			}
-			_origin = p;
+		}
+		
+		/** Convert the current polar coordinates (origin, radius and angle) 
+		 * to cartesian coordinates. */
+		protected function applyPolarCoordinates():void {
+			super.x =  _radius * Math.cos(_angle) + _origin.x;
+			super.y = -_radius * Math.sin(_angle) + _origin.y;
 		}
 		
 	} // end of class DirtySprite

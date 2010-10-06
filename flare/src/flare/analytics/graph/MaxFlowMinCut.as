@@ -1,7 +1,5 @@
 package flare.analytics.graph
 {
-	import __AS3__.vec.Vector;
-	
 	import flare.animate.Transitioner;
 	import flare.util.Property;
 	import flare.vis.data.Data;
@@ -152,9 +150,7 @@ package flare.analytics.graph
         {
         	_data.nodes.setProperty(_c.name, Number.MAX_VALUE);
         	var visited:Dictionary = new Dictionary();
-       		var u:NodeSprite, b:Boolean;
-			var queue:Vector.<NodeSprite> = new Vector.<NodeSprite>(1);
-			queue.push(_s);   
+        	var queue:Array = [_s], u:NodeSprite, b:Boolean;
         	
         	while (queue.length > 0) {
         		visited[u = queue.shift()] = true;
@@ -185,9 +181,7 @@ package flare.analytics.graph
         {
         	_data.nodes.setProperty(_k.name, 1);
         	var visited:Dictionary = new Dictionary();
-        	var u:NodeSprite, b:Boolean;
-			var queue:Vector.<NodeSprite> = new Vector.<NodeSprite>(1);
-			queue.push(_s);        	
+        	var queue:Array = [_s], u:NodeSprite, b:Boolean;
         	
         	while (queue.length > 0) {
         		visited[u = queue.shift()] = true;

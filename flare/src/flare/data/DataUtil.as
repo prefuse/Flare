@@ -1,7 +1,5 @@
 package flare.data
-{
-	import __AS3__.vec.Vector;
-		
+{	
 	/**
 	 * Utility class for parsing and representing data field values.
 	 */
@@ -62,18 +60,18 @@ package flare.data
 		
 		/**
 		 * Infers the data schema by checking values of the input data.
-		 * @param tuples an object vector of data tuples
+		 * @param tuples an array of data tuples
 		 * @return the inferred schema
 		 */
-		public static function inferSchema(tuples:Vector.<Object>):DataSchema
+		public static function inferSchema(tuples:Array):DataSchema
 		{
 			if (tuples==null || tuples.length==0) return null;
 			
-			var header:Vector.<String> = new Vector.<String>();
+			var header:Array = [];
 			for (var name:String in tuples[0]) {
 				header.push(name);
 			}
-			var types:Vector.<int> = new Vector.<int>(header.length);
+			var types:Array = new Array(header.length);
 			
 			// initialize data types
 			for (var col:int=0; col<header.length; ++col) {

@@ -2,7 +2,6 @@ package flare.vis.operator.layout
 {
 	import flare.util.Arrays;
 	import flare.util.Orientation;
-	import flare.util.Vectors;
 	import flare.vis.data.NodeSprite;
 	
 	import flash.geom.Point;
@@ -34,7 +33,7 @@ package flare.vis.operator.layout
 		private var _bspace:Number = 5;  // the spacing between sibling nodes
     	private var _tspace:Number = 25; // the spacing between subtrees
     	private var _dspace:Number = 50; // the spacing between depth levels
-    	private var _depths:Vector.<Object> = new Vector.<Object>(20); // stores depth co-ords
+    	private var _depths:Array = new Array(20); // stores depth co-ords
     	private var _maxDepth:int = 0;
     	private var _ax:Number, _ay:Number; // for holding anchor co-ordinates
 		
@@ -77,7 +76,7 @@ package flare.vis.operator.layout
 		/** @inheritDoc */
 		protected override function layout():void
 		{
-        	Vectors.fill(_depths, 0);
+        	Arrays.fill(_depths, 0);
         	_maxDepth = 0;
         	
         	var root:NodeSprite = layoutRoot as NodeSprite;
@@ -268,7 +267,7 @@ package flare.vis.operator.layout
     		var np:Params = params(n);
     		var o:Object = _t.$(n);
     		setBreadth(o, p, (visible ? np.prelim : 0) + m);
-    		setDepth(o, p, _depths[depth] as Number);
+    		setDepth(o, p, _depths[depth]);
     		setVisibility(n, o, visible);
     		
     		// recurse
@@ -351,18 +350,18 @@ package flare.vis.operator.layout
 
 			// resize if needed
 			if (depth >= _depths.length) {
-    			_depths = Vectors.copy(_depths, new Vector.<Object>(int(1.5*depth)));
+    			_depths = Arrays.copy(_depths, new Array(int(1.5*depth)));
     			for (var i:int=depth; i<_depths.length; ++i) _depths[i] = 0;
 			} 
 
-        	_depths[depth] = Math.max(_depths[depth] as Number, d);
+        	_depths[depth] = Math.max(_depths[depth], d);
         	_maxDepth = Math.max(_maxDepth, depth);
     	}
     
     	private function determineDepths():void
     	{
         	for (var i:uint=1; i<_maxDepth; ++i)
-            	_depths[i] += (_depths[i-1] as Number) + _dspace;
+            	_depths[i] += _depths[i-1] + _dspace;
     	}
 		
 		// -- Parameter Access ------------------------------------------------

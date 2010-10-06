@@ -9,7 +9,7 @@ package flare.vis.data.render
 	import flash.display.Graphics;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-
+	
 	/**
 	 * Renderer that draws edges as lines. The EdgeRenderer supports straight
 	 * lines, poly lines, and curves as Bezier or cardinal splines. The type
@@ -41,8 +41,9 @@ package flare.vis.data.render
 		public var miterLimit:int = 3;
 		
 		// temporary variables
-		private var _p:Point = new Point(), _q:Point = new Point();
-		private var _pts:Vector.<Object> = new Vector.<Object>(20);
+		private var _p:Point = new Point(); 
+		private var _q:Point = new Point();
+		private var _pts:Array = new Array(20);
 		
 		/** @inheritDoc */
 		public function render(d:DataSprite):void
@@ -53,25 +54,22 @@ package flare.vis.data.render
 			var t:NodeSprite = e.target;
 			var g:Graphics = e.graphics;
 			
-			var ctrls:Vector.<Object> = e.points as Vector.<Object>;
+			var ctrls:Array = e.points as Array;
 			var x1:Number = e.x1, y1:Number = e.y1;
 			var x2:Number = e.x2, y2:Number = e.y2;
-			var xL:Number = ctrls==null ? x1 : (ctrls[ctrls.length-2] as Number);
-			var yL:Number = ctrls==null ? y1 : (ctrls[ctrls.length-1] as Number);
+			var xL:Number = ctrls==null ? x1 : ctrls[ctrls.length-2];
+			var yL:Number = ctrls==null ? y1 : ctrls[ctrls.length-1];
 			var dx:Number, dy:Number, dd:Number;
-
+			
 			// modify end points as needed to accomodate arrow
 			if (e.arrowType != ArrowType.NONE)
 			{
 				// determine arrow head size
 				var ah:Number = e.arrowHeight, aw:Number = e.arrowWidth/2;
-				if (ah < 0 && aw < 0)
-					aw = 1.5 * e.lineWidth;
-				if (ah < 0) {
-					ah = ROOT3 * aw;
-				} else if (aw < 0) {
-					aw = ah / ROOT3;
-				}
+				
+				if (ah < 0 && aw < 0)	aw = 1.5 * e.lineWidth;
+				if (ah < 0) 			ah = ROOT3 * aw;
+				else if (aw < 0) 		aw = ah / ROOT3;
 				
 				// get arrow tip point as intersection of edge with bounding box
 				if (t==null) {
@@ -103,20 +101,19 @@ package flare.vis.data.render
 				x2 = _p.x - dd*dx;
 				y2 = _p.y - dd*dy;
 			}
-
+			
 			// draw the edge
 			g.clear(); // clear it out
 			setLineStyle(e, g); // set the line style
+			
 			if (e.shape == Shapes.BEZIER && ctrls != null && ctrls.length > 1) {
 				if (ctrls.length < 4)
 				{
-					g.moveTo(x1, y1);
-					g.curveTo(ctrls[0] as Number, ctrls[1] as Number, x2, y2);
+					Shapes.drawCurve(g, x1, y1, ctrls[0], ctrls[1], x2, y2);
 				}
 				else
 				{
-					Shapes.drawCubic(g, x1, y1, ctrls[0] as Number, ctrls[1] as Number,
-									 ctrls[2] as Number, ctrls[3] as Number, x2, y2);
+					Shapes.drawCubic(g, x1, y1, ctrls[0], ctrls[1],	ctrls[2], ctrls[3], x2, y2);
 				}
 			}
 			else if (e.shape == Shapes.CARDINAL)
@@ -134,7 +131,7 @@ package flare.vis.data.render
 				g.moveTo(x1, y1);
 				if (ctrls != null) {
 					for (var i:uint=0; i<ctrls.length; i+=2)
-						g.lineTo(ctrls[i] as Number, ctrls[i+1] as Number);
+						g.lineTo(ctrls[i], ctrls[i+1]);
 				}
 				g.lineTo(x2, y2);
 			}
@@ -144,7 +141,7 @@ package flare.vis.data.render
 				// get other arrow points
 				x1 = _p.x - ah*dx + aw*dy; y1 = _p.y - ah*dy - aw*dx;
 				x2 = _p.x - ah*dx - aw*dy; y2 = _p.y - ah*dy + aw*dx;
-								
+				
 				if (e.arrowType == ArrowType.TRIANGLE) {
 					g.lineStyle();
 					g.moveTo(_p.x, _p.y);
@@ -173,6 +170,6 @@ package flare.vis.data.render
 			g.lineStyle(e.lineWidth, e.lineColor, lineAlpha, 
 				pixelHinting, scaleMode, caps, joints, miterLimit);
 		}
-
+		
 	} // end of class EdgeRenderer
 }

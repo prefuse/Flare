@@ -1,16 +1,16 @@
 package flare.util.math
 {
 	/**
-	 * A matrix of numbers implemented using an object vector of values.
+	 * A matrix of numbers implemented using an array of values.
 	 */
 	public class DenseMatrix implements IMatrix
 	{
 		private var _r:int;
 		private var _c:int;
-		private var _v:Vector.<Object>;
+		private var _v:Array;
 		
-		/** The underlying vector of values */
-		public function get values():Vector.<Object> { return _v; }
+		/** The underlying array of values */
+		public function get values():Array { return _v; }
 		/** @inheritDoc */
 		public function get rows():int { return _r; }
 		/** @inheritDoc */
@@ -34,7 +34,7 @@ package flare.util.math
 		public function get sumsq():Number {
 			var sumsq:Number = 0;
 			for (var i:uint=0; i<_v.length; ++i)
-				sumsq += (_v[i] as Number)*(_v[i] as Number);
+				sumsq += _v[i]*_v[i];
 			return sumsq;
 		}
 		
@@ -52,7 +52,7 @@ package flare.util.math
 		/** @inheritDoc */
 		public function clone():IMatrix {
 			var m:DenseMatrix = new DenseMatrix(_r, _c);
-			var v:Vector.<Object> = m.values;
+			var v:Array = m.values;
 			for (var i:uint=0; i<_v.length; ++i) {
 				v[i] = _v[i];
 			}
@@ -68,13 +68,13 @@ package flare.util.math
 		public function init(rows:int, cols:int):void {
 			_r = rows;
 			_c = cols;
-			_v = new Vector.<Object>(_r * _c);
+			_v = new Array(_r * _c);
 			for (var i:uint=0; i<_v.length; ++i) _v[i]=0;
 		}
 		
 		/** @inheritDoc */
 		public function get(i:int, j:int):Number {
-			return _v[i*_c + j] as Number;
+			return _v[i*_c + j];
 		}
 		
 		/** @inheritDoc */
@@ -85,7 +85,7 @@ package flare.util.math
 		
 		/** @inheritDoc */
 		public function scale(s:Number):void {
-			for (var i:uint=0; i<_v.length; ++i) _v[i] = (_v[i] as Number) * s;
+			for (var i:uint=0; i<_v.length; ++i) _v[i] *= s;
 		}
 		
 		/** @inheritDoc */

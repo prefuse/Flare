@@ -4,6 +4,7 @@ package flare.display
 	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.geom.Rectangle;
+	import flash.text.StyleSheet;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
@@ -17,7 +18,7 @@ package flare.display
 	 * rotation. By using a TextSprite in BITMAP mode, the text is rendered
 	 * out to a bitmap which can then be alpha blended.
 	 */
-	public class TextSprite extends DirtySprite
+	public class TextSprite extends DisplaySprite
 	{
 		// vertical anchors
 		/**
@@ -75,6 +76,8 @@ package flare.display
 		private var _bmap:Bitmap;
 		private var _tf:TextField;
 		private var _fmt:TextFormat;
+		private var _styleSheet:StyleSheet=null;
+	
 		
 		private var _hAnchor:int = LEFT;
 		private var _vAnchor:int = TOP;
@@ -95,6 +98,19 @@ package flare.display
 		}
 		
 		/** The default text format for this text sprite. */
+		public function get styleSheet():StyleSheet { return _styleSheet; }
+		public function set styleSheet(ss:StyleSheet):void {
+			if (_fmt != null) {
+				_tf.styleSheet = null;
+				_tf.defaultTextFormat = _fmt;
+			}
+			
+			_tf.styleSheet = (_styleSheet = ss);
+			
+			dirty();
+		}
+		
+		/** The default text format for this text sprite. */
 		public function get textFormat():TextFormat { return _fmt; }
 		public function set textFormat(fmt:TextFormat):void {
 			_tf.defaultTextFormat = (_fmt = fmt);
@@ -108,6 +124,7 @@ package flare.display
 		public function get text():String { return _tf.text; }
 		public function set text(txt:String):void {
 			if (_tf.text != txt) {
+				_tf.htmlText = "";
 				_tf.text = (txt==null ? "" : txt);
 				if (_fmt!=null) _tf.setTextFormat(_fmt);
 				dirty();
@@ -120,7 +137,15 @@ package flare.display
 		public function get htmlText():String { return _tf.htmlText; }
 		public function set htmlText(txt:String):void {
 			if (_tf.htmlText != txt) {
+				_tf.text     = "";
+				
+				if (_styleSheet != null) this.styleSheet = _styleSheet;
 				_tf.htmlText = (txt==null ? "" : txt);
+				
+				_tf.selectable    = true;
+				_tf.mouseEnabled  = true;
+				_tf.condenseWhite = true;
+				
 				dirty();
 			}
 		}
@@ -234,12 +259,17 @@ package flare.display
 		 * @param mode the text rendering mode to use (BITMAP by default)
 		 */
 		public function TextSprite(text:String=null, format:TextFormat=null, mode:int=BITMAP) {
-			_tf = new TextField();
-			_tf.selectable = false; // not selectable by default
-			_tf.autoSize = TextFieldAutoSize.LEFT;
+			super();
+			
+			_backgroundRenderer   = null;		// By default this is not used!
+			_bmap 				  = new Bitmap();
+			_tf 				  = new TextField();
+			
+			_tf.selectable 		  = false; // not selectable by default
+			_tf.autoSize 		  = TextFieldAutoSize.LEFT;
 			_tf.defaultTextFormat = (_fmt = format ? format : new TextFormat());
 			if (text != null) _tf.text = text;
-			_bmap = new Bitmap();
+			
 			setMode(mode);
 			dirty();
 		}
@@ -306,10 +336,15 @@ package flare.display
 		/** @inheritDoc */
 		public override function render():void
 		{
+			graphics.clear();
+			
 			if (_mode == BITMAP) {
 				rasterize();
 			}
+			
 			layout();
+			
+			renderBackground();
 		}
 		
 		/** @private */

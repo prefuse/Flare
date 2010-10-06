@@ -202,7 +202,7 @@ package flare.apps
 		private function showAllDeps(evt:SelectionEvent, linkType:int):void
 		{
 			// first, do a breadth-first-search to compute closure
-			var q:Vector.<Object> = evt.items.slice();
+			var q:Array = evt.items.slice();
 			var map:Dictionary = new Dictionary();
 			while (q.length > 0) {
 				var u:NodeSprite = q.shift();

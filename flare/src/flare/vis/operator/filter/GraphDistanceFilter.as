@@ -1,7 +1,5 @@
 package flare.vis.operator.filter
 {
-	import __AS3__.vec.Vector;
-	
 	import flare.animate.Transitioner;
 	import flare.vis.data.DataSprite;
 	import flare.vis.data.EdgeSprite;
@@ -16,8 +14,8 @@ package flare.vis.operator.filter
 	 */
 	public class GraphDistanceFilter extends Operator
 	{
-		/** An object vector of focal NodeSprites. */
-		public var focusNodes:Vector.</*NodeSprite*/Object>;
+		/** An array of focal NodeSprites. */
+		public var focusNodes:/*NodeSprite*/Array;
 		/** Graph distance within which which items wll be visible. */
 		public var distance:int;
 		/** Flag indicating which graph links to traverse. */
@@ -25,13 +23,13 @@ package flare.vis.operator.filter
 		
 		/**
 		 * Creates a new GraphDistanceFilter.
-		 * @param focusNodes an object vector of focal NodeSprites. Graph distance is
+		 * @param focusNodes an array of focal NodeSprites. Graph distance is
 		 *  measured as the minimum number of edge-hops to one of these nodes.
 		 * @param distance graph distance within which items will be visible
 		 * @param links flag indicating which graph links to traverse. The
 		 *  default value is <code>NodeSprite.GRAPH_LINKS</code>.
 		 */		
-		public function GraphDistanceFilter(focusNodes:Vector.<Object>=null,
+		public function GraphDistanceFilter(focusNodes:Array=null,
 			distance:int=1, links:int=3/*NodeSprite.GRAPH_LINKS*/)
 		{
 			this.focusNodes = focusNodes;
@@ -45,8 +43,7 @@ package flare.vis.operator.filter
 			t = (t==null ? Transitioner.DEFAULT : t);
 	        
 	        // initialize breadth-first traversal
-	        var q:Vector.<EdgeSprite> = new Vector.<EdgeSprite>();
-	        var depths:Dictionary = new Dictionary();
+	        var q:Array = [], depths:Dictionary = new Dictionary();
 			for each (var fn:NodeSprite in focusNodes) {				
 				depths[fn] = 0;
 				fn.visitEdges(function(e:EdgeSprite):void {

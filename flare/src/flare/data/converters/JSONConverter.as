@@ -8,7 +8,6 @@ package flare.data.converters
 	import flare.data.DataTable;
 	import flare.data.DataUtil;
 	import flare.util.Property;
-	import flare.util.Vectors;
 	
 	import flash.utils.ByteArray;
 	import flash.utils.IDataInput;
@@ -25,9 +24,9 @@ package flare.data.converters
 		 */
 		public function read(input:IDataInput, schema:DataSchema=null):DataSet
 		{
-			var data:Vector.<Object>;
+			var data:Array;
 			return new DataSet(new DataTable(
-				data = Vectors.copyFromArray(parse(input.readUTFBytes(input.bytesAvailable), schema)),
+				data = parse(input.readUTFBytes(input.bytesAvailable), schema),
 				schema ? schema : DataUtil.inferSchema(data)
 			));
 		}
@@ -37,7 +36,9 @@ package flare.data.converters
 		 * @param input the loaded input data
 		 * @param schema a data schema describing the structure of the data.
 		 *  Schemas are optional in many but not all cases.
-		 * @return an Array of converted data objects. If the <code>data</code>
+		 * @param data an array in which to write the converted data objects.
+		 *  If this value is null, a new array will be created.
+		 * @return an array of converted data objects. If the <code>data</code>
 		 *  argument is non-null, it is returned.
 		 */
 		public function parse(text:String, schema:DataSchema):Array
@@ -65,7 +66,7 @@ package flare.data.converters
 		 */
 		public function write(data:DataSet, output:IDataOutput=null):IDataOutput
 		{
-			var tuples:Vector.<Object> = data.nodes.data;
+			var tuples:Array = data.nodes.data;
 			if (output==null) output = new ByteArray();
 			output.writeUTFBytes(JSON.encode(tuples));
 			return output;

@@ -1,13 +1,11 @@
 package flare.vis.data
 {
-	import __AS3__.vec.Vector;
-	
 	import flare.data.DataField;
 	import flare.data.DataSchema;
 	import flare.data.DataSet;
+	import flare.util.Arrays;
 	import flare.util.Property;
 	import flare.util.Sort;
-	import flare.util.Vectors;
 	import flare.vis.events.DataEvent;
 	
 	import flash.events.EventDispatcher;
@@ -95,27 +93,12 @@ package flare.vis.data
 		
 		/**
 		 * Creates a new Data instance from an array of tuples. The object in
-		 * the vector will become the data objects for NodeSprites.
-		 * @param a an array of data objects
+		 * the array will become the data objects for NodeSprites.
+		 * @param a an Array of data objects
 		 * @return a new Data instance, with NodeSprites populated with the
 		 *  input data.
 		 */
 		public static function fromArray(a:Array):Data {
-			var d:Data = new Data();
-			for each (var tuple:Object in a) {
-				d.addNode(tuple);
-			}
-			return d;
-		}
-
-		/**
-		 * Creates a new Data instance from an object vector of tuples. The object in
-		 * the vector will become the data objects for NodeSprites.
-		 * @param a an Object Vector of data objects
-		 * @return a new Data instance, with NodeSprites populated with the
-		 *  input data.
-		 */
-		public static function fromVector(a:Vector.<Object>):Data {
 			var d:Data = new Data();
 			for each (var tuple:Object in a) {
 				d.addNode(tuple);
@@ -303,37 +286,36 @@ package flare.vis.data
 		public function createEdges(sortBy:*=null, groupBy:*=null,
 			ignoreExistingEdges:Boolean=false):void
 		{
-			// create vectors and sort criteria
-			var a:Vector.<Object> = Vectors.copy(_nodes.list);
-			var g:Vector.<Object> = new Vector.<Object>;
-			// Workaround code as a result of initialization bug in the Vector class
-			if(groupBy){
-				if(groupBy is Vector.<Object>) g = groupBy as Vector.<Object>;
-				else if(groupBy is Array)g = Vectors.copyFromArray(groupBy);
-				else g.push(groupBy);	
-			}
+			// create arrays and sort criteria
+			var a:Array = Arrays.copy(_nodes.list);
+			var g:Array = groupBy ? 
+				(groupBy is Array ? groupBy as Array : [groupBy]) : [];
 			var len:int = g.length;
-			if (sortBy is Vector.<Object>) for each(var svi:Object in (sortBy as Vector.<Object>)) g.push(svi);
-			else if(sortBy is Array) for each(var sai:Object in (sortBy as Array)) g.push(sai);
-			else g.push(sortBy);
+			if (sortBy is Array) {
+				var s:Array = sortBy as Array;
+				for (var i:uint=0; i<s.length; ++i)
+					g.push(s[i]);
+			} else {
+				g.push(sortBy);
+			}
 			
 			// sort to group by, then ordering
 			a.sort(Sort.$(g));
 			
 			// get property instances for value operations
-			var p:Vector.<Object> = new Vector.<Object>();
-			for (var i:int=0; i<len; ++i) {
+			var p:Array = new Array();
+			for (i=0; i<len; ++i) {
 				if (g[i] is String)
-					p.push(Property.$(g[i] as String));
+					p.push(Property.$(g[i]));
 			}
-			var f:Property = p[p.length-1] as Property;
+			var f:Property = p[p.length-1];
 			
 			// connect all items who match on the last group by field
 			for (i=1; i<a.length; ++i) {
 				if (!f || f.getValue(a[i-1]) == f.getValue(a[i])) {
 					if (!ignoreExistingEdges && a[i].isConnected(a[i-1]))
 						continue;
-					var e:EdgeSprite = addEdgeFor(a[i-1] as NodeSprite, a[i] as NodeSprite, directedEdges);
+					var e:EdgeSprite = addEdgeFor(a[i-1], a[i], directedEdges);
 					// add data values from nodes
 					for (var j:uint=0; j<p.length; ++j) {
 						p[j].setValue(e, p[j].getValue(a[i]));
@@ -369,6 +351,48 @@ package flare.vis.data
 		}
 		
 		/**
+		 * Removes an existing edge between the given nodes and updates the data 
+		 * collection. 
+		 *  
+		 * @param source the NodeSprite source node (must already be in this data set)
+		 * @param target the NodeSprite target node (must already be in this data set)
+		 * 
+		 * @return NodeSprite
+		 * 
+		 */
+		public function removeEdgeFor(source:NodeSprite, target:NodeSprite):EdgeSprite {
+			var link : EdgeSprite = findEdgeFor(source,target);
+			if (link != null) removeEdge(link);
+			
+			return link;
+		}
+		
+		/**
+		 * Finds the existing edge (if it exists) for the specified source and target
+		 * node sprites.
+		 *  
+		 * @param source NodeSprite
+		 * @param target NodeSprite
+		 * @return EdgeSprite
+		 * 
+		 */
+		public function findEdgeFor(source:NodeSprite, target:NodeSprite):EdgeSprite {
+			var link : EdgeSprite = null;
+			if (source != null) {
+				var numOutEdges : uint = source.outDegree;
+				for (var j:int=0; j< numOutEdges; j++) {
+					var edge : EdgeSprite = source.getOutEdge(j);
+					if (edge.target == target) {
+						link = edge;
+						break;
+					}
+				}
+			}
+			
+			return link;
+		}
+		
+		/**
 		 * Internal function for creating a new node. Creates a NodeSprite,
 		 * sets its data property, and applies default values.
 		 * @param data the new node's data property
@@ -377,8 +401,8 @@ package flare.vis.data
 		protected function newNode(data:Object):NodeSprite
 		{
 			var ns:NodeSprite = new NodeSprite();
-			_nodes.applyDefaults(ns);
 			if (data != null) { ns.data = data; }
+			_nodes.applyDefaults(ns);
 			return ns;
 		}
 		
@@ -395,8 +419,8 @@ package flare.vis.data
 								   d:Boolean, data:Object):EdgeSprite
 		{
 			var es:EdgeSprite = new EdgeSprite(s,t,d);
-			_edges.applyDefaults(es);
 			if (data != null) { es.data = data; }
+			_edges.applyDefaults(es);
 			return es;
 		}
 		
@@ -444,9 +468,8 @@ package flare.vis.data
 		 * @param e the edge to remove
 		 * @returns true if sucessfully removed, false if not found in the data
 		 */
-		public function removeEdge(e:EdgeSprite):Boolean
-		{
-			return _edges.remove(e);
+		public function removeEdge(e:EdgeSprite):Boolean {
+			return e ? _edges.remove(e) : false;
 		}
 				
 		// -- Events -------------------------------------------

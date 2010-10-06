@@ -1,7 +1,5 @@
 package flare.query
 {
-	import flare.util.Vectors;
-	
 	import flash.utils.ByteArray;
 	
 	/**
@@ -9,8 +7,8 @@ package flare.query
 	 */
 	public class CompositeExpression extends Expression
 	{
-		/** Vector of sub-expressions. */
-		protected var _children:Vector.<Object>;
+		/** Array of sub-expressions. */
+		protected var _children:Array;
 		
 		/**
 		 * @inheritDoc
@@ -21,22 +19,20 @@ package flare.query
 		
 		/**
 		 * Creates a new CompositeExpression.
-		 * @param items either a single sub-expression or an array/Vector.<Object> of
+		 * @param items either a single sub-expression or an array of
 		 *  sub-expressions
 		 */
 		public function CompositeExpression(items:Object=null) {
 			if (items is Array) {
-				setChildren(Vectors.copyFromArray(items as Array));
-			} else if (items is Vector.<Object>) {
-				setChildren(items as Vector.<Object>);
+				setChildren(items as Array);
 			} else if (items is Expression) {
-				_children = new Vector.<Object>();
+				_children = new Array();
 				addChild(items as Expression);
 			} else if (items == null) {
-				_children = new Vector.<Object>();
+				_children = new Array();
 			} else {
 				throw new ArgumentError(
-					"Input must be an expression or array or vector of expressions");
+					"Input must be an expression or array of expressions");
 			}
 		}
 		
@@ -57,9 +53,9 @@ package flare.query
 		 * Sets the sub-expressions of this composite
 		 * @param array an array of sub-expressions
 		 */
-		public function setChildren(array:Vector.<Object>):void
+		public function setChildren(array:Array):void
 		{
-			_children = new Vector.<Object>();
+			_children = new Array();
 			for each (var e:* in array) {
 				_children.push(Expression.expr(e));
 			}
@@ -69,9 +65,9 @@ package flare.query
 		 * Adds an additional sub-expression to this composite.
 		 * @param expr the sub-expression to add.
 		 */
-		public function addChild(expr:*):void
+		public function addChild(expr:Expression):void
 		{
-			_children.push(Expression.expr(expr));
+			_children.push(expr);
 		}
 		
 		/**
@@ -96,7 +92,7 @@ package flare.query
 		 */
 		public override function getChildAt(idx:int):Expression
 		{
-			return _children[idx] as Expression;
+			return _children[idx];
 		}
 		
 		/**

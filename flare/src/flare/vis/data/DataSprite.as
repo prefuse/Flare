@@ -35,6 +35,8 @@ package flare.vis.data
 		
 		/** The renderer for drawing this DataSprite. */
 		protected var _renderer:IRenderer = ShapeRenderer.instance;
+		/** Selection state for this DataSprite. */
+		protected var _selected:Boolean = false;
 		/** Object storing backing data values. */
 		protected var _data:Object = {};
 		/** Object for attaching additional properties to this sprite. */
@@ -53,8 +55,8 @@ package flare.vis.data
 		/** The line width for this data sprite. */
 		protected var _lineWidth:Number = 0;
 
-		/** Optional object vector of x,y values for specifying arbitrary shapes. */
-		protected var _points:Vector.<Object>;
+		/** Optional array of x,y values for specifying arbitrary shapes. */
+		protected var _points:Array;
 		/** Code indicating the shape value of this data sprite. */
 		protected var _shape:String = "circle";
 		/** The size value of this data sprite (1 by default). */
@@ -74,6 +76,11 @@ package flare.vis.data
 		/** The renderer for drawing this DataSprite. */
 		public function get renderer():IRenderer { return _renderer; }
 		public function set renderer(r:IRenderer):void { _renderer = r; dirty(); }
+		
+		/** Flag indicating if this node is currently selected. This flag can
+		 *  be used by renderers to display selection state. */
+		public function get selected():Boolean { return _selected; }
+		public function set selected(b:Boolean):void { if (b != _selected) {_selected = b; dirty(); } }	
 		
 		/** Object storing backing data values. */
 		public function get data():Object { return _data; }
@@ -202,9 +209,9 @@ package flare.vis.data
 		public function get shape():String { return _shape; }
 		public function set shape(s:String):void { _shape = s; dirty(); }
 		
-		/** Optional object vector of x,y values for specifying arbitrary shapes. */
-		public function get points():Vector.<Object> { return _points; }
-		public function set points(p:Vector.<Object>):void { _points = p; dirty(); }
+		/** Optional array of x,y values for specifying arbitrary shapes. */
+		public function get points():Array { return _points; }
+		public function set points(p:Array):void { _points = p; dirty(); }
 		
 		// -- Methods ---------------------------------------------------------
 

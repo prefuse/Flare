@@ -8,7 +8,36 @@ package flare.util
 	 */
 	public final class Geometry
 	{		
-        /**
+		/**
+		 * Calculate the midpoint of a straight line segment [in 2-D space]; equidistant from both endpoints
+		 * 
+		 * @see http://en.wikipedia.org/wiki/Midpoint
+		 *  
+		 * @param p1 Point start point
+		 * @param p2 Point end point
+		 * @return Point calculated midpoint 
+		 */		
+		public static function midPoint(p1:Point, p2:Point):Point {
+			return new Point ((p1.x+p2.x)/2,(p1.y+p2.y)/2);
+		}
+		
+		/**
+		 * Consider the line segment the hypotenuse and determine the rightAngle corner (vector intersection);
+		 * based on line segment endpoints.
+		 * 
+		 * @param p1 Point Source point
+		 * @param p2 Point Target point
+		 * @return Point Corner point 
+		 */
+		public static function intersectionCorner(p1:Point, p2:Point):Point {
+			var x : Number = p2.x > p1.x ? p2.x : p1.x;
+			var y : Number = p2.y > p1.y ? p2.y : p1.y;
+			
+			return (new Point(x,y));  	
+		}
+		
+		
+		/**
          * Computes the co-efficients for a cubic Bezier curve.
          * @param a the starting point of the curve
          * @param b the first control point of the curve
@@ -50,35 +79,34 @@ package flare.util
         
         /**
          * Computes the co-efficients for a B-spline.
-         * @param p the control points of the spline as an object vector of x,y values
-         *          e.g., v:Vector.<Object> = Vectors.copyFromArray([x1,y1,x2,y2,...]);
-         * @param a an object vector for storing the x-components of co-efficients
-         * @param b an object vector for storing the y-components of co-efficients
+         * @param p the control points of the spline as an array of x,y values
+         * @param a an array for storing the x-components of co-efficients
+         * @param b an array for storing the y-components of co-efficients
          */
-        public static function bsplineCoeff(p:Vector.<Object>, a:Vector.<Object>, b:Vector.<Object>):void
+        public static function bsplineCoeff(p:Array, a:Array, b:Array):void
         {
-        	a[0] = (-(p[0] as Number) + 3 * (p[2] as Number) - 3 * (p[4] as Number) + (p[6] as Number)) / 6.0;
-        	a[1] = (3 * (p[0] as Number) - 6 * (p[2] as Number) + 3 * (p[4] as Number)) / 6.0;
-			a[2] = (-3 * (p[0] as Number) + 3 * (p[4] as Number)) / 6.0;
-			a[3] = ((p[0] as Number) + 4 * (p[3] as Number) + (p[4] as Number)) / 6.0;
+        	a[0] = (-p[0] + 3 * p[2] - 3 * p[4] + p[6]) / 6.0;
+        	a[1] = (3 * p[0] - 6 * p[2] + 3 * p[4]) / 6.0;
+			a[2] = (-3 * p[0] + 3 * p[4]) / 6.0;
+			a[3] = (p[0] + 4 * p[3] + p[4]) / 6.0;
 			
-			b[0] = (-(p[1] as Number) + 3 * (p[3] as Number) - 3 * (p[5] as Number) + (p[7] as Number)) / 6.0;
-        	b[1] = (3 * (p[1] as Number) - 6 * (p[3] as Number) + 3 * (p[5] as Number)) / 6.0;
-			b[2] = (-3 * (p[1] as Number) + 3 * (p[5] as Number)) / 6.0;
-			b[3] = ((p[1] as Number) + 4 * (p[4] as Number) + (p[5] as Number)) / 6.0;
+			b[0] = (-p[1] + 3 * p[3] - 3 * p[5] + p[7]) / 6.0;
+        	b[1] = (3 * p[1] - 6 * p[3] + 3 * p[5]) / 6.0;
+			b[2] = (-3 * p[1] + 3 * p[5]) / 6.0;
+			b[3] = (p[1] + 4 * p[4] + p[5]) / 6.0;
         }
         
         /**
          * Computes a point along a B-spline.
          * @param u the interpolation fraction along the curve (between 0 and 1)
-         * @param a an object vector of x-components of the B-spline co-efficients
-         * @param b an object vector of y-components of the B-spline co-efficients
+         * @param a an array of x-components of the B-spline co-efficients
+         * @param b an array of y-components of the B-spline co-efficients
          * @param s point in which to store the calculated point on the curve
          */
-        public static function bspline(u:Number, a:Vector.<Object>, b:Vector.<Object>, s:Point) : Point
+        public static function bspline(u:Number, a:Array, b:Array, s:Point) : Point
         {
-			s.x = u*((a[2] as Number) + u*((a[1] as Number) + u*(a[0] as Number))) + (a[3] as Number);
-			s.y = u*((b[2] as Number) + u*((b[1] as Number) + u*(b[0] as Number))) + (b[3] as Number);
+			s.x = u*(a[2] + u*(a[1] + u*a[0])) + a[3];
+			s.y = u*(b[2] + u*(b[1] + u*b[0])) + b[3];
 			return s;
 		}
 
@@ -132,13 +160,11 @@ package flare.util
 		
 		/**
 	     * Compute the intersection of a line and a rectangle.
-	     * @param a1x the x-coordinate of the first endpoint of the line
-	     * @param a1y the y-coordinate of the first endpoint of the line
-	     * @param a2x the x-coordinate of the second endpoint of the line
-	     * @param a2y the y-coordinate of the second endpoint of the line
+	     * @param a1 the first endpoint of the line
+	     * @param a2 the second endpoint of the line
 	     * @param r the rectangle
-	     * @param p0 a Point in which to store the first intersection
-	     * @param p1 a Point in which to store the second intersection
+	     * @param pts a length 2 or greater array of points in which to store
+	     * the results 
 	     * @return the intersection code. This is either the number of
 	     *  intersections or one of {@link #NO_INTERSECTION},
 	     *  {@link #COINCIDENT}, or {@link #PARALLEL}.
@@ -169,18 +195,18 @@ package flare.util
 
         /**
          * Computes the convex hull for a set of points.
-         * @param p the input points, as an object vector containing Points
+         * @param p the input points, as a flat array of x,y values
          * @param len the number of points to include in the hull
-         * @return the convex hull, as an object vector containing Points
+         * @return the convex hull, as a flat array of x,y values
          */
-        public static function convexHull(p:Vector.<Object>, len:uint) : Vector.<Object>
+        public static function convexHull(p:Array, len:uint) : Array
         {
         	// check arguments
             if (len < 3)
             	throw new ArgumentError('Input must have at least 3 points');
             
-            var pts:Vector.<Object> = new Vector.<Object>(len-1);
-            var stack:Vector.<uint> = new Vector.<uint>(len);
+            var pts:Array = new Array(len-1);
+            var stack:Array = new Array(len);
 			var i:uint, j:uint, i0:uint = 0;
 
             // find the starting ref point: leftmost point with the minimum y coord
@@ -202,7 +228,7 @@ package flare.util
                 	};
                 }
             }
-            pts.sort(Sort.$('angle'));
+            pts.sortOn(Sort.$('angle'));
 
             // toss out duplicated angles
             var angle:Number = pts[0].angle;
@@ -212,8 +238,8 @@ package flare.util
                 if (angle == pts[i].angle)
                 {
                     // keep angle corresponding to point most distant from reference point
-                    var d1:Number = Point.distance(p[i0] as Point, p[tj] as Point);
-                    var d2:Number = Point.distance(p[i0] as Point, p[j] as Point);
+                    var d1:Number = Point.distance(p[i0], p[tj]);
+                    var d2:Number = Point.distance(p[i0], p[j]);
                     
                     if (d1 >= d2) {
                         pts[i].index = -1;
@@ -251,14 +277,14 @@ package flare.util
             }
 
             // construct the hull
-            var hull:Vector.<Object> = new Vector.<Object>(sp);
+            var hull:Array = new Array(sp);
             for (i = 0; i < sp; ++i) {
                 hull[i] = p[stack[i]];
             }
             return hull;
         }
 
-        private static function isNonLeft(i0:uint, i1:uint, i2:uint, i3:uint, p:Vector.<Object>) : Boolean
+        private static function isNonLeft(i0:uint, i1:uint, i2:uint, i3:uint, p:Array) : Boolean
         {
             var l1:Number, l2:Number, l4:Number, l5:Number, l6:Number, a:Number, b:Number;
 
@@ -273,6 +299,8 @@ package flare.util
 
             return (Math.PI - a - b < 0);
         }
+		
+		
 		
 	} // end of class Geometry
 }

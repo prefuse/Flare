@@ -1,11 +1,11 @@
 package flare.animate
 {
-	import __AS3__.vec.Vector;
-	
+	import flare.display.DirtySprite;
 	import flare.util.IValueProxy;
 	import flare.util.Property;
 	
 	import flash.display.DisplayObject;
+	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
 	
@@ -285,6 +285,11 @@ package flare.animate
 		public function getValue(o:Object, name:String):*
 		{
 			if (!_immediate) {
+				if ( (o is DisplayObject) && (name == "x" || name == "y") ) {
+					var p:Point = endPosition(o as DisplayObject);
+					return (name == "x") ? p.x : p.y;
+				}
+				
 				var tw:Tween = _lookup[o];
 				if (tw != null && tw.values[name] != undefined) {
 					return tw.values[name];
@@ -382,6 +387,47 @@ package flare.animate
 		}
 		
 		/**
+		 * Computes the approximate position of the given object after this
+		 * transitioner has been run. This calculation is performed by
+		 * applying the final <code>x</code>, <code>y</code>, 
+		 * <code>radius</code>, <code>angle</code>, and <code>origin</code>
+		 * values of the object, if applicable.
+		 * @param d the display object to compute the size for
+		 * @return a point whose <code>x</code> and <code>y</code>
+		 *  properties contain the end position values.
+		 */
+		public function endPosition(d:DisplayObject):Point	
+		{
+			var x:Number = d.x;
+			var y:Number = d.y;
+			
+			var tw:Tween = _lookup[d];
+			if ( tw != null )
+			{
+				var v:Object = tw.values;
+				
+				if ( (d is DirtySprite) && (v.hasOwnProperty("radius") || v.hasOwnProperty("angle") || v.hasOwnProperty("origin")) )
+				{
+					var ds:DirtySprite = d as DirtySprite;
+					
+					var radius:Number = v.hasOwnProperty("radius") ? v.radius : ds.radius;
+					var angle:Number  = v.hasOwnProperty("angle")  ? v.angle  : ds.angle;
+					var origin:Point  = v.hasOwnProperty("origin") ? v.origin : ds.origin;
+					
+					x = radius * Math.cos(angle) + origin.x;
+					y = radius * Math.sin(angle) + origin.y;
+				}
+				else
+				{
+					if ( v.hasOwnProperty("x") ) x = v.x;
+					if ( v.hasOwnProperty("y") ) y = v.y;
+				}
+			}
+			
+			return new Point(x, y);
+		}
+		
+		/**
 		 * Computes the approximate size of the given object after this
 		 * transitioner has been run. This calculation is performed by
 		 * applying the final <code>scaleX</code>, <code>scaleY</code>, and
@@ -439,7 +485,8 @@ package flare.animate
 		{
 			var r:Rectangle = new Rectangle();
 			var t:Tween, v:Object, o:Object = Object(d);
-			var scaleX:Number, scaleY:Number, size:Number, x:Number, y:Number;
+			var ds:DirtySprite = d as DirtySprite;
+			var scaleX:Number, scaleY:Number, size:Number, x:Number, y:Number, origin:Point, angle:Number, radius:Number;
 			
 			if (_immediate || (t=_lookup[d])==null) {
 				r = d.getBounds(coords);
@@ -465,12 +512,31 @@ package flare.animate
 					y = d.y;
 					d.y = v.y;
 				}
+				if (ds != null) {
+					if (v.hasOwnProperty("origin")) {
+						origin = ds.origin;
+						ds.origin = v.origin;
+					}
+					if (v.hasOwnProperty("angle")) {
+						angle = ds.angle;
+						ds.angle = v.angle;
+					}
+					if (v.hasOwnProperty("radius")) {
+						radius = ds.radius;
+						ds.radius = v.radius;
+					}
+				}
 				r = d.getBounds(coords);
 				if (v.hasOwnProperty("scaleX")) d.scaleX = scaleX;
 				if (v.hasOwnProperty("scaleY")) d.scaleY = scaleY;
 				if (v.hasOwnProperty("size"))   o.size = size;
 				if (v.hasOwnProperty("x"))      d.x = x;
 				if (v.hasOwnProperty("y"))      d.y = y;
+				if (ds != null) {
+					if (v.hasOwnProperty("origin")) ds.origin = origin;
+					if (v.hasOwnProperty("angle"))  ds.angle = angle;
+					if (v.hasOwnProperty("radius")) ds.radius = radius;
+				}
 			}
 			return r;
 		}
@@ -478,14 +544,14 @@ package flare.animate
 		// --------------------------------------------------------------------
 		
 		private static var _maxPoolSize:int = 10000;
-		private static var _tweenPool:Vector.<Object> = new Vector.<Object>();
+		private static var _tweenPool:Array = [];
 		private static var _count:int = 0;
 		
 		private static function getTween(o:Object, duration:Number):Tween
 		{
 			var tw:Tween;
 			if (_tweenPool.length > 0) {
-				tw = _tweenPool.pop() as Tween;
+				tw = _tweenPool.pop();
 				tw.target = o;
 				tw.duration = duration;
 				tw.enabled = true;
@@ -508,8 +574,8 @@ package flare.animate
 import flare.animate.Transitioner;
 import flare.util.Property;
 
-import flash.utils.flash_proxy;
 import flash.utils.Proxy;
+import flash.utils.flash_proxy;
 
 /**
  * Helper class that gets/sets values for a Transitioner.

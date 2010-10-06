@@ -1,4 +1,3 @@
-
 package flare.query
 {
 	/**
@@ -19,11 +18,7 @@ package flare.query
 // DATE_ADD() 	Add two dates
 // DATE_FORMAT() 	Format date as specified
 // DATE_SUB() 	Subtract two dates
-		// DATE()(v4.1.1) 	Extract the date part of a date or datetime expression
-		public static function date(d:Date):Date{
-			return new Date(d.toLocaleDateString());
-		}
-		
+// DATE()(v4.1.1) 	Extract the date part of a date or datetime expression
 // DATEDIFF()(v4.1.1) 	Subtract two dates
 
 // DAYNAME()(v4.1.21) 	Return the name of the weekday

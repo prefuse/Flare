@@ -1,17 +1,15 @@
 package flare.vis.axis
 {
-	import __AS3__.vec.Vector;
-	
 	import flare.animate.Transitioner;
 	import flare.display.TextSprite;
 	import flare.scale.IScaleMap;
 	import flare.scale.LinearScale;
 	import flare.scale.Scale;
 	import flare.scale.ScaleType;
+	import flare.util.Arrays;
 	import flare.util.Sort;
 	import flare.util.Stats;
 	import flare.util.Strings;
-	import flare.util.Vectors;
 	
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
@@ -43,10 +41,10 @@ package flare.vis.axis
 	public class Axis extends Sprite implements IScaleMap
 	{
 		// children indices
-		protected static const TITLE:uint = 2;
-		protected static const LABELS:uint = 1;
         protected static const GRIDLINES:uint = 0;
-		
+		protected static const LABELS	:uint = 1;
+		protected static const TITLE	:uint = 2;
+
 		// axis scale
 		protected var _prevScale:Scale;
 		// axis settings
@@ -60,18 +58,19 @@ package flare.vis.axis
 		protected var _lineColor:uint = 0xd8d8d8;
 		protected var _lineWidth:Number = 0;
 		// label settings
-		protected var _numLabels:int = -1;
-		protected var _anchorH:int = TextSprite.LEFT;
-		protected var _anchorV:int = TextSprite.TOP;
-		protected var _labelAngle:Number = 0;
-		protected var _labelColor:uint = 0;
-		protected var _labelFormat:String = null;
-		protected var _labelTextMode:int = TextSprite.BITMAP;
-		protected var _labelTextFormat:TextFormat = new TextFormat("Arial",12,0);
+		protected var _numLabels		:int 		= -1;
+		protected var _anchorH			:int 		= TextSprite.LEFT;
+		protected var _anchorV			:int 		= TextSprite.TOP;
+		protected var _labelAngle		:Number 	= 0;
+		protected var _labelColor		:uint 		= 0;
+		protected var _labelFormat		:String 	= null;
+		protected var _labelTextMode	:int 		= TextSprite.BITMAP;
+		protected var _labelTextFormat	:TextFormat = new TextFormat("Arial",12,0);
+		
 		// title settings
-		protected var _axisTitleText:String;
-		protected var _titleTextMode:int = TextSprite.BITMAP;
-		protected var _titleTextFormat:TextFormat = new TextFormat("Arial",14,0);
+		protected var _axisTitleText	:String		= "";
+		protected var _titleTextMode	:int 		= TextSprite.BITMAP;
+		protected var _titleTextFormat	:TextFormat = new TextFormat("Arial",14,0);
 		
 		// temporary variables
 		protected var _point:Point = new Point();
@@ -80,10 +79,11 @@ package flare.vis.axis
 		
 		/** Sprite containing the axis labels. */
 		public function get labels():Sprite { return getChildAt(LABELS) as Sprite; }
-		/** Sprite containing the axis grid lines. */
-		public function get gridLines():Sprite { return getChildAt(GRIDLINES) as Sprite; }
 		/** Sprite containing the axis title. */
 		public function get title():TextSprite { return getChildAt(TITLE) as TextSprite; }
+		
+		/** Sprite containing the axis grid lines. */
+		public function get gridLines():Sprite { return getChildAt(GRIDLINES) as Sprite; }
 		
 		/** @inheritDoc */
 		public function get x1():Number { return _xa; }
@@ -143,13 +143,17 @@ package flare.vis.axis
 		
 		/** X-dimension offset value for axis title. If negative or zero, this
 		 *  value indicates how much to offset to the left of the label offset.
-		 *  If positive, the offset is made to the right of the label offset. */
+		 *  If positive, the offset is made to the right of the label offset. 
+		 */
 		public var titleOffsetX:Number = 0;
-		
+		    
 		/** Y-dimension offset value for axis title. If negative or zero, this
 		 *  value indicates how much to offset above the label offset.
-		 *  If positive, the offset is made beneath the label offset.*/
-		public var titleOffsetY:Number = 0;
+		 *  If positive, the offset is made beneath the label offset.
+		 *
+		 */
+		public var titleOffsetY:Number = 0; 
+		
 		
 		/** The line color of axis grid lines. */
 		public function get lineColor():uint { return _lineColor; }
@@ -206,7 +210,7 @@ package flare.vis.axis
 		/** TextFormat (font, size, style) for axis title text. */
 		public function get axisTitle():String { return _axisTitleText; }
 		public function set axisTitle(t:String):void { _axisTitleText = t; updateLabels(); }
-		
+			
 		/** TextFormat (font, size, style) for axis title text. */
 		public function get titleTextFormat():TextFormat { return _titleTextFormat; }
 		public function set titleTextFormat(f:TextFormat):void { _titleTextFormat = f; updateLabels(); }
@@ -214,7 +218,8 @@ package flare.vis.axis
 		/** The text rendering mode to use for title TextSprite.
 		 *  @see flare.display.TextSprite. */
 		public function get titleTextMode():int { return _titleTextMode; }
-		public function set titleTextMode(m:int):void { _titleTextMode = m; updateLabels(); }
+		public function set titleTextMode(m:int):void { _titleTextMode = m; updateLabels(); } 
+		
 		
 		
 		/** The horizontal anchor point for axis labels.
@@ -257,7 +262,8 @@ package flare.vis.axis
         {
             addChild(new Sprite()); // add gridlines
             addChild(new Sprite()); // add labels
-            addChild(new TextSprite()); // add title
+			addChild(new TextSprite()); // add title
+
         }
 		
 		// -- Updates ---------------------------------------------------------
@@ -282,7 +288,8 @@ package flare.vis.axis
             layout(t);
             updateLabels(); // TODO run through transitioner?
             updateGridLines(); // TODO run through transitioner?
-            updateTitle();
+			updateTitle();
+
             return trans;
         }
 		
@@ -362,9 +369,9 @@ package flare.vis.axis
 			var nl:uint = labels.numChildren;
 			var ng:uint = gridLines.numChildren;
 			
-			var keepLabels:Vector.<Boolean> = new Vector.<Boolean>(nl);
-			var keepLines:Vector.<Boolean> = new Vector.<Boolean>(ng);
-			var values:Vector.<Object> = axisScale.values(numLabels);
+			var keepLabels:Array = new Array(nl);
+			var keepLines:Array = new Array(ng);
+			var values:Array = axisScale.values(numLabels);
 			
 			if (showLabels) { // process labels
 				for (i=0, ordinal=0; i<values.length; ++i) {
@@ -397,11 +404,11 @@ package flare.vis.axis
 		/**
 		 * Marks all items slated for removal from this axis.
 		 * @param trans a Transitioner for collecting value updates.
-		 * @param keep a Boolean vector indicating which items to keep
+		 * @param keep a Boolean array indicating which items to keep
 		 * @param con a container Sprite whose contents should be marked
 		 *  for removal
 		 */
-		protected function markRemovals(trans:Transitioner, keep:Vector.<Boolean>, con:Sprite) : void
+		protected function markRemovals(trans:Transitioner, keep:Array, con:Sprite) : void
 		{
 			for (var i:uint = keep.length; --i >= 0; ) {
 				if (!keep[i]) trans.removeChild(con.getChildAt(i));
@@ -458,7 +465,7 @@ package flare.vis.axis
 		 */		
 		protected function fixOverlap(trans:Transitioner):void
 		{
-			var labs:Vector.<Object> = new Vector.<Object>(), d:DisplayObject, i:int;
+			var labs:Array = [], d:DisplayObject, i:int;
 			// collect and sort labels
 			for (i=0; i<labels.numChildren; ++i) {
 				var s:AxisLabel = AxisLabel(labels.getChildAt(i));
@@ -491,9 +498,7 @@ package flare.vis.axis
 					if (rem[min]) delete rem[min];
 					if (rem[max]) delete rem[max];
 					if (rem[mid]) delete rem[mid];
-					var v:Vector.<Object> = new Vector.<Object>();
-					v.push(min); v.push(mid); v.push(max);
-					labs = v;
+					labs = [min, mid, max];
 				}
 				else if (i < 4) { // use min and max if we're down to two
 					if (rem[min]) delete rem[min];
@@ -519,14 +524,14 @@ package flare.vis.axis
 			}
 		}
 		
-		protected static function fixLogOverlap(labs:Vector.<Object>, rem:Dictionary,
+		protected static function fixLogOverlap(labs:Array, rem:Dictionary,
 			trans:Transitioner, scale:Scale):void
 		{
 				var base:int = int(Object(scale).base), i:int, j:int, zidx:int;
 				if (!hasOverlap(labs, trans)) return;
 				
 				// find zero
-				zidx = Vectors.binarySearch(labs, 0, "value");
+				zidx = Arrays.binarySearch(labs, 0, "value");
 				var neg:Boolean = Number(scale.min) < 0;
 				var pos:Boolean = Number(scale.max) > 0;
 				
@@ -556,11 +561,11 @@ package flare.vis.axis
 				}
 		}
 		
-		private static function hasOverlap(labs:Vector.<Object>, trans:Transitioner):Boolean
+		protected static function hasOverlap(labs:Array, trans:Transitioner):Boolean
 		{
-			var d:DisplayObject = labs[0] as DisplayObject, e:DisplayObject;
+			var d:DisplayObject = labs[0], e:DisplayObject;
 			for (var i:int=1; i<labs.length; ++i) {
-				if (overlaps(trans, d, (e=labs[i] as DisplayObject))) return true;
+				if (overlaps(trans, d, (e=labs[i]))) return true;
 				d = e;
 			}
 			return false;
@@ -642,21 +647,22 @@ package flare.vis.axis
 					   : Strings.format(_labelFormat, label.value);
 		}
 		
-		
 		protected function updateTitle() : void
 		{
-			//set and format title
-			var titleSprite:TextSprite = getChildAt(TITLE) as TextSprite;
-			titleSprite.textFormat = _titleTextFormat;
-			titleSprite.horizontalAnchor = TextSprite.CENTER;
-			titleSprite.verticalAnchor = TextSprite.TOP;
-			titleSprite.textMode = _titleTextMode;
-			titleSprite.text = _axisTitleText;
-			//position title 
-			titleSprite.x = (_xb - _xa) / 2 + _xa + _xlo + titleOffsetX; 
-			titleSprite.y = (_yb - _ya) / 2 + _ya + _ylo + titleOffsetY;
-			
-		}
+			  //set and format title
+			  var titleSprite:TextSprite = getChildAt(TITLE) as TextSprite;
+			  
+				  titleSprite.textFormat 		= _titleTextFormat;
+				  titleSprite.horizontalAnchor 	= TextSprite.CENTER;
+				  titleSprite.verticalAnchor 	= TextSprite.TOP;
+				  titleSprite.textMode 			= _titleTextMode;
+				  titleSprite.text 				= _axisTitleText;
+				
+				  //position title 
+				  titleSprite.x = (_xb - _xa) / 2 + _xa + _xlo + titleOffsetX; 
+				  titleSprite.y = (_yb - _ya) / 2 + _ya + _ylo + titleOffsetY;
+		} 
+		
 		
 		/**
 		 * Updates all axis labels.

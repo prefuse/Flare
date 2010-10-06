@@ -50,7 +50,7 @@ package flare.animate.interpolate
 		{
 			_cur.x = _startX + f*_rangeX;
 			_cur.y = _startY + f*_rangeY;
-			_prop.setValue(_target, _cur);
+			_prop.setValue(_target, _cur.clone());
 		}
 		
 	} // end of class PointInterpolator

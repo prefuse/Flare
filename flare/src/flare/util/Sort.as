@@ -1,6 +1,6 @@
 package flare.util
 {
-	import __AS3__.vec.Vector;
+	import flash.display.DisplayObjectContainer;
 		
 	/**
 	 * Utility class for sorting and creating sorting functions. This class
@@ -43,11 +43,8 @@ package flare.util
 			if (crit is String) {
 				_crit = [crit];
 			} else if (crit is Array) {
-				_crit = crit;
-			} else if (crit is Vector.<Object>) {
-				_crit = Vectors.copyToArray(crit);
-			}
-			else {
+				_crit = Arrays.copy(crit as Array);
+			} else {
 				throw new ArgumentError("Invalid Sort specification type. " +
 					"Input must be either a String or Array");
 			}
@@ -71,7 +68,7 @@ package flare.util
 		 * Sorts the input array according to the sort criteria.
 		 * @param list an array to sort
 		 */
-		public function sort(list:Vector.<Object>):void
+		public function sort(list:Array):void
 		{
 			mergeSort(list, comparator, 0, list.length-1);
 		}
@@ -118,27 +115,22 @@ package flare.util
 		 */
 		public static function $(...a):Function
 		{
-			var names:Vector.<Object>;
-			if (a && a.length > 0){
-				if(a[0] is Array) names = Vectors.copyFromArray(a[0]);
-				else if(a[0] is Vector.<Object>) names = (a[0] as Vector.<Object>);
-				else names = Vectors.copyFromArray(a);
-			}
-			if (names==null || names.length < 1)
+			if (a && a.length > 0 && a[0] is Array) a = a[0];
+			if (a==null || a.length < 1)
 				throw new ArgumentError("Bad input.");
 
-			if (names.length == 1) {
-				return sortOn(names[0] as String);
+			if (a.length == 1) {
+				return sortOn(a[0]);
 			} else {
-				var sorts:Vector.<Object> = new Vector.<Object>();
-				for each (var field:String in names) {
+				var sorts:Array = [];
+				for each (var field:String in a) {
 					sorts.push(sortOn(field));
 				}
 				return multisort(sorts);
 			}
 		}
 		
-		private static function multisort(f:Vector.<Object>):Function
+		private static function multisort(f:Array):Function
 		{
 			return function(a:Object, b:Object):int {
 				var c:int;
@@ -166,7 +158,7 @@ package flare.util
 
 		private static const SORT_THRESHOLD:int = 16;
 
-		private static function insertionSort(a:Vector.<Object>, cmp:Function, p:int, r:int):void
+		private static function insertionSort(a:Array, cmp:Function, p:int, r:int):void
 		{
 			var i:int, j:int, key:Object;
 	        for (j = p+1; j<=r; ++j) {
@@ -180,7 +172,7 @@ package flare.util
 	        }
     	}
     	
-    	private static function mergeSort(a:Vector.<Object>, cmp:Function, p:int, r:int):void
+    	private static function mergeSort(a:Array, cmp:Function, p:int, r:int):void
     	{
 	        if (p >= r) {
 	            return;
@@ -195,9 +187,9 @@ package flare.util
 	        }
     	}
 
-	    private static function merge(a:Vector.<Object>, cmp:Function, p:int, q:int, r:int):void
+	    private static function merge(a:Array, cmp:Function, p:int, q:int, r:int):void
 	    {
-	    	var t:Vector.<Object> = new Vector.<Object>(r-p+1);
+	    	var t:Array = new Array(r-p+1);
 	    	var i:int, p1:int = p, p2:int = q+1;
 	    	
 	        for (i=0; p1<=q && p2<=r; ++i)

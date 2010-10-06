@@ -1,8 +1,5 @@
 package flare.vis.events
 {
-	import __AS3__.vec.Vector;
-	
-	import flare.util.Vectors;
 	import flare.vis.data.DataList;
 	import flare.vis.data.DataSprite;
 	import flare.vis.data.EdgeSprite;
@@ -23,24 +20,20 @@ package flare.vis.events
 		public static const UPDATE:String = "update";
 		
 		/** @private */
-		protected var _items:Vector.<Object> = null;
+		protected var _items:Array;
 		/** @private */
 		protected var _item:Object;
 		/** @private */
-		private var _list:DataList;
+		protected var _list:DataList;
 		
 		/** The number of items in this data event. */
 		public function get length():int {
 			return _items ? _items.length : 1;
 		}
 		
-		/** The list of affected data items (as a Vector.<Object> instance). */
-		public function get items():Vector.<Object> {
-			if (_items == null)
-			{
-				_items = new Vector.<Object>();
-				_items.push(_item);
-			}
+		/** The list of effected data items. */
+		public function get items():Array {
+			if (_items == null) _items = [_item];
 			return _items;
 		}
 		
@@ -65,18 +58,10 @@ package flare.vis.events
 		public function DataEvent(type:String, items:*, list:DataList=null)
 		{
 			super(type, false, true);
-			if (items is Vector.<Object>)
-			{
+			if (items is Array) {
 				_items = items;
 				_item = _items[0];
-			}
-			else if (items is Array)
-			{
-				_items = Vectors.copyFromArray(items);
-				_item = _items[0];
-			}
-			else
-			{
+			} else {
 				_items = null;
 				_item = items;
 			}

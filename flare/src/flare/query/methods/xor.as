@@ -1,7 +1,6 @@
 package flare.query.methods
 {
 	import flare.query.Xor;
-	import flare.util.Vectors;
 	
 	/**
 	 * Creates a new <code>Xor</code> (exclusive or) query operator.
@@ -11,7 +10,7 @@ package flare.query.methods
 	public function xor(...rest):Xor
 	{
 		var x:Xor = new Xor();
-		x.setChildren(Vectors.copyFromArray(rest));
+		x.setChildren(rest);
 		return x;
 	}	
 }

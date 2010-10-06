@@ -18,18 +18,10 @@ package flare.query
 		 *  in the static function table.
 		 * @params args sub-expressions for the function arguments
 		 */
-		public function Fn(name:String=null, ...args) {
-			if(name)this.name = name;
-			super(args);
-		}
-		
-		/**
-		 * Sets the name of the function. This should map to an entry
-		 *  in the static function table.
-		 */
-		public function set name(n:String):void{
-			_name = n.toUpperCase();
+		public function Fn(name:String, ...args) {
+			_name = name.toUpperCase();
 			_func = table[_name];
+			super(args);
 		}
 		
 		/**
@@ -118,7 +110,6 @@ package flare.query
 			UCASE:		StringUtil.upper,
 			
 			// Date/Time Functions
-			DATE:		DateUtil.date,
 			DAY:		DateUtil.day,
 			DAYOFWEEK:	DateUtil.dayOfWeek,
 			HOUR:		DateUtil.hour,

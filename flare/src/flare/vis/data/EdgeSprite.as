@@ -3,6 +3,8 @@ package flare.vis.data
 	import flare.vis.data.render.ArrowType;
 	import flare.vis.data.render.EdgeRenderer;
 	
+	import flash.geom.Point;
+	
 	/**
 	 * Visually represents a connection between two data elements. Examples
 	 * include an edge in a graph structure or a line between points in a line
@@ -19,10 +21,15 @@ package flare.vis.data
 		public var x1:Number;
 		/** The y-coordinate for the first end point of this edge. */
 		public var y1:Number;
+		
+		public function get s():Point {	return new Point(x1,y1);	}
+		
 		/** The x-coordinate for the second end point of this edge. */
 		public var x2:Number;
 		/** The y-coordinate for the second end point of this edge. */
 		public var y2:Number;
+		
+		public function get t():Point {	return new Point(x1,y1);	}
 		
 		/** The first, or source, node upon which this edge is incident. */
 		public var source:NodeSprite;
@@ -83,6 +90,8 @@ package flare.vis.data
 		{
 			source = null;
 			target = null;
+			
+			this.graphics.clear();
 		}
 		
 		/** @inheritDoc */

@@ -293,7 +293,7 @@ class QuadTreeNode
 	
 	// -- Factory ---------------------------------------------------------
 	
-	private static var _nodes:Vector.<Object> = new Vector.<Object>();
+	private static var _nodes:Array = new Array();
 	
 	public static function node():QuadTreeNode {
 		var n:QuadTreeNode;

@@ -1,9 +1,6 @@
 package flare.util.palette
 {
-	import __AS3__.vec.Vector;
-	
 	import flare.util.Colors;
-	import flare.util.Vectors;
 	
 	/**
 	 * Palette for color values, including utility methods for generating
@@ -11,27 +8,20 @@ package flare.util.palette
 	 */
 	public class ColorPalette extends Palette
 	{
-		private var _keyframes:Vector.<Object>;
+		private var _keyframes:Array;
 		
 		/** Keyframes at which color values change in the palette. Useful
 		 *  for configuring gradient paint fills. */
-		public function get keyframes():Vector.<Object> { return _keyframes; }
+		public function get keyframes():Array { return _keyframes; }
 		
 		/**
 		 * Creates a new ColorPalette.
-		 * @param colors an object vector or array of colors defining the palette
-		 * @param keyframes object vector or array of keyframes of color interpolations
+		 * @param colors an array of colors defining the palette
+		 * @param keyframes array of keyframes of color interpolations
 		 */
-		public function ColorPalette(colors:*=null, keyframes:*=null) {
-			if(colors is Vector.<Object>)
-				_values = colors;
-			else if(colors is Array)
-				_values = Vectors.copyFromArray(colors);
-			
-			if(keyframes is Vector.<Object>)
-				_keyframes = keyframes;
-			else if(keyframes is Array)
-				_keyframes = Vectors.copyFromArray(keyframes);
+		public function ColorPalette(colors:Array=null, keyframes:Array=null) {
+			_values = colors;
+			_keyframes = keyframes;
 		}
 		
 		/**
@@ -43,7 +33,7 @@ package flare.util.palette
 		{
 			if (_values==null || _values.length==0)
 				return 0;
-			return _values[uint(Math.round(v*(_values.length-1)))] as uint;
+			return _values[uint(Math.round(v*(_values.length-1)))];
 		}
 		
 		/**
@@ -57,7 +47,7 @@ package flare.util.palette
 			if (_values == null || _values.length == 0 || idx < 0)
 				return 0;
 			else
-				return _values[idx % _values.length] as uint;
+				return _values[idx % _values.length];
 		}
 		
 		// --------------------------------------------------------------------
@@ -90,21 +80,20 @@ package flare.util.palette
 		/**
 		 * Generates a categorical color palette
 		 * @param size the number of colors to include
-		 * @param colors an object vector of category colors to use. If null, a
+		 * @param colors an array of category colors to use. If null, a
 		 *  default category color palette will be used.
 		 * @param alpha the alpha value for this palette's colors
 		 * @return the categorical color palette
 		 */
-		public static function category(size:int=20, colors:Vector.<Object>=null,
+		public static function category(size:int=20, colors:Array=null,
 										alpha:Number=1.0):ColorPalette
 		{
 			if (colors==null)
-				colors = size<=10 ? Vectors.copyFromArray(CATEGORY_COLORS_10) :
-								    Vectors.copyFromArray(CATEGORY_COLORS_20);
+				colors = size<=10 ? CATEGORY_COLORS_10 : CATEGORY_COLORS_20;
 			var a:uint = uint(255 * alpha) % 256;
-			var cm:Vector.<Object> = new Vector.<Object>(size);
+			var cm:Array = new Array(size);
 			for (var i:uint=0; i<size; ++i) {
-				cm[i] = Colors.setAlpha(colors[i % colors.length] as uint, a);
+				cm[i] = Colors.setAlpha(colors[i % colors.length], a);
 			}
 			return new ColorPalette(cm);
 		}
@@ -127,7 +116,7 @@ package flare.util.palette
 	     */
 	    public static function hot(size:int=DEFAULT_SIZE):ColorPalette
 	    {
-	        var cm:Vector.<Object> = new Vector.<Object>(size), r:Number, g:Number, b:Number;
+	        var cm:Array = new Array(size), r:Number, g:Number, b:Number;
 	        var n:int = int(2*size/8);
 	        
 	        for (var i:uint=0; i<size; i++) {
@@ -137,7 +126,7 @@ package flare.util.palette
 	            cm[i] = Colors.rgba(255*r, 255*g, 255*b);
 	        }
 			var f:Number = 1/4;
-	        return new ColorPalette(cm, Vectors.copyFromArray([0, f, 2*f, 1]));
+	        return new ColorPalette(cm, [0, f, 2*f, 1]);
 	    }
 		
 		/**
@@ -150,11 +139,11 @@ package flare.util.palette
 		public static function ramp(min:uint=0xfff1eef6, max:uint=0xff045a8d,
 			size:int=DEFAULT_SIZE):ColorPalette
 		{
-			var cm:Vector.<Object> = new Vector.<Object>(size);
+			var cm:Array = new Array(size);
 			for (var i:uint=0; i<size; ++i) {
 				cm[i] = Colors.interpolate(min, max, i/(size-1));
 			}
-			return new ColorPalette(cm, Vectors.copyFromArray([0,1]));
+			return new ColorPalette(cm, [0,1]);
 		}
 		
 		/**
@@ -172,7 +161,7 @@ package flare.util.palette
 			mid:uint=0xffffffbf, max:uint=0xff1a9850,
 			f:Number=0.5, size:int=DEFAULT_SIZE):ColorPalette
 		{
-			var cm:Vector.<Object> = new Vector.<Object>(size);
+			var cm:Array = new Array(size);
 			var mp:int = int(f*size), i:uint, j:uint;
 			for (i=0; i<mp; ++i) {
 				cm[i] = Colors.interpolate(min, mid, i/mp);
@@ -181,7 +170,7 @@ package flare.util.palette
 			for (j=0; i<size; ++i, ++j) {
 				cm[i] = Colors.interpolate(mid, max, j/mp);
 			}
-			return new ColorPalette(cm, Vectors.copyFromArray([0,f,1]));
+			return new ColorPalette(cm, [0,f,1]);
 		}
 		
 	} // end of class ColorPalette

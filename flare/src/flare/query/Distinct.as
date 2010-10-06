@@ -14,7 +14,7 @@ package flare.query
 		 * @param input the sub-expression of which to compute the distinct
 		 *  values
 		 */
-		public function Distinct(input:*=null) {
+		public function Distinct(input:*) {
 			super(input);
 		}
 		

@@ -37,10 +37,8 @@ package flare.query
 		{
 			if (_children.length==0) return false;
 			
-			var i:uint = 0;
-			//for each (var e:Expression in _children) {
-			for(i=0; i<_children.length; i++){
-				if (!(_children[i] as Expression).eval(o)) return false;
+			for each (var e:Expression in _children) {
+				if (!e.eval(o)) return false;
 			}
 			return true;
 		}

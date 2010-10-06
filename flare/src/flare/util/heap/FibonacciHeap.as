@@ -200,13 +200,13 @@ package flare.util.heap
 
 	    private function consolidate():void
 	    {
-	    	var vectorSize:int = _size + 1;
-	    	var vector:Vector.<Object> = new Vector.<Object>(HeapNode);
+	    	var arraySize:int = _size + 1;
+	    	var array:Array = new Array(arraySize);
 	    	var i:uint;
 	
-	        // Initialize degree vector
-	        for (i=0; i<vectorSize; i++)
-	            vector[i] = null;
+	        // Initialize degree array
+	        for (i=0; i<arraySize; i++)
+	            array[i] = null;
 	
 	        // Find the number of root nodes.
 	        var numRoots:int = 0, d:int;
@@ -230,9 +230,9 @@ package flare.util.heap
 	            next = x.right;
 	
 	            // ..and see if there's another of the same degree.
-	            while (vector[d] != null) {
+	            while (array[d] != null) {
 	                // There is, make one of the nodes a child of the other.
-	                y = vector[d] as HeapNode;
+	                y = array[d];
 	
 	                // Do this based on the key value.
 	                if (x.key > y.key) {
@@ -245,13 +245,13 @@ package flare.util.heap
 	                link(y, x);
 	
 	                // We've handled this degree, go to next one.
-	                vector[d] = null;
+	                array[d] = null;
 	                d++;
 	            }
 	
 	            // Save this node for later when we might encounter another
 	            // of the same degree.
-	            vector[d] = x;
+	            array[d] = x;
 	
 	            // Move forward through list.
 	            x = next;
@@ -259,29 +259,29 @@ package flare.util.heap
 	        }
 	
 	        // Set min to null (effectively losing the root list) and
-	        // reconstruct the root list from the vector entries in vector[].
+	        // reconstruct the root list from the array entries in array[].
 	        _min = null;
 	
-	        for (i=0; i<vectorSize; i++) {
-	            if (vector[i] != null) {
+	        for (i=0; i<arraySize; i++) {
+	            if (array[i] != null) {
 	                // We've got a live one, add it to root list.
 	                if (_min != null) {
 	                    // First remove node from root list.
-	                    vector[i].left.right = vector[i].right;
-	                    vector[i].right.left = vector[i].left;
+	                    array[i].left.right = array[i].right;
+	                    array[i].right.left = array[i].left;
 	
 	                    // Now add to root list, again.
-	                    vector[i].left = _min;
-	                    vector[i].right = _min.right;
-	                    _min.right = vector[i] as HeapNode;
-	                    vector[i].right.left = vector[i];
+	                    array[i].left = _min;
+	                    array[i].right = _min.right;
+	                    _min.right = array[i];
+	                    array[i].right.left = array[i];
 	
 	                    // Check if this is a new min.
-	                    if (vector[i].key < _min.key) {
-	                        _min = vector[i] as HeapNode;
+	                    if (array[i].key < _min.key) {
+	                        _min = array[i];
 	                    }
 	                } else {
-	                    _min = vector[i] as HeapNode;
+	                    _min = array[i];
 	                }
 	            }
 	        }

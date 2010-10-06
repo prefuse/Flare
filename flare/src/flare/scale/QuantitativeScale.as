@@ -158,9 +158,9 @@ package flare.scale
 		}
 		
 		/** @inheritDoc */
-		public override function values(num:int=-1):/*Number*/Vector.<Object>
+		public override function values(num:int=-1):/*Number*/Array
 		{
-			var a:Vector.<Object> = new Vector.<Object>();
+			var a:Array = new Array();
 			var range:Number = _smax - _smin;
 
 			if (range == 0) {

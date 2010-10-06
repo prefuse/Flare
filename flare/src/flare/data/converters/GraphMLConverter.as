@@ -1,7 +1,5 @@
 package flare.data.converters
 {
-	import __AS3__.vec.Vector;
-	
 	import flare.data.DataField;
 	import flare.data.DataSchema;
 	import flare.data.DataSet;
@@ -44,8 +42,8 @@ package flare.data.converters
 		public function parse(graphml:XML, schema:DataSchema=null):DataSet
 		{
 			var lookup:Object = {};
-			var nodes:Vector.<Object> = new Vector.<Object>(), n:Object;
-			var edges:Vector.<Object> = new Vector.<Object>(), e:Object;
+			var nodes:Array = [], n:Object;
+			var edges:Array = [], e:Object;
 			var id:String, sid:String, tid:String;
 			var def:Object, type:int;
 			var group:String, attrName:String, attrType:String;
@@ -182,7 +180,7 @@ package flare.data.converters
 			return xml;
 		}
 		
-		private static function addData(xml:XML, tuples:Vector.<Object>,
+		private static function addData(xml:XML, tuples:Array,
 			schema:DataSchema, tag:String, attrs:Object):void
 		{
 			for each (var tuple:Object in tuples) {

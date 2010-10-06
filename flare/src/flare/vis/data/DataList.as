@@ -1,7 +1,5 @@
 package flare.vis.data
 {
-	import __AS3__.vec.Vector;
-	
 	import flare.animate.Transitioner;
 	import flare.util.Arrays;
 	import flare.util.Filter;
@@ -9,7 +7,6 @@ package flare.vis.data
 	import flare.util.Property;
 	import flare.util.Sort;
 	import flare.util.Stats;
-	import flare.util.Vectors;
 	import flare.util.math.DenseMatrix;
 	import flare.util.math.IMatrix;
 	import flare.vis.events.DataEvent;
@@ -54,13 +51,13 @@ package flare.vis.data
 		/** Hashed set of items in the data list. */
 		private var _map:Dictionary = new Dictionary();
 		/** Array of items in the data set. */
-		private var _list:Vector.<Object> = new Vector.<Object>();
+		private var _list:Array = [];
 		/** Default property values to be applied to new items. */
 		private var _defs:Object = null;
 		/** Cache of Stats objects for item properties. */
 		private var _stats:Object = {};
 		/** The underlying array storing the list. */
-		internal function get list():Vector.<Object> { return _list; }
+		internal function get list():Array { return _list; }
 		
 		/** The name of this data list. */
 		public function get name():String { return _name; }
@@ -115,7 +112,7 @@ package flare.vis.data
 			_map[d] = _list.length;
 			_stats = {};
 			if (_sort != null) {
-				var idx:int = Vectors.binarySearch(_list, d, null,
+				var idx:int = Arrays.binarySearch(_list, d, null,
 				                                  _sort.comparator);
 				_list.splice(-(idx+1), 0, d);
 			} else {
@@ -136,10 +133,10 @@ package flare.vis.data
 				return false;
 			if (_visiting > 0) {
 				// if called from a visitor, use a copy-on-write strategy
-				_list = Vectors.copy(_list);
+				_list = Arrays.copy(_list);
 				_visiting = 0; // reset the visitor count
 			}
-			Vectors.remove(_list, d);
+			Arrays.remove(_list, d);
 			delete _map[d];
 			_stats = {};	
 			return true;
@@ -152,11 +149,11 @@ package flare.vis.data
 		 */
 		public function removeAt(idx:int):DataSprite
 		{
-			var d:DataSprite = _list[idx] as DataSprite;
+			var d:DataSprite = _list[idx];
 			if (d == null || !fireEvent(DataEvent.REMOVE, d))
 				return null;
 			
-			Vectors.removeAt(_list, idx);
+			Arrays.removeAt(_list, idx);
 			if (d != null) {
 				delete _map[d];
 				_stats = {};
@@ -173,7 +170,7 @@ package flare.vis.data
 			if (!fireEvent(DataEvent.REMOVE, _list))
 				return false;
 			_map = new Dictionary();
-			_list.length = 0;
+			_list = [];
 			_stats = {};
 			return true;
 		}
@@ -188,20 +185,6 @@ package flare.vis.data
 		public function toDataArray():Array
 		{
 			var a:Array = new Array(_list.length);
-			for (var i:int=0; i<a.length; ++i) {
-				a[i] = _list[i].data;
-			}
-			return a;
-		}
-		
-		/**
-		 * Returns an object vector of data objects for each item in this data list.
-		 * Data objects are retrieved from the "data" property for each item.
-		 * @return an array of data objects for items in this data list
-		 */
-		public function toDataVector():Vector.<Object>
-		{
-			var a:Vector.<Object> = new Vector.<Object>(_list.length);
 			for (var i:int=0; i<a.length; ++i) {
 				a[i] = _list[i].data;
 			}
@@ -323,7 +306,7 @@ package flare.vis.data
 			reverse:Boolean=false):Boolean
 		{
 			_visiting++; // mark a visit in process
-			var a:Vector.<Object> = _list; // use our own reference to the list
+			var a:Array = _list; // use our own reference to the list
 			var i:uint, n:uint=a.length, b:Boolean = false;
 			var f:Function = Filter.$(filter);
 			
@@ -449,7 +432,7 @@ package flare.vis.data
 		{
 			var trans:Transitioner = Transitioner.instance(t);
 			var f:Function = Filter.$(filter);
-			Vectors.setProperty(_list, name, value, f, trans);
+			Arrays.setProperty(_list, name, value, f, trans);
 			return trans;
 		}
 		
@@ -484,7 +467,7 @@ package flare.vis.data
 			var trans:Transitioner = Transitioner.instance(t);
 			var f:Function = Filter.$(filter);
 			for (var name:String in vals)
-				Vectors.setProperty(_list, name, vals[name], f, trans);
+				Arrays.setProperty(_list, name, vals[name], f, trans);
 			return trans;
 		}
 		

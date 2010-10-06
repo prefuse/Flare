@@ -1,7 +1,6 @@
 package flare.query.methods
 {
 	import flare.query.And;
-	import flare.util.Vectors;
 	
 	/**
 	 * Creates a new <code>And</code> query operator.
@@ -11,7 +10,7 @@ package flare.query.methods
 	public function and(...rest):And
 	{
 		var a:And = new And();
-		a.setChildren(Vectors.copyFromArray(rest));
+		a.setChildren(rest);
 		return a;
 	}	
 }

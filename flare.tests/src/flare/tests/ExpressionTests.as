@@ -1,7 +1,5 @@
 package flare.tests
 {
-	import flare.util.Vectors;
-	
 	import flare.query.And;
 	import flare.query.Arithmetic;
 	import flare.query.Comparison;
@@ -219,7 +217,7 @@ package flare.tests
 		
 		public function testQuery():void
 		{
-			var dataa:Array = [
+			var data:Array = [
 				{val:4, cat:"a"},
 				{val:4, cat:"a"},
 				{val:4, cat:"a"},
@@ -231,9 +229,9 @@ package flare.tests
 				{val:2, cat:"c"},
 				{val:1, cat:"d"}
 			];
-			var data:Vector.<Object> = Vectors.copyFromArray(dataa);
 			
-			var r:Vector.<Object>;
+			var r:Array;
+			
 			r = select({count:count("cat")}).eval(data);
 			assertEquals(1, r.length);
 			assertEquals(10, r[0].count);
@@ -291,22 +289,22 @@ package flare.tests
 			r = where(eq(fn("sqrt","val"), 2)).eval(data);
 			assertEquals(3, r.length);
 			assertEquals("a", r[0].cat);
-
+			
 			// -----
-			dataa = [
+			
+			data = [
 	 			{cat:"a", val:1}, {cat:"a", val:2},
 	 			{cat:"b", val:3}, {cat:"b", val:4},
 	 			{cat:"c", val:5}, {cat:"c", val:6},
 	 			{cat:"d", val:7}, {cat:"d", val:8}
 	 		];
-	 		data = Vectors.copyFromArray(dataa);
 	 
 	 		r = orderby("cat", "-val").eval(data);
 	 		assertEquals(8, r.length);
 	 		assertEquals(2, r[0].val); assertEquals(1, r[1].val); 
 	 		assertEquals(4, r[2].val); assertEquals(3, r[3].val); 
 	 		assertEquals(6, r[4].val); assertEquals(5, r[5].val); 
-	 		assertEquals(8, r[6].val); assertEquals(7, r[7].val);
+	 		assertEquals(8, r[6].val); assertEquals(7, r[7].val); 
 	 
 	 		r = select("cat", {sum:sum("val")}) // category + sum of values
 	            .where(neq("cat", _("d")))      // exclude category "d"
@@ -341,7 +339,7 @@ package flare.tests
 			}
 			
 			var q:Query = select({val:div("val",sum("val"))}).map();
-			var r:Vector.<Object> = q.eval(data);
+			var r:Array = q.eval(data);
 			for (var i:uint=0; i<r.length; ++i) {
 				assertEquals(data[i].val/sums.all, r[i].val);
 			}

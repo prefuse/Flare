@@ -2,7 +2,6 @@ package flare.vis.operator.layout
 {
 	import flare.animate.Transitioner;
 	import flare.util.Property;
-	import flare.util.Sort;
 	import flare.vis.data.NodeSprite;
 	
 	import flash.geom.Rectangle;
@@ -33,13 +32,13 @@ package flare.vis.operator.layout
 	 */
 	public class TreeMapLayout extends Layout
 	{
-		private static const AREA:String = "treeMapArea";
+		protected static const AREA:String = "treeMapArea";
 		
-		private var _kids:Vector.<Object> = new Vector.<Object>();
-		private var _row:Vector.<NodeSprite>  = new Vector.<NodeSprite>();
-		private var _r:Rectangle = new Rectangle();
+		protected var _kids:Array = new Array();
+		protected var _row:Array  = new Array();
+		protected var _r:Rectangle = new Rectangle();
 		
-		private var _size:Property = Property.$("size");
+		protected var _size:Property = Property.$("size");
 		
 		/** The property from which to access size values for leaf nodes. */
 		public function get sizeField():String { return _size.name; }
@@ -84,7 +83,7 @@ package flare.vis.operator.layout
 	    /**
     	 * Compute the pixel areas of nodes based on their size values.
 	     */
-	    private function computeAreas(root:NodeSprite):void
+	    protected function computeAreas(root:NodeSprite):void
 	    {
 	    	var leafCount:int = 0;
         
@@ -117,14 +116,13 @@ package flare.vis.operator.layout
 	    /**
 	     * Compute the tree map layout.
 	     */
-	    private function doLayout(p:NodeSprite, r:Rectangle):void
+	    protected function doLayout(p:NodeSprite, r:Rectangle):void
 	    {
 	        // create sorted list of children's properties
 	        for (var i:uint = 0; i < p.childDegree; ++i) {
 	        	_kids.push(p.getChildNode(i).props);
 	        }
-	        //_kids.sortOn(AREA, Array.NUMERIC);
-	        _kids.sort(Sort.$(AREA, Array.NUMERIC));
+	        _kids.sortOn(AREA, Array.NUMERIC);
 	        // update array to point to sprites, not props
 	        for (i = 0; i < _kids.length; ++i) {
 	        	_kids[i] = _kids[i].self;
@@ -145,7 +143,7 @@ package flare.vis.operator.layout
 	        }
 	    }
 	    
-	    private function updateArea(n:NodeSprite, r:Rectangle):void
+	    protected function updateArea(n:NodeSprite, r:Rectangle):void
 	    {
 	    	var o:Object = _t.$(n);
 			r.x = o.u;
@@ -187,14 +185,14 @@ package flare.vis.operator.layout
 	        */
 	    }
 	    
-	    private function squarify(c:Vector.<Object>, row:Vector.<NodeSprite>, w:Number, r:Rectangle):void
+	    protected function squarify(c:Array, row:Array, w:Number, r:Rectangle):void
 	    {
 	    	var worst:Number = Number.MAX_VALUE, nworst:Number;
 	    	var len:int;
 	        
 	        while ((len=c.length) > 0) {
 	            // add item to the row list, ignore if negative area
-	            var item:NodeSprite = c[len-1] as NodeSprite;
+	            var item:NodeSprite = c[len-1];
 				var a:Number = item.props[AREA];
 	            if (a <= 0.0) {
 	            	c.pop();
@@ -220,7 +218,7 @@ package flare.vis.operator.layout
 	        }
 	    }
 	
-	    private function getWorst(rlist:Vector.<NodeSprite>, w:Number):Number
+	    protected function getWorst(rlist:Array, w:Number):Number
 	    {
 	    	var rmax:Number = Number.MIN_VALUE;
 	    	var rmin:Number = Number.MAX_VALUE;
@@ -236,7 +234,7 @@ package flare.vis.operator.layout
 	        return Math.max(w*rmax/s, s/(w*rmin));
 	    }
 	    
-	    private function layoutRow(row:Vector.<NodeSprite>, ww:Number, r:Rectangle):Rectangle
+	    protected function layoutRow(row:Array, ww:Number, r:Rectangle):Rectangle
 	    {
 	    	var s:Number = 0; // sum of row areas
 	        for each (var n:NodeSprite in row) {
