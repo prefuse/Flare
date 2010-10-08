@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
-<componentPackage>
+<componentPackage>  
+
   <component id="CommunityStructure" class="flare.analytics.cluster.CommunityStructure" />
   <component id="BetweennessCentrality" class="flare.analytics.graph.BetweennessCentrality" />
   <component id="LinkDistance" class="flare.analytics.graph.LinkDistance" />
@@ -38,9 +39,9 @@
   <component id="StackedAreaLayout" class="flare.vis.operator.layout.StackedAreaLayout" />
   <component id="TreeMapLayout" class="flare.vis.operator.layout.TreeMapLayout" />
 
-  <component id="ColorPalette" class="flare.vis.palette.ColorPalette" />
-  <component id="ShapePalette" class="flare.vis.palette.ShapePalette" />
-  <component id="SizePalette" class="flare.vis.palette.SizePalette" />
+  <component id="ColorPalette" class="flare.util.palette.ColorPalette" />
+  <component id="ShapePalette" class="flare.util.palette.ShapePalette" />
+  <component id="SizePalette" class="flare.util.palette.SizePalette" />
 
   <component id="ScaleBinding" class="flare.vis.data.ScaleBinding" />
   <component id="LinearScale" class="flare.scale.LinearScale" />
@@ -60,5 +61,4 @@
   <component id="SelectionControl" class="flare.vis.controls.SelectionControl" />
   <component id="TooltipControl" class="flare.vis.controls.TooltipControl" />
   
-  <component id="FlareVis" class="flare.flex.FlareVis" />
 </componentPackage>

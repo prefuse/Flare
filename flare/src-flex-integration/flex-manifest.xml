@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<componentPackage> 
+  
+  <component id="FlareVisualization" class="flare.flex.vis.FlareVisualization" />
+  <component id="FlareCanvas"        class="flare.flex.vis.FlareCanvas" />
+  <component id="DragButton"         class="flare.flex.display.buttons.DragButton" />
+  
+</componentPackage>

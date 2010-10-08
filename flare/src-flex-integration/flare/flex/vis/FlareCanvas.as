@@ -1,4 +1,4 @@
-package flare.flex
+package flare.flex.vis
 {
 	import flare.data.DataSet;
 	import flare.display.DirtySprite;
@@ -15,7 +15,7 @@ package flare.flex
 	 * underlying Flare <code>Visualization</code> instance can always be
 	 * accessed using the <code>visualization</code> property.
 	 */
-	public class FlareVis extends Canvas
+	public class FlareCanvas extends Canvas
 	{
 		private var _vis:Visualization;
 		
@@ -91,12 +91,12 @@ package flare.flex
 		private var _margin:int = 10;
 		
 		/**
-		 * Creates a new FlareVis component. By default, a new visualization
+		 * Creates a new FlareCavnas component. By default, a new visualization
 		 * with an empty data set is created.
 		 * @param data the data to visualize. If this value is null, a new
 		 *  empty data instance will be used.
 		 */
-		public function FlareVis(data:Data=null) {
+		public function FlareCanvas(data:Data=null) {
 			this.rawChildren.addChild(
 				_vis = new Visualization(data==null ? new Data() : data)
 			);

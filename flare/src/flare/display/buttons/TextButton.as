@@ -1,22 +1,7 @@
 package flare.display.buttons
 {
-	import flare.display.render.BitmapRenderer;
-	import flare.vis.data.render.IRenderer;
-	
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.Graphics;
-	import flash.display.Sprite;
-	import flash.events.MouseEvent;
-	import flash.geom.Matrix;
-	import flash.geom.Point;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
-	import flash.utils.Dictionary;
-	
-	import mx.controls.ButtonPhase;
-	import mx.events.DragEvent;
-	import mx.managers.DragManager;
 	
 	public class TextButton extends SpriteButton
 	{

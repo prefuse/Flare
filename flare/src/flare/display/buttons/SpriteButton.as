@@ -1,25 +1,20 @@
 package flare.display.buttons
 {
 	import flare.display.render.BitmapRenderer;
-	import flare.vis.data.render.IRenderer;
 	
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.Graphics;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
-	import flash.geom.Matrix;
-	import flash.geom.Point;
-	import flash.text.TextField;
-	import flash.text.TextFormat;
 	import flash.utils.Dictionary;
 	
-	import mx.controls.ButtonPhase;
-	import mx.events.DragEvent;
-	import mx.managers.DragManager;
-	
+	/**
+	 *  
+	 * @author thomasburleson
+	 * 
+	 */
 	public class SpriteButton extends Sprite
 	{
+
+		
 		// ========================================
 		// Protected constants
 		// ========================================
@@ -43,11 +38,6 @@ package flare.display.buttons
 		 * Backing variable for <code>disabled</code> property.
 		 */
 		protected var _disabled:Boolean;
-		
-		/**
-		 * Backing variable for <code>draggable</code> property.
-		 */
-		protected var _draggable:Boolean;
 		
 		/**
 		 * Backing variable for <code>icon</code> property.
@@ -85,16 +75,6 @@ package flare.display.buttons
 		protected var _minHeight:Number;			
 		
 		/**
-		 * Indicates whether the button is currently being dragged.
-		 */
-		protected var isDragging:Boolean;
-		
-		/**
-		 * Drag starting coordinate.
-		 */
-		protected var dragStart:Point;
-		
-		/**
 		 * Button phase.
 		 */
 		protected var buttonPhase:String;
@@ -130,34 +110,6 @@ package flare.display.buttons
 				_disabled = value;
 				
 				refresh();
-			}
-		}
-		
-		/**
-		 * Indicates whether this button is draggable.
-		 */
-		public function get draggable() : Boolean
-		{
-			return _draggable;
-		}
-		
-		public function set draggable( value:Boolean ):void
-		{
-			if ( _draggable != value)
-			{
-				if ( _draggable )
-				{
-					removeEventListener( MouseEvent.MOUSE_DOWN, mouseDownHandler );
-					
-					removeDragListeners();
-					dragStart = null;
-				}
-				else
-				{
-					addEventListener( MouseEvent.MOUSE_DOWN, mouseDownHandler );
-				}
-				
-				_draggable = value;
 			}
 		}
 		
@@ -345,12 +297,11 @@ package flare.display.buttons
 			
 			// Setup initial internal state.
 			
-			_draggable = false;
-			
-			buttonPhase = ButtonPhase.UP;
+			buttonPhase = ButtonPhase_UP;
 			
 			// Add MouseEvent.ROLL_OVER, MouseEvent.ROLL_OUT listeners.
 			
+			addEventListener( MouseEvent.MOUSE_DOWN, mouseDownHandler );
 			addEventListener( MouseEvent.ROLL_OVER, rollOverHandler );
 			addEventListener( MouseEvent.ROLL_OUT, rollOutHandler );
 			
@@ -384,42 +335,14 @@ package flare.display.buttons
 			switch ( buttonPhase )
 			{
 				default:
-				case ButtonPhase.UP:
+				case ButtonPhase_UP:
 					return upSkinBitmapClass;
 				
-				case ButtonPhase.OVER:
+				case ButtonPhase_OVER:
 					return ( overSkinBitmapClass != null ) ? overSkinBitmapClass : upSkinBitmapClass;
 					
-				case ButtonPhase.DOWN:
+				case ButtonPhase_DOWN:
 					return ( downSkinBitmapClass != null ) ? downSkinBitmapClass : upSkinBitmapClass;
-			}
-		}
-		
-		/**
-		 * Add drag event listeners (if not already added).
-		 */
-		protected function addDragListeners():void
-		{
-			if ( !isDragging )
-			{
-				isDragging = true;
-				
-				addEventListener( MouseEvent.MOUSE_MOVE, mouseMoveHandler );
-				addEventListener( MouseEvent.MOUSE_UP, mouseUpHandler );
-			}
-		}
-
-		/**
-		 * Remove drag event listeners (if not already removed).
-		 */
-		protected function removeDragListeners():void
-		{
-			if ( isDragging )
-			{
-				removeEventListener( MouseEvent.MOUSE_MOVE, mouseMoveHandler );
-				removeEventListener( MouseEvent.MOUSE_UP, mouseUpHandler );
-				
-				isDragging = false;
 			}
 		}
 		
@@ -428,49 +351,16 @@ package flare.display.buttons
 		 */
 		protected function mouseDownHandler( event : MouseEvent ):void
 		{
-			buttonPhase = ButtonPhase.DOWN;
+			buttonPhase = ButtonPhase_DOWN;
+			addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
 			
-			dragStart = new Point( mouseX, mouseY );
-			
-			addDragListeners();
-			
-			event.stopImmediatePropagation()
+			refresh();
 		}
 		
 		/**
 		 * Handle MouseEvent.MOUSE_MOVE.
 		 */
-		protected function mouseMoveHandler( event:MouseEvent ):void
-		{
-			var currentPoint:Point = new Point( event.localX, event.localY );
-			
-			if ( event.buttonDown )
-			{
-				if ( dragStart && !DragManager.isDragging )
-				{
-					if ( Math.abs( dragStart.x - currentPoint.x ) > DRAG_THRESHOLD || Math.abs( dragStart.y - currentPoint.y ) > DRAG_THRESHOLD ) 
-					{
-						var dragEvent:DragEvent = new DragEvent( DragEvent.DRAG_START, true );
-						
-						//dragEvent.dragInitiator = this;
-						dragEvent.localX = dragStart.x;
-						dragEvent.localY = dragStart.y;
-						dragEvent.buttonDown = true;
-						
-						dragStart = null;
-						
-						dispatchEvent( dragEvent );
-						event.stopImmediatePropagation();
-						
-						removeDragListeners();
-					}
-				}
-			}
-			else
-			{
-				removeDragListeners();
-				dragStart = null;
-			}
+		protected function mouseMoveHandler( event:MouseEvent ):void {
 		}
 		
 		/**
@@ -478,12 +368,10 @@ package flare.display.buttons
 		 */
 		protected function mouseUpHandler( event:MouseEvent ):void
 		{
-			buttonPhase = ButtonPhase.UP;
+			buttonPhase = ButtonPhase_UP;
+			removeEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
 			
 			refresh();
-			
-			removeDragListeners();
-			dragStart = null;
 		}
 
 		/**
@@ -491,7 +379,7 @@ package flare.display.buttons
 		 */
 		protected function rollOverHandler( event:MouseEvent ):void
 		{
-			buttonPhase = ( event.buttonDown ) ? ButtonPhase.DOWN : ButtonPhase.OVER;
+			buttonPhase = ( event.buttonDown ) ? ButtonPhase_DOWN : ButtonPhase_OVER;
 			
 			refresh();
 		}
@@ -501,12 +389,28 @@ package flare.display.buttons
 		 */
 		protected function rollOutHandler( event:MouseEvent ):void
 		{
-			buttonPhase = ButtonPhase.UP;
+			buttonPhase = ButtonPhase_UP;
 			
 			refresh();
-			
-			removeDragListeners();
-			dragStart = null;
 		}
+
+		// ************************************************************************
+		// Copies of values in mx.controls.ButtonPhase so dependency is removed!
+		// ************************************************************************
+		
+		/**
+		 *  @private
+		 */
+		public static const ButtonPhase_DOWN:String = "down";
+		
+		/**
+		 *  @private
+		 */
+		public static const ButtonPhase_OVER:String = "over";
+		
+		/**
+		 *  @private
+		 */
+		public static const ButtonPhase_UP:String = "up";
 	}
 }
