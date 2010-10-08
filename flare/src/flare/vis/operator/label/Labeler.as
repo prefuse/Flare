@@ -59,6 +59,8 @@ package flare.vis.operator.label
 		protected var _labels:Sprite;
 		/** @private */
 		protected var _group:String;
+
+
 		/** @private */
 		protected var _filter:Function;
 		/** @private */
@@ -67,7 +69,6 @@ package flare.vis.operator.label
 		protected var _access:Property = Property.$("props.label");
 		/** @private */
 		protected var _cacheText:Boolean = true;
-		
 		
 		
 		/** @private */
@@ -131,8 +132,39 @@ package flare.vis.operator.label
 		public var xOffset:Number = 0;
 		/** The default <code>y</code> value for labels. */
 		public var yOffset:Number = 0;
-		/** Background renderer to apply to TextSprites created by this Labeler. */
-		public var backgroundRenderer:IBackgroundRenderer = null;
+
+		/** 
+		 * Background renderer to apply to TextSprites created by this Labeler. 
+		 **/
+		public function get backgroundRenderer():IBackgroundRenderer {
+			return _backgroundRenderer;
+		}
+		public function set backgroundRenderer(value:IBackgroundRenderer):void {
+			if (_backgroundRenderer != value) {
+				_backgroundRenderer = value;
+				if (value == null) backgroundEnabled = false;
+			}
+		}
+		
+		/**
+		 * Quick toggle to enable or disable background rendering with the Labeler.
+		 * Defaults to BackgroundRenderer instance if not assigned.
+		 *  
+		 * @return Boolean True if enabled and a renderer is assigned
+		 */
+		protected function get backgroundEnabled():Boolean {
+			return _backgroundEnabled;
+		}
+		
+		protected function set backgroundEnabled(value:Boolean):void {
+			if (_backgroundEnabled != value) {
+				_backgroundEnabled  = value;
+				
+				// Defaults to BackgroundRenderer if currently NULL and enabled or is cleared
+				if (value == true) _backgroundRenderer ||= BackgroundRenderer.instance;
+			}
+		}
+		
 		
 		/** MouseEvent.CLICK handler */
 		public var clickHandler: Function = null;
@@ -157,7 +189,7 @@ package flare.vis.operator.label
 		 *  separate label layer) or CHILD (for adding labels as children of
 		 *  data objects)
 		 */
-		public function Labeler(source:*=null, group:String=Data.NODES,
+		public function Labeler(source:*=null, group:String="nodes",
 								format:TextFormat=null, filter:*=null, policy:String=CHILD)
 		{
 			if (source is String) {
@@ -308,7 +340,7 @@ package flare.vis.operator.label
 			label.textMode           = textMode;
 			label.horizontalAnchor   = horizontalAnchor;
 			label.verticalAnchor     = verticalAnchor;
-			label.backgroundRenderer = backgroundRenderer;
+			label.backgroundRenderer = backgroundEnabled ? backgroundRenderer : null;
 			
 			return label;
 		}
@@ -339,6 +371,13 @@ package flare.vis.operator.label
 				stopEvent = false;
 			}
 		}
+		
+		/** 
+		 * Background renderer to apply to TextSprites created by this Labeler.
+		 *  
+		 **/
+		protected 	var _backgroundRenderer: IBackgroundRenderer = null;
+		private 	var _backgroundEnabled : Boolean 			 = false;
 		
 	} // end of class Labeler
 }
