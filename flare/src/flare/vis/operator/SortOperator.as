@@ -43,7 +43,7 @@ package flare.vis.operator
 		 *  be sorted in descending order.
 		 * @param group the data group to sort
 		 */
-		public function SortOperator(criteria:Array, group:String=Data.NODES)
+		public function SortOperator(criteria:Array, group:String="nodes")
 		{
 			this.group = group;
 			this.criteria = criteria;

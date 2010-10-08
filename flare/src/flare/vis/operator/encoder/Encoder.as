@@ -71,8 +71,7 @@ package flare.vis.operator.encoder
 		 * @param group the data group to process
 		 * @param filter a filter function controlling which items are encoded
 		 */		
-		public function Encoder(source:String=null, target:String=null,
-							group:String=Data.NODES, filter:*=null)
+		public function Encoder(source:String=null, target:String=null, group:String="nodes", filter:*=null)
 		{
 			_binding = new ScaleBinding();
 			_binding.property = source;

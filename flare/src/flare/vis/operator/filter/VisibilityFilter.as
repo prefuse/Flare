@@ -60,7 +60,7 @@ package flare.vis.operator.filter
 		 *  to the <code>predicate</code> argument.
 		 */
 		public function VisibilityFilter(predicate:Function=null,
-						group:String=Data.NODES, filter:*=null)
+						group:String="nodes", filter:*=null)
 		{
 			this.predicate = predicate;
 			this.group = group;
