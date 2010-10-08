@@ -175,13 +175,5 @@ package flare.vis.operator
 			}
 		}
 		
-		// -- MXML ------------------------------------------------------------
-		
-		/** @private */
-		public function initialized(document:Object, id:String):void
-		{
-			// do nothing
-		}
-		
 	} // end of class OperatorList
 }

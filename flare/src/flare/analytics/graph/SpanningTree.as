@@ -82,13 +82,5 @@ package flare.analytics.graph
 			// for subclasses
 		}
 		
-		// -- MXML ------------------------------------------------------------
-		
-		/** @private */
-		public function initialized(document:Object, id:String):void
-		{
-			// do nothing
-		}
-		
 	} // end of class SpanningTree
 }

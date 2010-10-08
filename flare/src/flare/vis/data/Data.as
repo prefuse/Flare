@@ -52,6 +52,7 @@ package flare.vis.data
 	{
 		/** Constant indicating the nodes in a Data object. */
 		public static const NODES:String = "nodes";
+		
 		/** Constant indicating the edges in a Data object. */
 		public static const EDGES:String = "edges";
 		

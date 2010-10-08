@@ -5,9 +5,7 @@ package flare.vis.controls
 	
 	import flash.utils.flash_proxy;
 	import flash.utils.Proxy;
-	
-	import mx.core.IMXMLObject;
-	
+		
 	/**
 	 * A ControlList maintains a sequential chain of controls for interacting
 	 * with a visualization. Controls may perform operations such as selection,
@@ -17,7 +15,7 @@ package flare.vis.controls
 	 * notation (<code>[]</code>) or with the <code>getControlAt</code> and
 	 * <code>setControlAt</code> methods.
 	 */
-	public class ControlList extends Proxy implements IMXMLObject
+	public class ControlList extends Proxy
 	{
 		protected var _vis:Visualization;
 		protected var _list:/*IControl*/Array = [];
@@ -158,13 +156,5 @@ package flare.vis.controls
 			Arrays.clear(_list);
 		}
 		
-		// -- MXML ------------------------------------------------------------
-		
-		/** @private */
-		public function initialized(document:Object, id:String):void
-		{
-			// do nothing
-		}
-
 	} // end of class ControlList
 }

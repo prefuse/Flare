@@ -2,12 +2,10 @@ package flare.scale
 {
 	import flare.util.Strings;
 	
-	import mx.core.IMXMLObject;
-	
 	/**
 	 * Base class for all data scale types.
 	 */
-	public class Scale implements IMXMLObject
+	public class Scale
 	{
 		/** Flag indicating if the scale bounds should be flush with the data.
 		 *  False by default, thereby allowing some padding space on the end
@@ -129,13 +127,6 @@ package flare.scale
 			return null;
 		}
 		
-		// -- MXML ------------------------------------------------------------
-		
-		/** @private */
-		public function initialized(document:Object, id:String):void
-		{
-			// do nothing
-		}
 		
 	} // end of class Scale
 }

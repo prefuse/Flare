@@ -1,12 +1,10 @@
 package flare.util.palette
 {
-	import mx.core.IMXMLObject;
-	
 	/**
 	 * Base class for palettes, such as color and size palettes, that map from
 	 * interpolated scale values into visual properties
 	 */
-	public class Palette implements IMXMLObject
+	public class Palette 
 	{
 		/** Array of palette values. */
 		protected var _values:Array;

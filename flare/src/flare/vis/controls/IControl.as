@@ -2,9 +2,7 @@ package flare.vis.controls
 {
 	import flash.display.InteractiveObject;
 	
-	import mx.core.IMXMLObject;
-	
-	public interface IControl extends IMXMLObject
+	public interface IControl
 	{
 		/** The interactive object this control is attached to. */
 		function get object():InteractiveObject;

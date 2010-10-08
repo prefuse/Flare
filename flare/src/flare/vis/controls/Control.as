@@ -48,13 +48,6 @@ package flare.vis.controls
 			return obj;
 		}
 		
-		// -- MXML ------------------------------------------------------------
-		
-		/** @private */
-		public function initialized(document:Object, id:String):void
-		{
-			// do nothing
-		}
 		
 	} // end of class Control
 }
