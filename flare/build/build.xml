@@ -1,0 +1,128 @@
+<!--
+    By default, this script builds a deployable version of Flare.swc 
+	    - with both AS3 and Flex components
+	    - with no debug code
+	    - with code optimized
+	    - swc name contains the version #
+	    - output is in /build/deploy
+	    
+	Using a target "compile-as3" will build a debug version of the AS3-only components
+	Using a target "compile-flex" will build a debug versio of the AS3 & Flex components
+
+	NOTE: the FlashBuilder settings also generate the equivalent of "compile-flex" SWC    
+-->
+
+<project name="Flare Library (AS3 and Flex)" basedir="../" default="DEPLOYABLE">
+	<!-- SDK config and Namespace -->
+	<property name="FLEX_HOME" value="/Developer/Applications/FlashBuilder/sdks/4.5.0.17855"/>
+	<property name="flare.namespace" location="http://ns.flare.com/2010/mxml" />
+	
+	<!-- Version config -->
+    <property file="${basedir}/build/version.properties" />
+    
+    <!-- Existing -->
+    <property name="src-as3.loc" 	location="${basedir}/src" />
+    <property name="src-flex.loc" 	location="${basedir}/src-flex-integration" />
+    <property name="lib.loc" 		location="${basedir}/lib" />
+    
+    <!-- Generated -->
+    <property name="build.loc" 		location="${basedir}/build" />
+    <property name="deploy.loc" 	location="${build.loc}/deploy" />
+	<property name="root.loc" 		location="${basedir}/../build" />
+    
+	
+
+	<taskdef name="compc" classname="flex.ant.CompcTask"	classpath="${FLEX_HOME}/ant/lib/flexTasks.jar"/>
+    
+    <target name="clean">
+        <delete dir="${deploy.loc}" />
+    </target>
+    
+    <target name="init">
+        <mkdir dir="${build.loc}" />
+        <mkdir dir="${deploy.loc}" />
+    </target>
+    
+    <target name="compile-as3" depends="clean,init">
+    	<echo>FLEX_HOME = ${FLEX_HOME}</echo>
+        <!-- Compile AS3-Only code SWC -->
+        <compc output="${deploy.loc}/${build.finalName}-as3.swc">
+        	<include-sources dir="${src-as3.loc}">
+                <include name="**/*.as" />
+            </include-sources>
+            <external-library-path append="true" dir="${FLEX_HOME}/frameworks/libs">
+                <include name="*.swc" />
+            </external-library-path>
+            <source-path path-element="${src-as3.loc}" />
+        	<source-path path-element="${lib.loc}" />
+            <namespace uri="http://ns.flare.com/2010/mxml" manifest="${src-as3.loc}/as3-manifest.xml" />
+            <compiler.verbose-stacktraces>false</compiler.verbose-stacktraces>
+            <compiler.optimize>false</compiler.optimize>
+            <compiler.debug>true</compiler.debug>
+            <compiler.headless-server>true</compiler.headless-server>
+        </compc>
+    </target>
+    
+    <target name="compile-flex" depends="clean,init">
+        <!-- Compile AS3 and Flex code into SWC -->
+        <compc output="${deploy.loc}/${build.finalName}.swc">
+            <include-sources dir="${src-as3.loc}">
+                <include name="**/*.as" />
+            </include-sources>
+            <include-sources dir="${src-flex.loc}">
+                <include name="**/*.as" />
+            </include-sources>
+            <external-library-path append="true" dir="${FLEX_HOME}/frameworks/libs">
+                <include name="*.swc" />
+            </external-library-path>
+            <source-path path-element="${src-as3.loc}" />
+            <source-path path-element="${src-flex.loc}" />
+        	<source-path path-element="${lib.loc}" />
+            <namespace uri="http://ns.flare.com/2010/mxml" manifest="${src-flex.loc}/flex-manifest.xml" />
+            <compiler.verbose-stacktraces>false</compiler.verbose-stacktraces>
+            <compiler.headless-server>true</compiler.headless-server>
+        </compc>
+    </target>    
+    
+
+    <target name="DEPLOYABLE" depends="clean,init">
+        <!-- Compile All AS3 & Flex code into optimized, compressed SWC -->
+    	
+    	<echo> DEPOLOYABLE</echo>
+    	<echo> - Building deployable SWC [in ${deploy.loc}]: no debug, optimized</echo>
+    	<echo> - FLEX_HOME = ${FLEX_HOME}</echo>
+    	
+    	<compc output="${deploy.loc}/${build.finalName}.swc" debug="false" optimize="true">
+        	
+    		<!-- AS3 Components -->
+        	<source-path path-element="${lib.loc}" />
+            <source-path path-element="${src-as3.loc}" />
+
+    		<!-- Flex components -->
+            <source-path path-element="${src-flex.loc}" />
+    		
+    		<!-- Manifest for MXML tags -->
+            <namespace uri="${flare.namespace}" manifest="${src-flex.loc}/flex-manifest.xml" />
+        	<include-namespaces uri="${flare.namespace}" />
+        	
+        	<!-- Compress without warnings -->
+        	<compiler.show-actionscript-warnings>false</compiler.show-actionscript-warnings>
+            <compiler.verbose-stacktraces>false</compiler.verbose-stacktraces>
+        	
+        	<!-- Configure the flex framework libraries as external link dependencies -->
+			<external-library-path file="${FLEX_HOME}/frameworks/libs/player/10.1/playerglobal.swc" append="true"/>
+			<external-library-path file="${FLEX_HOME}/frameworks/libs/framework.swc" append="true"/>
+			<external-library-path file="${FLEX_HOME}/frameworks/libs/flex.swc" append="true"/>
+			<external-library-path file="${FLEX_HOME}/frameworks/libs/utilities.swc" append="true"/>
+
+    		<include-file name="as3-manifest.xml" path="${src-as3.loc}/as3-manifest.xml"/>
+    		<include-file name="flex-manifest.xml" path="${src-flex.loc}/flex-manifest.xml"/>
+    		
+			<!-- Sets java.awt.headless=true so font compilation works in headless environments -->
+			<headless-server>true</headless-server>        	
+        </compc>
+    	
+    	<copy file="${deploy.loc}/${build.finalName}.swc" tofile="${root.loc}/${build.finalName}.swc" overwrite="true" />
+    </target>
+
+</project>
