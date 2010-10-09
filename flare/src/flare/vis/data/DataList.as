@@ -114,7 +114,11 @@ package flare.vis.data
 			if (_sort != null) {
 				var idx:int = Arrays.binarySearch(_list, d, null,
 				                                  _sort.comparator);
-				_list.splice(-(idx+1), 0, d);
+				
+				// previous implementation assumed that all sort values were unique 
+				// and failed when Array.binarySearch() returned a positive insertion index.
+				
+				_list.splice((idx < 0) ? -(idx+1) : idx, 0, d);
 			} else {
 				_list.push(d);
 			}

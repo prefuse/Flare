@@ -31,6 +31,9 @@ package flare.util
 		
 		/** Gets the sorting comparison function for this Sort instance. */
 		public function get comparator():Function { return _comp; }
+		public function set comparator(func:Function):void {
+			_comp = func;
+		}
 		
 		/** The sorting criteria. Sort criteria are expressed as an
 		 *  array of property names to sort on. These properties are accessed
@@ -60,8 +63,9 @@ package flare.util
 		 *  includes a "-" (negative sign) prefix, that variable will instead
 		 *  be sorted in descending order.
 		 */
-		public function Sort(crit:*) {
-			this.criteria = crit;
+		public function Sort(c:*) {
+			if ( c is Function )	this.comparator = c as Function;
+			else					this.criteria   = c;
 		}
 		
 		/**
