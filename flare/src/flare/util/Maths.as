@@ -342,7 +342,7 @@ package flare.util
             while (a < b)
             {   // binary search over the boundaries
                 if (quantiles[i] == x) {
-                	for (; i>0 && quantiles[i-1] == x; --i);
+                	for (; i>0 && quantiles[i-1] == x; --i) {}
                     break;
                 } else if (quantiles[i] < x) {
                     a = i+1;

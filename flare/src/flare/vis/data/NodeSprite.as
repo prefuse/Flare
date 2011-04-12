@@ -78,7 +78,7 @@ package flare.vis.data
 		/** The depth of this node in the tree structure. A value of zero
 		 *  indicates that this is a root node or that there is no tree. */
 		public function get depth():uint {
-			for (var d:uint=0, p:NodeSprite=parentNode; p!=null; p=p.parentNode, d++);
+			for (var d:uint=0, p:NodeSprite=parentNode; p!=null; p=p.parentNode, d++){}
 			return d;
 		}
 

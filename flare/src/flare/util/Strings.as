@@ -194,7 +194,7 @@ package flare.util
 		private static function count(s:String, c:Number, i:int):int
 		{
 			var n:int = 0;
-			for (n=0; i<s.length && s.charCodeAt(i)==c; ++i, ++n);
+			for (n=0; i<s.length && s.charCodeAt(i)==c; ++i, ++n){}
 			return n;
 		}
 
@@ -278,7 +278,7 @@ package flare.util
 			// process custom formatting pattern
 			for (i=0; i<p.length;) {
 				c = p.charCodeAt(i);
-				for (n=0,j=i; j<p.length && p.charCodeAt(j)==c; ++j, ++n);
+				for (n=0,j=i; j<p.length && p.charCodeAt(j)==c; ++j, ++n){}
 				
 				if (c == _DATE) {
 					if (n >= 4) {
@@ -301,7 +301,7 @@ package flare.util
 				else if (c == _FRAZ) {
 					a = int(Math.round(Math.pow(10,n) * (d.time/1000 % 1)));
 					s = String(a);
-					for (a=s.length; s.charCodeAt(a-1)==_ZERO; --a);
+					for (a=s.length; s.charCodeAt(a-1)==_ZERO; --a){}
 					b.writeUTFBytes(s.substring(0,a));
 				}
 				else if (c == _HOUR) {
@@ -540,7 +540,7 @@ package flare.util
 					if (ep >= 0) continue;
 					ep = i;
 					if (i<max && (c=p.charCodeAt(i+1))==_PLUS || c==_MINUS) ++i;
-					for (;i<max && p.charCodeAt(i+1)==_ZERO; ++i, ++ne);
+					for (;i<max && p.charCodeAt(i+1)==_ZERO; ++i, ++ne){}
 					ep2 = i;
 					if (p.charCodeAt(ep2) != _ZERO) { ep = ep2 = -1; ne=0; }
 				}
@@ -549,11 +549,11 @@ package flare.util
 				}
 				else if (c == _APOSTROPHE) {
 					// skip string literal
-					for(i=i+1; i<p.length && (c==_BACKSLASH || (c=p.charCodeAt(i))!=_APOSTROPHE); ++i);
+					for(i=i+1; i<p.length && (c==_BACKSLASH || (c=p.charCodeAt(i))!=_APOSTROPHE); ++i){}
 				}
 				else if (c == _QUOTE) {
 					// skip string literal
-					for(i=i+1; i<p.length && (c==_BACKSLASH || (c=p.charCodeAt(i))!=_QUOTE); ++i);
+					for(i=i+1; i<p.length && (c==_BACKSLASH || (c=p.charCodeAt(i))!=_QUOTE); ++i){}
 				}
 			}
 			
@@ -606,8 +606,8 @@ package flare.util
 			// create strings for integral and fractional parts
 			sd = pad(xd, nd);
 			sf = (xf+1).toFixed(nf).substring(2); // add 1 to avoid AS3 bug
-			if (hash) for (; zd<sd.length && sd.charCodeAt(zd)==_ZERO; ++zd);
-			for (zf=sf.length; --zf>=0 && sf.charCodeAt(zf)==_ZERO;);
+			if (hash) for (; zd<sd.length && sd.charCodeAt(zd)==_ZERO; ++zd){}
+			for (zf=sf.length; --zf>=0 && sf.charCodeAt(zf)==_ZERO;){}
 			
 			
 			// ----------------------------------------------------------------
@@ -666,12 +666,12 @@ package flare.util
 					b.writeUTFBytes(p.charAt(++i));
 				}
 				else if (c == _APOSTROPHE) {
-					for(j=i+1; j<p.length && (c==_BACKSLASH || (c=p.charCodeAt(j))!=_APOSTROPHE); ++j);
+					for(j=i+1; j<p.length && (c==_BACKSLASH || (c=p.charCodeAt(j))!=_APOSTROPHE); ++j){}
 					if (j-i > 1) b.writeUTFBytes(p.substring(i+1,j));
 					i=j;
 				}
 				else if (c == _QUOTE) {
-					for(j=i+1; j<p.length && (c==_BACKSLASH || (c=p.charCodeAt(j))!=_QUOTE); ++j);
+					for(j=i+1; j<p.length && (c==_BACKSLASH || (c=p.charCodeAt(j))!=_QUOTE); ++j){}
 					if (j-i > 1) b.writeUTFBytes(p.substring(i+1,j));
 					i=j;
 				}
