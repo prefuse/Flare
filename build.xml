@@ -21,6 +21,7 @@
   <property name="version" value="alpha"/>
 
   <property name="flare.src" value="${basedir}/flare/src"/>
+  <property name="flare.flex.src" value="${basedir}/flare/src-flex-integration"/>
   <property name="flare.lib" value="${basedir}/flare/lib"/>
   <property name="apps.src"  value="${basedir}/flare.apps/src"/>
   <property name="demos.src" value="${basedir}/flare.demos/src"/>
@@ -48,6 +49,7 @@
     <echo message=""/>
     <echo message="   all        --> builds flare and demos in ./build}"/>
     <echo message="   flare      --> builds the flare libraries in ./build"/>
+    <echo message="   flare-flex --> builds the flare Flex integration libraries in ./build"/>
     <echo message="   apps       --> builds the apps project in ./build"/>
     <echo message="   demos      --> builds the demos app in ./build"/>
     <echo message="   tests      --> builds the tests app in ./build"/>
@@ -96,6 +98,32 @@
     <compc output="${build.dir}/flare.swc" include-classes="${flare.classes}">
       <source-path path-element="${flare.src}/"/>
       <source-path path-element="${flare.lib}/"/>
+    </compc>
+  </target>
+
+  <target name="flare-flex" depends="flare">
+    <!-- Shameless copy from above; ant doesn't make this kind of workflow easy -->
+    <!-- First we have to collect all the AS files -->
+    <path id="flare.flex.files">
+      <fileset dir="${flare.flex.src}">
+        <include name="**/**"/>
+      </fileset>
+    </path>
+    <pathconvert
+      property="flare.flex.classes"
+      pathsep=" "
+      dirsep="."
+      refid="flare.flex.files">
+      <map from="${flare.flex.src}/" to=""/>
+      <mapper>
+         <chainedmapper><globmapper from="*.as" to="*"/></chainedmapper>
+      </mapper>
+    </pathconvert>
+
+    <!-- Now we build the .swc -->
+    <compc output="${build.dir}/flare-flex.swc" include-classes="${flare.flex.classes}">
+      <external-library-path file="${build.dir}/flare.swc" append="true"/>
+      <source-path path-element="${flare.flex.src}/"/>
     </compc>
   </target>
 
