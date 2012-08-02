@@ -219,6 +219,9 @@ package flare.vis.operator.layout
 			_b.right = _b.bottom = Number.MIN_VALUE;
 			_order = 0;
 			
+			// handle edge case
+			if (N==0) return 0;
+			
 			// create first node
 			a = nodes[0]; a.x = -a.r; a.y = 0; updateBounds(a,_b);
 			if (N==1) return center(nodes, _b);
