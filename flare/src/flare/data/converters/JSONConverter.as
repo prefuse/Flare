@@ -1,6 +1,6 @@
 package flare.data.converters
 {
-	import com.adobe.serialization.json.JSON;
+	//import com.adobe.serialization.json.JSON;
 	
 	import flare.data.DataField;
 	import flare.data.DataSchema;
@@ -43,7 +43,7 @@ package flare.data.converters
 		 */
 		public function parse(text:String, schema:DataSchema):Array
 		{
-			var json:Object = JSON.decode(text) as Object;
+			var json:Object = JSON.stringify(text) as Object;
 			var list:Array = json as Array;
 			
 			if (schema != null) {
@@ -68,7 +68,7 @@ package flare.data.converters
 		{
 			var tuples:Array = data.nodes.data;
 			if (output==null) output = new ByteArray();
-			output.writeUTFBytes(JSON.encode(tuples));
+			output.writeUTFBytes(JSON.stringify(tuples));
 			return output;
 		}
 		
